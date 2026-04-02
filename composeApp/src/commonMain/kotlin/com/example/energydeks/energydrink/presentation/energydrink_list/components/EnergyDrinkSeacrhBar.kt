@@ -1,6 +1,7 @@
 package com.example.energydeks.energydrink.presentation.energydrink_list.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Icon
@@ -9,12 +10,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.energydeks.core.presentation.DarkBlue
 import energydeks.composeapp.generated.resources.Res
 import energydeks.composeapp.generated.resources.close_hint
+import energydeks.composeapp.generated.resources.ic_close
+import energydeks.composeapp.generated.resources.ic_search
 import energydeks.composeapp.generated.resources.search_hint
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -40,7 +45,7 @@ fun EnergyDrinkSearchBar(
         },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
+                painter = painterResource(Res.drawable.ic_search),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
             )
@@ -61,12 +66,18 @@ fun EnergyDrinkSearchBar(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        painter = painterResource(Res.drawable.ic_close),
                         contentDescription = stringResource(Res.string.close_hint),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
-        }
+        },
+        modifier = modifier
+            .background(
+                shape = RoundedCornerShape(100),
+                color = DarkBlue
+            )
+            .minimumInteractiveComponentSize()
     )
 }
