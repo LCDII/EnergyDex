@@ -33,9 +33,9 @@ fun EnergyDrinkList (
                 0->EnergyDrinkItemSquared(
                     //TODO
                 )
-                1->EnergyDrinkItemLonged(
-                    //TODO
-                )
+//                1->EnergyDrinkItemLonged(
+//                    //TODO
+//                )
             }
 
         }

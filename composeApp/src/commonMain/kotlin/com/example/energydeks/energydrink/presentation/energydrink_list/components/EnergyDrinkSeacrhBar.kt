@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.energydeks.core.presentation.DarkBlue
 import energydeks.composeapp.generated.resources.Res
 import energydeks.composeapp.generated.resources.close_hint
@@ -21,6 +22,7 @@ import energydeks.composeapp.generated.resources.ic_search
 import energydeks.composeapp.generated.resources.search_hint
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
 
 @Composable
 fun EnergyDrinkSearchBar(
@@ -80,4 +82,14 @@ fun EnergyDrinkSearchBar(
             )
             .minimumInteractiveComponentSize()
     )
+}
+
+@Preview
+@Composable
+fun PreviewEnergyDrinkSearchBar() {
+            EnergyDrinkSearchBar(
+                searchQuery = "",
+                onSearchQueryChange = {},
+                onImeSearch = {}
+            )
 }
