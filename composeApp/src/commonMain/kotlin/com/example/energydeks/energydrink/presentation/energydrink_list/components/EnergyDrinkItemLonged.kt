@@ -114,7 +114,7 @@ fun EnergyDrinkItemLonged(
 
 @Preview
 @Composable
-fun PreviewEnergyDrinkItemLonged()
+fun TmpPreviewEnergyDrinkItemLonged()
 {
     EnergyDrinkItemLonged(
         energyDrink = EnergyDrink(

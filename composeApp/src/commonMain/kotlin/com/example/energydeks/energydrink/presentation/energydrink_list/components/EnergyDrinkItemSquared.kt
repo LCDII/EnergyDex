@@ -122,7 +122,7 @@ fun EnergyDrinkItemSquared(
 
 @Preview
 @Composable
-fun PreviewEnergyDrinkItemSquared()
+fun TmpPreviewEnergyDrinkItemSquared()
 {
     EnergyDrinkItemSquared(
         energyDrink = EnergyDrink(
