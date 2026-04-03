@@ -30,9 +30,9 @@ fun EnergyDrinkList (
             key = { it.id }
         ) { energyDrink ->
             when(energyDrinksListViewTabIndex){
-                0->EnergyDrinkItemSquared(
-                    //TODO
-                )
+//                0->EnergyDrinkItemSquared(
+//                    //TODO
+//                )
 //                1->EnergyDrinkItemLonged(
 //                    //TODO
 //                )
