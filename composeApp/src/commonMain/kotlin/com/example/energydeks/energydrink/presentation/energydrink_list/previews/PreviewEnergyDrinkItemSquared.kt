@@ -14,6 +14,7 @@ fun PreviewEnergyDrinkItemSquared()
         energyDrink = EnergyDrink(
             id = 1,
             name = "Monster Energy White",
+            amount = 1,
             description=null,
             rating = 10.0,
             createdAt = Instant.parse("2006-10-05T12:00:00Z"),

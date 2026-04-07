@@ -1,0 +1,14 @@
+CREATE TABLE EnergyDrinkTag (
+    energyDrinkId INTEGER NOT NULL REFERENCES EnergyDrinkEntity(id),
+    tagID INTEGER NOT NULL REFERENCES TagEntity(id),
+    PRIMARY KEY (energyDrinkId, tagID)
+);
+
+insertEnergyDrinkTag:
+INSERT OR IGNORE INTO EnergyDrinkTag(energyDrinkId, tagID) VALUES (?, ?);
+
+selectTagsForEnergyDrink:
+SELECT TagEntity.*
+FROM TagEntity
+JOIN EnergyDrinkTag ON TagEntity.id = EnergyDrinkTag.tagID
+WHERE EnergyDrinkTag.energyDrinkId = ?;

@@ -1,0 +1,14 @@
+CREATE TABLE TagEntity (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    color TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE
+);
+
+insertTag:
+INSERT OR IGNORE INTO TagEntity(name, color) VALUES (?,?);
+
+selectAllTags:
+SELECT * FROM TagEntity;
+
+selectTagById:
+SELECT * FROM TagEntity WHERE id = ?;

@@ -1,11 +1,11 @@
 package com.example.energydeks.energydrink.domain
 
-import com.example.energydeks.tag.domain.Tag
 import kotlin.time.Instant
 
 data class EnergyDrink(
     val id: Long,
     val name: String,
+    val amount: Int,
     val description: String?,
     val rating: Double?,
     val createdAt: Instant,
