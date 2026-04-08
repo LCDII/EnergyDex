@@ -1,5 +1,6 @@
 package com.example.energydeks.energydrink.domain
 
+import com.example.energydeks.tag.domain.Tag
 import kotlin.time.Instant
 
 data class EnergyDrink(
@@ -11,5 +12,5 @@ data class EnergyDrink(
     val createdAt: Instant,
     val updatedAt: Instant,
     val imagePath:String?,
-    val tags: List<String>
+    val tags: List<Tag>
 )

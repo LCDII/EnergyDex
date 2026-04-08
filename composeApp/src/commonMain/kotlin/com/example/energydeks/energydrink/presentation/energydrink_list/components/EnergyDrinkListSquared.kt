@@ -60,6 +60,7 @@ fun TmpPreviewEnergyDrinkListSquared() {
             EnergyDrink(
                 id = index.toLong(),
                 name = "Monster Energy White",
+                amount = 0,
                 description=null,
                 rating = 10.0,
                 createdAt = Instant.parse("2006-10-05T12:00:00Z"),

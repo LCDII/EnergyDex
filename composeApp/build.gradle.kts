@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -26,9 +27,14 @@ kotlin {
     }
     
     sourceSets {
+        iosMain.dependencies {
+            implementation(libs.sqldelight.ios)
+        }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.sqldelight.android)
+
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -39,6 +45,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.sqldelight.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -76,5 +84,14 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
     implementation(libs.compose.material3)
+}
+
+
+sqldelight {
+    databases {
+        create("EnergyDexDatabse") {
+            packageName.set("com.example")
+        }
+    }
 }
 

@@ -120,6 +120,7 @@ fun TmpPreviewEnergyDrinkItemLonged()
         energyDrink = EnergyDrink(
             id = 0,
             name = "Monster Energy White",
+            amount = 0,
             description=null,
             rating = 10.0,
             createdAt = Instant.parse("2006-10-05T12:00:00Z"),
