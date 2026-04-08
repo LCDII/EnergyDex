@@ -89,7 +89,7 @@ dependencies {
 
 sqldelight {
     databases {
-        create("EnergyDexDatabse") {
+        create("EnergyDexDatabase") {
             packageName.set("com.example")
         }
     }

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energydeks.core.presentation.TestColor
 import com.example.energydeks.energydrink.domain.EnergyDrink
+import com.example.energydeks.tag.domain.Tag
 import energydeks.composeapp.generated.resources.Res
 import energydeks.composeapp.generated.resources.ic_gem
 import org.jetbrains.compose.resources.painterResource
@@ -84,7 +85,7 @@ fun EnergyDrinkItemLonged(
                     if (energyDrink.tags.isNotEmpty()) {
                         energyDrink.tags.forEach { tag ->
                             Text(
-                                text = tag,
+                                text = tag.name,
                                 style = MaterialTheme.typography.bodyMedium,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
@@ -126,7 +127,18 @@ fun TmpPreviewEnergyDrinkItemLonged()
             createdAt = Instant.parse("2006-10-05T12:00:00Z"),
             updatedAt = Instant.parse("2006-10-05T12:00:00Z"),
             imagePath = null,
-            tags = listOf("Good AF", "Chuds Drink", "Fuck Foids")
+            tags = listOf(
+                Tag(
+                    id = 0,
+                    name = "Good AF",
+                    color = "#000000"
+                ),
+                Tag(
+                    id = 0,
+                    name = "Chuds Drink",
+                    color = "#000000"
+                )
+            )
         ),
         onClick = {}
     )
