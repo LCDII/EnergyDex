@@ -1,4 +1,4 @@
-package com.example.energydeks.domain.tag
+package com.example.energydeks.domain.tag.model
 
 data class Tag(
     //TODO add tags

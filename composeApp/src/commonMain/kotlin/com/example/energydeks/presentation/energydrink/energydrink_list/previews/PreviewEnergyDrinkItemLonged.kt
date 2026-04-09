@@ -2,9 +2,9 @@ package com.example.energydeks.presentation.energydrink.energydrink_list.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.energydeks.domain.energydrink.EnergyDrink
+import com.example.energydeks.domain.energydrink.model.EnergyDrink
 import com.example.energydeks.presentation.energydrink.energydrink_list.components.EnergyDrinkItemLonged
-import com.example.energydeks.domain.tag.Tag
+import com.example.energydeks.domain.tag.model.Tag
 import kotlin.time.Instant
 
 @Preview

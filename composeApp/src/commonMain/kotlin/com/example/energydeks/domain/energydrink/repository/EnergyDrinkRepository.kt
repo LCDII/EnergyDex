@@ -1,8 +1,9 @@
-package com.example.energydeks.domain.energydrink
+package com.example.energydeks.domain.energydrink.repository
 
 import com.example.energydeks.core.domain.DataError
 import com.example.energydeks.core.domain.EmptyResult
 import com.example.energydeks.core.domain.Result
+import com.example.energydeks.domain.energydrink.model.EnergyDrink
 
 interface EnergyDrinkRepository {
     suspend fun searchEnergyDrink(query: String): Result<List<EnergyDrink>, DataError.Local>

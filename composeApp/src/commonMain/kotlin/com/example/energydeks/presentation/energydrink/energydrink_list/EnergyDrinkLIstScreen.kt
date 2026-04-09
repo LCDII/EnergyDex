@@ -1,7 +1,7 @@
 package com.example.energydeks.presentation.energydrink.energydrink_list
 
 import androidx.compose.runtime.Composable
-import com.example.energydeks.domain.energydrink.EnergyDrink
+import com.example.energydeks.domain.energydrink.model.EnergyDrink
 
 @Composable
 fun EnergyDrinkScreenRoot(

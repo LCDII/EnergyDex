@@ -1,8 +1,9 @@
-package com.example.energydeks.domain.tag
+package com.example.energydeks.domain.tag.repository
 
 import com.example.energydeks.core.domain.DataError
 import com.example.energydeks.core.domain.EmptyResult
 import com.example.energydeks.core.domain.Result
+import com.example.energydeks.domain.tag.model.Tag
 
 interface TagRepository {
     suspend fun createTag(

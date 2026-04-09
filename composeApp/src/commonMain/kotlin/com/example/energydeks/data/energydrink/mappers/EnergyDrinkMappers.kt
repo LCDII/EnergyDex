@@ -1,8 +1,8 @@
 package com.example.energydeks.data.energydrink.mappers
 
 import com.example.EnergyDrinkEntity
-import com.example.energydeks.domain.energydrink.EnergyDrink
-import com.example.energydeks.domain.tag.Tag
+import com.example.energydeks.domain.energydrink.model.EnergyDrink
+import com.example.energydeks.domain.tag.model.Tag
 import kotlin.time.Instant
 
 fun EnergyDrinkEntity.toEnergyDrink(tags: List<Tag>): EnergyDrink = EnergyDrink(

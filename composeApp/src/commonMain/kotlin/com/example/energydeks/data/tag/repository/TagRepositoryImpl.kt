@@ -5,8 +5,8 @@ import com.example.energydeks.core.domain.DataError
 import com.example.energydeks.core.domain.EmptyResult
 import com.example.energydeks.core.domain.Result
 import com.example.energydeks.data.tag.mappers.toTag
-import com.example.energydeks.domain.tag.Tag
-import com.example.energydeks.domain.tag.TagRepository
+import com.example.energydeks.domain.tag.model.Tag
+import com.example.energydeks.domain.tag.repository.TagRepository
 
 class TagRepositoryImpl(
     private val tagEntityQueries: TagEntityQueries

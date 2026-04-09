@@ -4,7 +4,7 @@ import com.example.EnergyDrinkTagQueries
 import com.example.energydeks.core.domain.DataError
 import com.example.energydeks.core.domain.EmptyResult
 import com.example.energydeks.core.domain.Result
-import com.example.energydeks.domain.energydrink.EnergyDrinkTagRepository
+import com.example.energydeks.domain.energydrink.repository.EnergyDrinkTagRepository
 
 class EnergyDrinkTagRepositoryImpl(
     private val energyDrinkTagQueries: EnergyDrinkTagQueries

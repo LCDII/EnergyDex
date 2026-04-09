@@ -1,6 +1,6 @@
-package com.example.energydeks.domain.energydrink
+package com.example.energydeks.domain.energydrink.model
 
-import com.example.energydeks.domain.tag.Tag
+import com.example.energydeks.domain.tag.model.Tag
 import kotlin.time.Instant
 
 data class EnergyDrink(

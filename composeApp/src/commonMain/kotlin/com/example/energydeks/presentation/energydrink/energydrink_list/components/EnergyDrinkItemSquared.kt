@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energydeks.core.presentation.TestColor
-import com.example.energydeks.domain.energydrink.EnergyDrink
-import com.example.energydeks.domain.tag.Tag
+import com.example.energydeks.domain.energydrink.model.EnergyDrink
+import com.example.energydeks.domain.tag.model.Tag
 import energydeks.composeapp.generated.resources.Res
 import energydeks.composeapp.generated.resources.ic_gem
 import org.jetbrains.compose.resources.painterResource

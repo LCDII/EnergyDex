@@ -8,8 +8,8 @@ import com.example.energydeks.core.domain.EmptyResult
 import com.example.energydeks.core.domain.Result
 import com.example.energydeks.data.energydrink.mappers.toEnergyDrink
 import com.example.energydeks.data.tag.mappers.toTag
-import com.example.energydeks.domain.energydrink.EnergyDrink
-import com.example.energydeks.domain.energydrink.EnergyDrinkRepository
+import com.example.energydeks.domain.energydrink.model.EnergyDrink
+import com.example.energydeks.domain.energydrink.repository.EnergyDrinkRepository
 
 class EnergyDrinkRepositoryImpl(
     private val energyDrinkEntityQueries: EnergyDrinkEntityQueries,
