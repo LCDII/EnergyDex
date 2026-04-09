@@ -7,6 +7,14 @@ CREATE TABLE TagEntity (
 insertTag:
 INSERT OR IGNORE INTO TagEntity(name, color) VALUES (?,?);
 
+deleteTag:
+DELETE FROM TagEntity WHERE id = ?;
+
+updateTag:
+UPDATE TagEntity
+SET name = ?, color = ?
+WHERE id = ?;
+
 selectAllTags:
 SELECT * FROM TagEntity;
 

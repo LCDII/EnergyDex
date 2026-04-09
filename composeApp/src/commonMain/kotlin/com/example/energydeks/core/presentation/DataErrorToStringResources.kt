@@ -10,6 +10,8 @@ fun DataError.toUiText(): UiText{
     val stringRes = when(this){
         DataError.Local.DISK_FULL -> Res.string.error_disk_full
         DataError.Local.UNKNOWN -> Res.string.error_unknown
+        DataError.Local.ALREADY_EXISTS -> Res.string.error_unknown//TODO change
+        DataError.Local.DOESNT_EXISTS -> Res.string.error_unknown//TODO change
     }
 
     return UiText.StringResourceId(stringRes)

@@ -1,0 +1,97 @@
+package com.example.energydeks.data.energydrink.repository
+
+import com.example.EnergyDrinkEntityQueries
+import com.example.EnergyDrinkTagQueries
+import com.example.TagEntityQueries
+import com.example.energydeks.core.domain.DataError
+import com.example.energydeks.core.domain.EmptyResult
+import com.example.energydeks.core.domain.Result
+import com.example.energydeks.data.energydrink.mappers.toEnergyDrink
+import com.example.energydeks.data.tag.mappers.toTag
+import com.example.energydeks.domain.energydrink.EnergyDrink
+import com.example.energydeks.domain.energydrink.EnergyDrinkRepository
+
+class EnergyDrinkRepositoryImpl(
+    private val energyDrinkEntityQueries: EnergyDrinkEntityQueries,
+    private val energyDrinkTagQueries: EnergyDrinkTagQueries
+) : EnergyDrinkRepository{
+    override suspend fun searchEnergyDrink(query: String): Result<List<EnergyDrink>, DataError.Local> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createEnergyDrink(
+        name: String,
+        amount: Int,
+        description: String?,
+        rating: Int,
+        createdAt: Long,
+        updatedAt: Long,
+        imagePath: String?
+    ): EmptyResult<DataError.Local> =
+        try {
+            energyDrinkEntityQueries.insertEnergyDrink(name, amount.toLong(), description, rating.toLong(), createdAt, updatedAt, imagePath)
+            Result.Success(Unit)
+        } catch(e: Exception) {
+            Result.Error(DataError.Local.ALREADY_EXISTS)
+            //TODO make variant for DISK_FULL
+        }
+
+    override suspend fun updateEnergyDrink(
+        id: Long,
+        name: String,
+        amount: Int,
+        description: String?,
+        rating: Int,
+        updatedAt: Long,
+        imagePath: String?
+    ): EmptyResult<DataError.Local> =
+       try {
+        energyDrinkEntityQueries.updateEnergyDrink(
+            id = id,
+            name = name,
+            amount = amount.toLong(),
+            description = description,
+            rating = rating.toLong(),
+            updatedAt = updatedAt,
+            imagePath = imagePath
+        )
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(DataError.Local.DOESNT_EXISTS)
+        }
+
+    override suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local> =
+        try {
+            energyDrinkEntityQueries.deleteEnergyDrink(id = id)
+            energyDrinkTagQueries.deleteAllTagsForEnergyDrink(energyDrinkId = id)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(DataError.Local.DOESNT_EXISTS)
+        }
+
+    override suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local> =
+        try {
+            //for energyDrinkEntity mapper we need tags from another table
+            val energyDrink = energyDrinkEntityQueries.selectById(id = id).executeAsOne()
+            val tags = energyDrinkTagQueries.selectTagsForEnergyDrink(energyDrinkId = id).executeAsList().map { it.toTag() }
+            Result.Success(energyDrink.toEnergyDrink(tags))
+        } catch (e: Exception) {
+            Result.Error(DataError.Local.DOESNT_EXISTS)
+        }
+
+    override suspend fun getAllEnergyDrinks(): Result<List<EnergyDrink>, DataError.Local> =
+        try {
+            //for energyDrinkEntity mapper we need tags from another table
+            val energyDrinks = energyDrinkEntityQueries.selectAll().executeAsList().map { energyDrink ->
+                val tags = energyDrinkTagQueries.selectTagsForEnergyDrink(energyDrinkId = energyDrink.id).executeAsList().map {
+                    it.toTag()
+                }
+                energyDrink.toEnergyDrink(tags)
+            }
+            Result.Success(energyDrinks)
+        } catch (e: Exception) {
+            Result.Error(DataError.Local.DOESNT_EXISTS)
+        }
+
+
+}

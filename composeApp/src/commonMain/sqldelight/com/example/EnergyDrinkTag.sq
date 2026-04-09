@@ -1,14 +1,27 @@
 CREATE TABLE EnergyDrinkTag (
     energyDrinkId INTEGER NOT NULL REFERENCES EnergyDrinkEntity(id),
-    tagID INTEGER NOT NULL REFERENCES TagEntity(id),
-    PRIMARY KEY (energyDrinkId, tagID)
+    tagId INTEGER NOT NULL REFERENCES TagEntity(id),
+    PRIMARY KEY (energyDrinkId, tagId)
 );
 
+
 insertEnergyDrinkTag:
-INSERT OR IGNORE INTO EnergyDrinkTag(energyDrinkId, tagID) VALUES (?, ?);
+INSERT OR IGNORE INTO EnergyDrinkTag(energyDrinkId, tagId) VALUES (?, ?);
+
+deleteEnergyDrinkTag:
+DELETE FROM EnergyDrinkTag WHERE energyDrinkId = ? AND tagId = ?;
+
+deleteAllTagsForEnergyDrink:
+DELETE FROM EnergyDrinkTag WHERE energyDrinkId = ?;
 
 selectTagsForEnergyDrink:
 SELECT TagEntity.*
 FROM TagEntity
-JOIN EnergyDrinkTag ON TagEntity.id = EnergyDrinkTag.tagID
+INNER JOIN EnergyDrinkTag ON TagEntity.id = EnergyDrinkTag.tagId
 WHERE EnergyDrinkTag.energyDrinkId = ?;
+
+selectEnergyDrinksForTag:
+SELECT EnergyDrinkEntity.*
+FROM EnergyDrinkEntity
+INNER JOIN EnergyDrinkTag ON EnergyDrinkEntity.id = EnergyDrinkTag.energyDrinkId
+WHERE EnergyDrinkTag.tagId = ?;

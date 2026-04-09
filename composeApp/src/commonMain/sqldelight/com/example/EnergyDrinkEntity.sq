@@ -9,8 +9,24 @@ CREATE TABLE EnergyDrinkEntity(
     imagePath TEXT
 );
 
+insertEnergyDrink:
+INSERT INTO EnergyDrinkEntity(name, amount,description, rating, createdAt, updatedAt, imagePath)
+VALUES (?,?,?,?,?,?,?);
+
+updateEnergyDrink:
+UPDATE EnergyDrinkEntity
+SET name = ?, amount = ?, description = ?, rating = ?, updatedAt = ?, imagePath = ?
+WHERE id = ?;
+
+deleteEnergyDrink:
+DELETE FROM EnergyDrinkEntity WHERE id = ?;
+
+
 selectById:
 SELECT * FROM EnergyDrinkEntity WHERE id = ?;
 
 selectAll:
 SELECT * FROM EnergyDrinkEntity;
+
+lastInsertRowId:
+SELECT last_insert_rowid();
