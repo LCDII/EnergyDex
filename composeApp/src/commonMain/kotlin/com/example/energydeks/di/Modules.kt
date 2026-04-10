@@ -11,7 +11,6 @@ import com.example.energydeks.domain.energydrink.usecase.AttachTagToEnergyDrinkU
 import com.example.energydeks.domain.energydrink.usecase.CreateEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.DetachTagFromEnergyDrinkUseCase
-import com.example.energydeks.domain.energydrink.usecase.EnergyDrinkUseCases
 import com.example.energydeks.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
 import com.example.energydeks.domain.energydrink.usecase.GetEnergyDrinkByIdUSeCase
 import com.example.energydeks.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
@@ -20,48 +19,29 @@ import com.example.energydeks.domain.tag.usecase.CreateTagUseCase
 import com.example.energydeks.domain.tag.usecase.DeleteTagUseCase
 import com.example.energydeks.domain.tag.usecase.GetAllTagsUseCase
 import com.example.energydeks.domain.tag.usecase.GetTagByIdUseCase
-import com.example.energydeks.domain.tag.usecase.TagUseCases
 import com.example.energydeks.domain.tag.usecase.UpdateTagUseCase
+import com.example.energydeks.presentation.energydrink.energydrink_list.EnergyDrinkListViewModel
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val useCaseModule = module {
 
-    single { CreateEnergyDrinkUseCase(get()) }
-    single { UpdateEnergyDrinkUseCase(get()) }
-    single { DeleteEnergyDrinkUseCase(get()) }
-    single { GetEnergyDrinkByIdUSeCase(get()) }
-    single { GetAllEnergyDrinksUseCase(get()) }
-    single { AttachTagToEnergyDrinkUseCase(get()) }
-    single { DetachTagFromEnergyDrinkUseCase(get()) }
+    factoryOf(::CreateEnergyDrinkUseCase)
+    factoryOf(::UpdateEnergyDrinkUseCase)
+    factoryOf(::DeleteEnergyDrinkUseCase)
+    factoryOf(::GetEnergyDrinkByIdUSeCase)
+    factoryOf(::GetAllEnergyDrinksUseCase)
+    factoryOf(::AttachTagToEnergyDrinkUseCase)
+    factoryOf(::DetachTagFromEnergyDrinkUseCase)
 
-    single {
-        EnergyDrinkUseCases(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get()
-        )
-    }
+    factoryOf(::CreateTagUseCase)
+    factoryOf(::UpdateTagUseCase)
+    factoryOf(::DeleteTagUseCase)
+    factoryOf(::GetTagByIdUseCase)
+    factoryOf(::GetAllTagsUseCase)
 
-    single { CreateTagUseCase(get()) }
-    single { UpdateTagUseCase(get()) }
-    single { DeleteTagUseCase(get()) }
-    single { GetTagByIdUseCase(get()) }
-    single { GetAllTagsUseCase(get()) }
-
-    single{
-        TagUseCases(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-        )
-    }
 }
 
 expect val platformModule: Module
@@ -101,5 +81,5 @@ val repositoryModule = module {
 
 
 val viewModelModule = module {
-    //TODO
+    viewModelOf(::EnergyDrinkListViewModel)
 }

@@ -1,4 +1,9 @@
 package com.example.energydeks.presentation.energydrink.energydrink_list
 
-class EnergyDrinkListViewModel {
+import androidx.lifecycle.ViewModel
+
+class EnergyDrinkListViewModel (
+
+): ViewModel() {
+
 }
