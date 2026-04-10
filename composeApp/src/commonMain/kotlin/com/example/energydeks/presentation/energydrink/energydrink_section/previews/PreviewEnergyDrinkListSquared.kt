@@ -1,9 +1,9 @@
-package com.example.energydeks.presentation.energydrink.energydrink_list.previews
+package com.example.energydeks.presentation.energydrink.energydrink_section.previews
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.energydeks.domain.energydrink.model.EnergyDrink
-import com.example.energydeks.presentation.energydrink.energydrink_list.components.EnergyDrinkListSquared
+import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkListSquared
 import com.example.energydeks.domain.tag.model.Tag
 import kotlin.time.Instant
 

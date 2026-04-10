@@ -1,10 +1,9 @@
-package com.example.energydeks.presentation.energydrink.energydrink_list.components
+package com.example.energydeks.presentation.energydrink.energydrink_section.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -35,12 +34,12 @@ import org.jetbrains.compose.resources.painterResource
 import kotlin.time.Instant
 
 @Composable
-fun EnergyDrinkItemLonged(
+fun EnergyDrinkItemSquared(
     energyDrink: EnergyDrink,
     onClick: () -> Unit,
     modifier: Modifier  = Modifier
 ) {
-    Surface(
+    Surface (
         shape = RoundedCornerShape(32.dp),
         modifier = modifier
             .clickable(onClick = onClick),
@@ -49,77 +48,86 @@ fun EnergyDrinkItemLonged(
         Row(
             modifier = Modifier
                 .padding(12.dp)
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Box(
+                .height(IntrinsicSize.Min)
+        )
+        {
+            Column(
                 modifier = Modifier
-                    .height(110.dp)
-                    .width(110.dp),
-                contentAlignment = Alignment.Center
+                    .width(IntrinsicSize.Min),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Box(
+                    modifier = Modifier
+                        .height(110.dp)
+                        .width(110.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Image"
+                    )
+                }
+
                 Text(
-                    text="Image"
+                    text = energyDrink.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
                 )
+
             }
             Column(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center
+                    .width(IntrinsicSize.Min)
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text=energyDrink.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                )
-                {
-                    if (energyDrink.tags.isNotEmpty()) {
-                        energyDrink.tags.forEach { tag ->
-                            Text(
-                                text = tag.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.White
-                            )
-                        }
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_gem),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text ="${energyDrink.rating}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 18.sp
+                    )
+                }
+                if (energyDrink.tags.isNotEmpty()) {
+                    energyDrink.tags.forEach { tag ->
+                        Text(
+                            text = tag.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.White,
+                        )
                     }
                 }
                 Text(
-                    text = energyDrink.createdAt.toString().substring(0,10)
+                    text = energyDrink.createdAt.toString().substring(0,10),
+                    modifier = Modifier
                 )
             }
-            Icon(
-                painter = painterResource(Res.drawable.ic_gem),
-                contentDescription = null,
-                modifier = Modifier.size(32.dp)
-            )
-            Text(
-                text ="${energyDrink.rating}",
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = 24.sp
-           )
         }
     }
 }
 
-
 @Preview
 @Composable
-fun TmpPreviewEnergyDrinkItemLonged()
+fun TmpPreviewEnergyDrinkItemSquared()
 {
-    EnergyDrinkItemLonged(
+    EnergyDrinkItemSquared(
         energyDrink = EnergyDrink(
-            id = 0,
+            id = 1,
             name = "Monster Energy White",
             amount = 0,
             description=null,

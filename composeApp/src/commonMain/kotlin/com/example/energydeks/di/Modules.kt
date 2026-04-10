@@ -12,7 +12,7 @@ import com.example.energydeks.domain.energydrink.usecase.CreateEnergyDrinkUseCas
 import com.example.energydeks.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.DetachTagFromEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
-import com.example.energydeks.domain.energydrink.usecase.GetEnergyDrinkByIdUSeCase
+import com.example.energydeks.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
 import com.example.energydeks.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
 import com.example.energydeks.domain.tag.repository.TagRepository
 import com.example.energydeks.domain.tag.usecase.CreateTagUseCase
@@ -20,7 +20,7 @@ import com.example.energydeks.domain.tag.usecase.DeleteTagUseCase
 import com.example.energydeks.domain.tag.usecase.GetAllTagsUseCase
 import com.example.energydeks.domain.tag.usecase.GetTagByIdUseCase
 import com.example.energydeks.domain.tag.usecase.UpdateTagUseCase
-import com.example.energydeks.presentation.energydrink.energydrink_list.EnergyDrinkListViewModel
+import com.example.energydeks.presentation.energydrink.energydrink_section.EnergyDrinkSectionViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -31,7 +31,7 @@ val useCaseModule = module {
     factoryOf(::CreateEnergyDrinkUseCase)
     factoryOf(::UpdateEnergyDrinkUseCase)
     factoryOf(::DeleteEnergyDrinkUseCase)
-    factoryOf(::GetEnergyDrinkByIdUSeCase)
+    factoryOf(::GetEnergyDrinkByIdUseCase)
     factoryOf(::GetAllEnergyDrinksUseCase)
     factoryOf(::AttachTagToEnergyDrinkUseCase)
     factoryOf(::DetachTagFromEnergyDrinkUseCase)
@@ -81,5 +81,5 @@ val repositoryModule = module {
 
 
 val viewModelModule = module {
-    viewModelOf(::EnergyDrinkListViewModel)
+    viewModelOf(::EnergyDrinkSectionViewModel)
 }

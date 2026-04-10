@@ -1,11 +1,11 @@
-package com.example.energydeks.presentation.energydrink.energydrink_list
+package com.example.energydeks.presentation.energydrink.energydrink_section
 
 import androidx.compose.runtime.Composable
 import com.example.energydeks.domain.energydrink.model.EnergyDrink
 
 @Composable
 fun EnergyDrinkScreenRoot(
-    viewModel: EnergyDrinkListViewModel,//TODO
+    viewModel: EnergyDrinkSectionViewModel,//TODO
     onEnergyDrinkClick: (EnergyDrink) -> Unit
 ) {
     //TODO state
@@ -15,8 +15,8 @@ fun EnergyDrinkScreenRoot(
 
 @Composable
 fun EnergyDrinkScreen(
-    state: EnergyDrinkListState,
-    onAction: (EnergyDrinkAction) -> Unit
+    state: EnergyDrinkSectionAction,
+    onAction: (EnergyDrinkSectionAction) -> Unit
 ) {
     //TODO  Screen of energetics
 }
