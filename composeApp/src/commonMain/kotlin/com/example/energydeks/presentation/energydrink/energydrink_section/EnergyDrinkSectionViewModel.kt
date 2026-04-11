@@ -9,7 +9,6 @@ import com.example.energydeks.domain.energydrink.usecase.GetAllEnergyDrinksUseCa
 import com.example.energydeks.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
