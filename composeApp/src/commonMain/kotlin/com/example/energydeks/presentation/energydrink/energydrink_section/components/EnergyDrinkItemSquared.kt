@@ -43,7 +43,7 @@ fun EnergyDrinkItemSquared(
         shape = RoundedCornerShape(32.dp),
         modifier = modifier
             .clickable(onClick = onClick),
-        color = TestColor
+        color = Color(0x73995EFF)
     ) {
         Row(
             modifier = Modifier

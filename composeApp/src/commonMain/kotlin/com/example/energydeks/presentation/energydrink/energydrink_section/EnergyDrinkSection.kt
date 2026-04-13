@@ -30,14 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.energydeks.core.presentation.TestBackgroundColor
-import com.example.energydeks.core.presentation.TestBackgroundSurfaceColor
-import com.example.energydeks.di.initKoin
 import com.example.energydeks.domain.energydrink.model.EnergyDrink
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkListLonged
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkListSquared
@@ -51,17 +49,17 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@Preview
-@Composable
-fun TmpEnergyDrinkSectionRootPreview() {
-    //Calling the stateless EnergyDrinkSection instead of EnergyDrinkSectionRoot
-    // to avoid the "KoinApplication has not been started" error in the preview.
-    MaterialTheme {
-        EnergyDrinkSectionRoot(
-            onEnergyDrinkClick = {}
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun TmpEnergyDrinkSectionRootPreview() {
+//    //Calling the stateless EnergyDrinkSection instead of EnergyDrinkSectionRoot
+//    // to avoid the "KoinApplication has not been started" error in the preview.
+//    MaterialTheme {
+//        EnergyDrinkSectionRoot(
+//            onEnergyDrinkClick = {}
+//        )
+//    }
+//}
 @Preview
 @Composable
 fun TmpEnergyDrinkSectionPreview() {
@@ -88,7 +86,7 @@ fun EnergyDrinkSectionRoot(
         state = state,
         onAction = { action ->
             when(action) {
-                is EnergyDrinkSectionAction.OnEnergyDrinkClick ->
+                is EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick ->
                     onEnergyDrinkClick(action.energyDrink)
                 else -> Unit
             }//can redo it
@@ -121,14 +119,14 @@ fun EnergyDrinkSection(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(TestBackgroundColor)
+                .background(Color(0xFFD8B4FE))
                 .statusBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(),
-                color = TestBackgroundSurfaceColor,
+                color = Color(0xFF1F1038),
                 shape = RoundedCornerShape(
                     topStart = 32.dp,
                     topEnd = 32.dp
@@ -205,7 +203,7 @@ fun EnergyDrinkSection(
                                                 energyDrinks = state.searchResult,
                                                 onEnergyDrinkClick = {
                                                     onAction(
-                                                        EnergyDrinkSectionAction.OnEnergyDrinkClick(
+                                                        EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick(
                                                             it
                                                         )
                                                     )
@@ -223,7 +221,7 @@ fun EnergyDrinkSection(
                                                 energyDrinks = state.searchResult,
                                                 onEnergyDrinkClick = {
                                                     onAction(
-                                                        EnergyDrinkSectionAction.OnEnergyDrinkClick(
+                                                        EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick(
                                                             it
                                                         )
                                                     )
@@ -259,7 +257,7 @@ private fun TabToggleButtons(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(Color(0x73995EFF)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -276,9 +274,9 @@ private fun TabToggleButtons(
                     },
                     contentDescription = tab.name,
                     tint = if (selectedTab == tab)
-                        MaterialTheme.colorScheme.primary
+                        Color(0xFFFFFFFF)
                     else
-                        MaterialTheme.colorScheme.onSurfaceVariant
+                        Color(0xFFFFFFFF)
                 )
             }
         }
@@ -300,7 +298,7 @@ private fun FloatingActionButtons(
     ) {
         FloatingActionButton(
             onClick = onCreateClick,
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = Color(0xFFFF7700),
             contentColor = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(56.dp)
         ) {
@@ -321,8 +319,7 @@ private fun FloatingActionButtons(
     ) {
         FloatingActionButton(
             onClick = onSortClick,
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            containerColor = Color(0xFFFF7700),
             modifier = Modifier.size(56.dp)
         ) {
             Icon(

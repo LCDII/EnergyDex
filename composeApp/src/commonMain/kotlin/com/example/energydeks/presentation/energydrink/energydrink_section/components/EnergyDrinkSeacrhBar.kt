@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.energydeks.core.presentation.DarkBlue
 import energydeks.composeapp.generated.resources.Res
@@ -37,19 +38,20 @@ fun EnergyDrinkSearchBar(
         onValueChange = onSearchQueryChange,
         shape = RoundedCornerShape(100),
         colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = DarkBlue,
-            focusedBorderColor =  DarkBlue
+            cursorColor = Color(0xFFFFFFFF),
+            focusedBorderColor = Color(0xFFFFFFFF)
         ),
         placeholder = {
             Text(
-                text = stringResource(Res.string.search_hint)
+                text = stringResource(Res.string.search_hint),
+                color = Color(0xFFFFFFFF)
             )
         },
         leadingIcon = {
             Icon(
                 painter = painterResource(Res.drawable.ic_search),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
+                tint = Color(0xFFFFFFFF)
             )
         },
         singleLine = true,
@@ -70,7 +72,7 @@ fun EnergyDrinkSearchBar(
                     Icon(
                         painter = painterResource(Res.drawable.ic_close),
                         contentDescription = stringResource(Res.string.close_hint),
-                        tint = MaterialTheme.colorScheme.onSurface
+                        tint = Color(0xFFFFFFFF)
                     )
                 }
             }
@@ -78,7 +80,7 @@ fun EnergyDrinkSearchBar(
         modifier = modifier
             .background(
                 shape = RoundedCornerShape(100),
-                color = DarkBlue
+                color = Color(0x73995EFF)
             )
             .minimumInteractiveComponentSize()
     )

@@ -33,7 +33,25 @@ class EnergyDrinkSectionViewModel (
                     it.copy(searchQuery = action.query)
                 }
             }
-            is EnergyDrinkSectionAction.OnEnergyDrinkClick->{
+            is EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick->{
+
+            }
+            is EnergyDrinkSectionAction.OnCreateButtonClick->{
+
+            }
+//            is EnergyDrinkSectionAction.OnEnergyDrinkHold->{
+//
+//            }
+//            is EnergyDrinkSectionAction.OnDeleteOptionClick->{
+//
+//            }
+//            is EnergyDrinkSectionAction.OnUpdateOptionClick->{
+//
+//            }
+            is EnergyDrinkSectionAction.OnSortButtonClick->{
+
+            }
+            is EnergyDrinkSectionAction.OnSortOptionSelected->{
 
             }
             is EnergyDrinkSectionAction.OnTabSelected->{
