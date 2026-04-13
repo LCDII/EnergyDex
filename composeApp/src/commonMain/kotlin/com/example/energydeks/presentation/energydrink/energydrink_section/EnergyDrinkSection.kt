@@ -1,6 +1,7 @@
 package com.example.energydeks.presentation.energydrink.energydrink_section
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,13 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
@@ -42,8 +47,10 @@ import com.example.energydeks.presentation.energydrink.energydrink_section.compo
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkSearchBar
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkSectionTab
 import energydeks.composeapp.generated.resources.Res
-import energydeks.composeapp.generated.resources.close_hint
-import energydeks.composeapp.generated.resources.ic_close
+import energydeks.composeapp.generated.resources.ic_energy_drink_add
+import energydeks.composeapp.generated.resources.ic_energy_drinks_filter
+import energydeks.composeapp.generated.resources.ic_energy_drinks_list_view_longed
+import energydeks.composeapp.generated.resources.ic_energy_drinks_list_view_squared
 import energydeks.composeapp.generated.resources.no_search_results
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -179,7 +186,7 @@ fun EnergyDrinkSection(
                                         text = state.errorMessage.asString(),
                                         textAlign = TextAlign.Center,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        color = MaterialTheme.colorScheme.error
+                                        color = Color(0xFFFF7700)
                                     )
                                 }
 
@@ -188,7 +195,7 @@ fun EnergyDrinkSection(
                                         text = stringResource(Res.string.no_search_results),
                                         textAlign = TextAlign.Center,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        color = MaterialTheme.colorScheme.error
+                                        color = Color(0xFFFF7700)
                                     )
                                 }
 
@@ -257,28 +264,61 @@ private fun TabToggleButtons(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0x73995EFF)),
+            .background(Color(0x73995EFF))
+            .border(1.dp, Color.White, RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        EnergyDrinkSectionTab.entries.forEach { tab ->
-            IconToggleButton(
-                checked = selectedTab == tab,
-                onCheckedChange = { onTabSelected(tab) },
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    painter = when (tab) {
-                        EnergyDrinkSectionTab.SQUARED -> painterResource(Res.drawable.ic_close)//TODO fix
-                        EnergyDrinkSectionTab.LONGED -> painterResource(Res.drawable.ic_close)//TODO fix
-                    },
-                    contentDescription = tab.name,
-                    tint = if (selectedTab == tab)
-                        Color(0xFFFFFFFF)
+        // Первая кнопка (SQUARED)
+        IconToggleButton(
+            checked = selectedTab == EnergyDrinkSectionTab.SQUARED,
+            onCheckedChange = { onTabSelected(EnergyDrinkSectionTab.SQUARED) },
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    color = if (selectedTab == EnergyDrinkSectionTab.SQUARED)
+                        Color.White.copy(alpha = 0.3f)
                     else
-                        Color(0xFFFFFFFF)
+                        Color.Transparent,
+                    shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
                 )
-            }
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_energy_drinks_list_view_squared),
+                contentDescription = "Squared",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        // Вертикальная линия-разделитель
+        Box(
+            modifier = Modifier
+                .width(1.dp)
+                .height(32.dp)
+                .background(Color.White)
+        )
+
+        // Вторая кнопка (LONGED)
+        IconToggleButton(
+            checked = selectedTab == EnergyDrinkSectionTab.LONGED,
+            onCheckedChange = { onTabSelected(EnergyDrinkSectionTab.LONGED) },
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    color = if (selectedTab == EnergyDrinkSectionTab.LONGED)
+                        Color.White.copy(alpha = 0.3f)
+                    else
+                        Color.Transparent,
+                    shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
+                )
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_energy_drinks_list_view_longed),
+                contentDescription = "Longed",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
@@ -289,44 +329,66 @@ private fun FloatingActionButtons(
     onCreateClick: () -> Unit,
     onSortClick: () -> Unit
 ) {
-    // Create button
-    Box(
+    Row(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
-        contentAlignment = Alignment.BottomStart
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Bottom,
     ) {
-        FloatingActionButton(
-            onClick = onCreateClick,
-            containerColor = Color(0xFFFF7700),
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.size(56.dp)
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_close),//TODO fix
-                contentDescription = stringResource(Res.string.close_hint),//TODO fix
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-
-    // Sort button
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.BottomEnd
-    ) {
+        // Create button с градиентом
         FloatingActionButton(
             onClick = onSortClick,
-            containerColor = Color(0xFFFF7700),
+            elevation = FloatingActionButtonDefaults.elevation(4.dp),
+            containerColor = Color.Transparent,
             modifier = Modifier.size(56.dp)
         ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_close),//TODO fix
-                contentDescription = stringResource(Res.string.close_hint),//TODO fix
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Color(0xFFFF7700),
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_energy_drinks_filter),
+                    contentDescription = "Create",
+                    tint = Color.White,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Sort button с градиентом
+        FloatingActionButton(
+            onClick = onCreateClick,
+            containerColor = Color.Transparent,
+            elevation = FloatingActionButtonDefaults.elevation(4.dp),
+            modifier = Modifier.size(56.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFFFF7700), // оранжевый
+                                Color(0xFFFFCC00)
+                            )
+                        ),
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_energy_drink_add),
+                    contentDescription = "Sort",
+                    tint = Color.White,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
 }
