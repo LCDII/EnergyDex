@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydeks.domain.energydrink.model.EnergyDrink
+import com.example.energydeks.domain.tag.model.Tag
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkListLonged
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkListSquared
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkSearchBar
@@ -56,6 +57,7 @@ import energydeks.composeapp.generated.resources.no_search_results
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.Instant
 
 @Preview
 @Composable
@@ -66,7 +68,6 @@ fun TmpEnergyDrinkSectionRootPreview() {
         EnergyDrinkSectionRoot(
             onEnergyDrinkClick = {},
             onAddEnergyDrinkButtonClick = {},
-            onSortButtonClick = {},
         )
     }
 }
@@ -78,7 +79,31 @@ fun TmpEnergyDrinkSectionPreview() {
     MaterialTheme {
         EnergyDrinkSection(
             state = EnergyDrinkSectionState(
-                isLoading = false
+                isLoading = false,
+                searchResult = List(100) { index ->
+                    EnergyDrink(
+                        id = index.toLong(),
+                        name = "Monster Energy White",
+                        amount = 1,
+                        description=null,
+                        rating = 10.0,
+                        createdAt = Instant.parse("2006-10-05T12:00:00Z"),
+                        updatedAt = Instant.parse("2006-10-05T12:00:00Z"),
+                        imagePath = null,
+                        tags = listOf(
+                            Tag(
+                                id = 0,
+                                name = "Good AF",
+                                color = "#000000"
+                            ),
+                            Tag(
+                                id = 0,
+                                name = "Chuds Drink",
+                                color = "#000000"
+                            )
+                        )
+                    )
+                }
             ),
             onAction = {}
         )
@@ -89,7 +114,6 @@ fun TmpEnergyDrinkSectionPreview() {
 fun EnergyDrinkSectionRoot(
     viewModel: EnergyDrinkSectionViewModel = koinViewModel(),
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
-    onSortButtonClick: ()->Unit,
     onAddEnergyDrinkButtonClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -99,7 +123,9 @@ fun EnergyDrinkSectionRoot(
         onAction = { action ->
             when(action) {
                 is EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick ->
-                    onEnergyDrinkClick(action.energyDrink)
+                    onEnergyDrinkClick(action.energyDrink)//navigation
+                is EnergyDrinkSectionAction.OnCreateButtonClick->
+                    onAddEnergyDrinkButtonClick()//navigation
                 else -> Unit
             }//can redo it
             viewModel.onAction(action)
@@ -114,17 +140,6 @@ fun EnergyDrinkSection(
     onAction: (EnergyDrinkSectionAction) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val pagerState = rememberPagerState { EnergyDrinkSectionTab.entries.size } //Tab state for Tags Drinks; 2 because 2 tabs
-
-
-//    LaunchedEffect(state.selectedTabIndex) {
-//        pagerState.animateScrollToPage(state.selectedTabIndex.ordinal) //TODO animation
-//    }//smooth scroll between tabs
-
-    LaunchedEffect(pagerState.currentPage) {
-        onAction(EnergyDrinkSectionAction.OnTabSelected(EnergyDrinkSectionTab.entries[pagerState.currentPage]))
-    }//works with previous launcher: say viewmodel to rewrite what list of items
 
     Box(modifier = Modifier.fillMaxSize())
     {
@@ -251,10 +266,10 @@ fun EnergyDrinkSection(
         }
         FloatingActionButtons(
             onCreateClick = {
-                //TODO
+                onAction(EnergyDrinkSectionAction.OnCreateButtonClick)
             },
             onSortClick = {
-                //todo
+                //TODO
             }
         )
     }

@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class EnergyDrinkSectionViewModel (
-    private val createEnergyDrink: CreateEnergyDrinkUseCase,
     private val deleteEnergyDrink: DeleteEnergyDrinkUseCase,
-    private val editEnergyDrin: UpdateEnergyDrinkUseCase,
     private val getAllEnergyDrinks: GetAllEnergyDrinksUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkSectionState())
@@ -34,10 +32,10 @@ class EnergyDrinkSectionViewModel (
                 }
             }
             is EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick->{
-                //TODO navigate
+                //navigation only; ui responsible for nav;
             }
             is EnergyDrinkSectionAction.OnCreateButtonClick->{
-                //TODO navigate to screen
+                //navigation only; ui responsible for nav;
             }
 //            is EnergyDrinkSectionAction.OnEnergyDrinkHold->{
 //
