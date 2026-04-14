@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,17 +57,19 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-//@Preview
-//@Composable
-//fun TmpEnergyDrinkSectionRootPreview() {
-//    //Calling the stateless EnergyDrinkSection instead of EnergyDrinkSectionRoot
-//    // to avoid the "KoinApplication has not been started" error in the preview.
-//    MaterialTheme {
-//        EnergyDrinkSectionRoot(
-//            onEnergyDrinkClick = {}
-//        )
-//    }
-//}
+@Preview
+@Composable
+fun TmpEnergyDrinkSectionRootPreview() {
+    //Calling the stateless EnergyDrinkSection instead of EnergyDrinkSectionRoot
+    // to avoid the "KoinApplication has not been started" error in the preview.
+    MaterialTheme {
+        EnergyDrinkSectionRoot(
+            onEnergyDrinkClick = {},
+            onAddEnergyDrinkButtonClick = {},
+            onSortButtonClick = {},
+        )
+    }
+}
 @Preview
 @Composable
 fun TmpEnergyDrinkSectionPreview() {
@@ -85,7 +88,9 @@ fun TmpEnergyDrinkSectionPreview() {
 @Composable
 fun EnergyDrinkSectionRoot(
     viewModel: EnergyDrinkSectionViewModel = koinViewModel(),
-    onEnergyDrinkClick: (EnergyDrink) -> Unit
+    onEnergyDrinkClick: (EnergyDrink) -> Unit,
+    onSortButtonClick: ()->Unit,
+    onAddEnergyDrinkButtonClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -264,8 +269,7 @@ private fun TabToggleButtons(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(0x73995EFF))
-            .border(1.dp, Color.White, RoundedCornerShape(12.dp)),
+            .border(1.dp, Color(0x73995EFF), RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -274,10 +278,10 @@ private fun TabToggleButtons(
             checked = selectedTab == EnergyDrinkSectionTab.SQUARED,
             onCheckedChange = { onTabSelected(EnergyDrinkSectionTab.SQUARED) },
             modifier = Modifier
-                .size(48.dp)
+                .weight(1f)
                 .background(
                     color = if (selectedTab == EnergyDrinkSectionTab.SQUARED)
-                        Color.White.copy(alpha = 0.3f)
+                        Color(0x73995EFF)
                     else
                         Color.Transparent,
                     shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
@@ -291,27 +295,21 @@ private fun TabToggleButtons(
             )
         }
 
-        // Вертикальная линия-разделитель
-        Box(
-            modifier = Modifier
-                .width(1.dp)
-                .height(32.dp)
-                .background(Color.White)
-        )
 
         // Вторая кнопка (LONGED)
         IconToggleButton(
             checked = selectedTab == EnergyDrinkSectionTab.LONGED,
             onCheckedChange = { onTabSelected(EnergyDrinkSectionTab.LONGED) },
             modifier = Modifier
-                .size(48.dp)
+                .weight(1f)
                 .background(
                     color = if (selectedTab == EnergyDrinkSectionTab.LONGED)
-                        Color.White.copy(alpha = 0.3f)
+                        Color(0x73995EFF)
                     else
                         Color.Transparent,
                     shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
-                )
+                ),
+
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ic_energy_drinks_list_view_longed),

@@ -34,10 +34,10 @@ class EnergyDrinkSectionViewModel (
                 }
             }
             is EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick->{
-
+                //TODO navigate
             }
             is EnergyDrinkSectionAction.OnCreateButtonClick->{
-
+                //TODO navigate to screen
             }
 //            is EnergyDrinkSectionAction.OnEnergyDrinkHold->{
 //
@@ -49,10 +49,14 @@ class EnergyDrinkSectionViewModel (
 //
 //            }
             is EnergyDrinkSectionAction.OnSortButtonClick->{
-
+                _state.update { it.copy(
+                    isSortMode = !it.isSortMode
+                ) }
             }
             is EnergyDrinkSectionAction.OnSortOptionSelected->{
-
+                _state.update { it.copy(
+                    sortOption = action.option
+                ) }
             }
             is EnergyDrinkSectionAction.OnTabSelected->{
                 _state.update { it.copy(

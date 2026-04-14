@@ -9,6 +9,7 @@ data class EnergyDrinkSectionState(
     val searchQuery: String = "",
     val searchResult: List<EnergyDrink> = emptyList(),
     val selectedEnergyDrinks: List<EnergyDrink> = emptyList(),
+    val isSortMode: Boolean = false,
     val sortOption: EnergyDrinkListSortOptions = EnergyDrinkListSortOptions.RATING_DESC,
     val isLoading: Boolean = true,
     val isSelectionMode: Boolean = false,
