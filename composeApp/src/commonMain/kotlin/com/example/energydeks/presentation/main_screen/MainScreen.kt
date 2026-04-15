@@ -2,36 +2,46 @@ package com.example.energydeks.presentation.main_screen
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydeks.domain.energydrink.model.EnergyDrink
 import com.example.energydeks.domain.tag.model.Tag
 import com.example.energydeks.presentation.energydrink.energydrink_section.EnergyDrinkSectionRoot
 import com.example.energydeks.presentation.main_screen.components.MainScreenTab
+import org.koin.compose.viewmodel.koinViewModel
 
 @Preview
 @Composable
@@ -45,7 +55,7 @@ fun MainScreenPreview(){
 
 @Composable
 fun MainScreenRoot(
-    viewModel: MainScreenViewModel = MainScreenViewModel(),
+    viewModel: MainScreenViewModel = koinViewModel(),
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     onAddEnergyDrinkButtonClick: () -> Unit,
     onTagClick: (Tag) -> Unit
@@ -103,38 +113,75 @@ fun MainScreen(
                 .padding(vertical = 12.dp)
                 .widthIn(max = 700.dp)
                 .fillMaxWidth(),
-            indicator = {}
+            indicator = {
+                Box(
+                    modifier = Modifier
+                        .tabIndicatorOffset(state.selectedTabIndex.ordinal)
+                        .padding(horizontal = 24.dp)
+                        .height(3.dp)
+                        .clip(RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp))
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFFF7700),
+                                    Color(0xFFFF5500)
+                                )
+                            )
+                        )
+                )
+            },
+            divider = {}
         ) {
-            Tab(
-                selected = state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS,
-                onClick = {
-                    onAction(MainScreenAction.OnTabSelected(MainScreenTab.ENERGY_DRINKS))
-                },
-                modifier = Modifier.weight(1f),
-                selectedContentColor = Color(0xFFFF7700),
-                unselectedContentColor = Color.Gray,
-
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { onAction(MainScreenAction.OnTabSelected(MainScreenTab.ENERGY_DRINKS)) }
+                    ),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Drinks",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
+                    color = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
+                        Color(0xFFFF7700) else Color.Gray,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
+                            FontWeight.SemiBold
+                        else
+                            FontWeight.Normal,
+                        letterSpacing = 0.5.sp
+                    )
                 )
             }
 
-            Tab(
-                selected = state.selectedTabIndex == MainScreenTab.TAGS,
-                onClick = {
-                    onAction(MainScreenAction.OnTabSelected(MainScreenTab.TAGS))
-                },
-                modifier = Modifier.weight(1f),
-                selectedContentColor = Color(0xFFFF7700),
-                unselectedContentColor = Color.Gray,
-                ) {
+            // Кастомный таб для Tags
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { onAction(MainScreenAction.OnTabSelected(MainScreenTab.TAGS)) }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     text = "Tags",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
+                    color = if (state.selectedTabIndex == MainScreenTab.TAGS)
+                        Color(0xFFFF7700) else Color.Gray,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = if (state.selectedTabIndex == MainScreenTab.TAGS)
+                            FontWeight.SemiBold
+                        else
+                            FontWeight.Normal,
+                        letterSpacing = 0.5.sp
+                    )
                 )
             }
         }
@@ -193,14 +240,11 @@ fun MainScreen(
                                 }
 
                                 else -> {
-                                    EnergyDrinkSectionRoot(
-                                        onEnergyDrinkClick = {
-
-                                        },
-                                        onAddEnergyDrinkButtonClick = {
-
-                                        }
-                                    )
+                                    Surface {
+                                        Text(
+                                            text="Tags"
+                                        )
+                                    }
                                 }
                             }
                         }
