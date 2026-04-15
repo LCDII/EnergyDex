@@ -113,33 +113,3 @@ fun EnergyDrinkItemLonged(
 }
 
 
-@Preview
-@Composable
-fun TmpPreviewEnergyDrinkItemLonged()
-{
-    EnergyDrinkItemLonged(
-        energyDrink = EnergyDrink(
-            id = 0,
-            name = "Monster Energy White",
-            amount = 0,
-            description=null,
-            rating = 10.0,
-            createdAt = Instant.parse("2006-10-05T12:00:00Z"),
-            updatedAt = Instant.parse("2006-10-05T12:00:00Z"),
-            imagePath = null,
-            tags = listOf(
-                Tag(
-                    id = 0,
-                    name = "Good AF",
-                    color = "#000000"
-                ),
-                Tag(
-                    id = 0,
-                    name = "Chuds Drink",
-                    color = "#000000"
-                )
-            )
-        ),
-        onClick = {}
-    )
-}

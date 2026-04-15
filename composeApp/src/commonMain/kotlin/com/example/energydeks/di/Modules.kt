@@ -21,6 +21,7 @@ import com.example.energydeks.domain.tag.usecase.GetAllTagsUseCase
 import com.example.energydeks.domain.tag.usecase.GetTagByIdUseCase
 import com.example.energydeks.domain.tag.usecase.UpdateTagUseCase
 import com.example.energydeks.presentation.energydrink.energydrink_section.EnergyDrinkSectionViewModel
+import com.example.energydeks.presentation.main_screen.MainScreenViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -82,4 +83,5 @@ val repositoryModule = module {
 
 val viewModelModule = module {
     viewModelOf(::EnergyDrinkSectionViewModel)
+    viewModelOf(::MainScreenViewModel)
 }

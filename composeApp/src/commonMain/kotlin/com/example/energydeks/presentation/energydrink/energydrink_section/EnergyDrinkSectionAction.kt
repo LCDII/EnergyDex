@@ -18,7 +18,7 @@ sealed interface EnergyDrinkSectionAction {
 //
 //    data class OnUpdateOptionClick(val index: Int): EnergyDrinkSectionAction
 //
-//    data object OnDeleteOptionClick(val index: Int): EnergyDrinkSectionAction
+//    data class OnDeleteOptionClick(val index: Int): EnergyDrinkSectionAction
 
     data object OnSortButtonClick : EnergyDrinkSectionAction
 

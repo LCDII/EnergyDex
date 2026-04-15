@@ -33,7 +33,7 @@ data class EnergyDrinkSectionState(
             )
         )
     },//emptyList(),
-    val selectedEnergyDrinks: List<EnergyDrink> = emptyList(),
+    val selectedEnergyDrinkIds: List<Long> = emptyList(),
     val isSortMode: Boolean = false,
     val sortOption: EnergyDrinkListSortOptions = EnergyDrinkListSortOptions.RATING_DESC,
     val isLoading: Boolean = false,//true

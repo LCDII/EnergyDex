@@ -18,12 +18,12 @@ class MainScreenViewModel(
                 SharingStarted.WhileSubscribed(5000L),
                 _state.value
             )
-    
+
     fun onAction(action: MainScreenAction){
         when(action){
             is MainScreenAction.OnTabSelected -> {
                 _state.update { it.copy(
-                    selectedTabIndex = it.selectedTabIndex
+                    selectedTabIndex = action.index
                 ) }
             }
         }

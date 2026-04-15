@@ -145,19 +145,13 @@ fun EnergyDrinkSection(
     {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFD8B4FE))
-                .statusBarsPadding(),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(),
                 color = Color(0xFF1F1038),
-                shape = RoundedCornerShape(
-                    topStart = 32.dp,
-                    topEnd = 32.dp
-                )
             ) {
                 Column {
                     Row(
