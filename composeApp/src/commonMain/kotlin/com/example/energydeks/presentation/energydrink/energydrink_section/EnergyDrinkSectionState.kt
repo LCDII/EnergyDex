@@ -3,7 +3,7 @@ package com.example.energydeks.presentation.energydrink.energydrink_section
 import com.example.energydeks.core.presentation.UiText
 import com.example.energydeks.domain.energydrink.model.EnergyDrink
 import com.example.energydeks.domain.tag.model.Tag
-import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
+import com.example.energydeks.core.domain.EnergyDrinkListSortOptions
 import com.example.energydeks.presentation.energydrink.energydrink_section.components.EnergyDrinkSectionTab
 import kotlin.time.Instant
 

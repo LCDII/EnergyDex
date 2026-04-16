@@ -1,6 +1,6 @@
 CREATE TABLE EnergyDrinkTag (
-    energyDrinkId INTEGER NOT NULL REFERENCES EnergyDrinkEntity(id),
-    tagId INTEGER NOT NULL REFERENCES TagEntity(id),
+    energyDrinkId INTEGER NOT NULL REFERENCES EnergyDrinkEntity(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tagId INTEGER NOT NULL REFERENCES TagEntity(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (energyDrinkId, tagId)
 );
 

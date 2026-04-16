@@ -13,6 +13,7 @@ import com.example.energydeks.domain.energydrink.usecase.DeleteEnergyDrinkUseCas
 import com.example.energydeks.domain.energydrink.usecase.DetachTagFromEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
 import com.example.energydeks.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
+import com.example.energydeks.domain.energydrink.usecase.SearchEnergyDrinksUseCase
 import com.example.energydeks.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
 import com.example.energydeks.domain.tag.repository.TagRepository
 import com.example.energydeks.domain.tag.usecase.CreateTagUseCase
@@ -36,6 +37,7 @@ val useCaseModule = module {
     factoryOf(::GetAllEnergyDrinksUseCase)
     factoryOf(::AttachTagToEnergyDrinkUseCase)
     factoryOf(::DetachTagFromEnergyDrinkUseCase)
+    factoryOf(::SearchEnergyDrinksUseCase)
 
     factoryOf(::CreateTagUseCase)
     factoryOf(::UpdateTagUseCase)

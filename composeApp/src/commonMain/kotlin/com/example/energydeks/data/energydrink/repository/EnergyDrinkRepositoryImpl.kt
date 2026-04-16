@@ -1,10 +1,11 @@
 package com.example.energydeks.data.energydrink.repository
 
+
 import com.example.EnergyDrinkEntityQueries
 import com.example.EnergyDrinkTagQueries
-import com.example.TagEntityQueries
 import com.example.energydeks.core.domain.DataError
 import com.example.energydeks.core.domain.EmptyResult
+import com.example.energydeks.core.domain.EnergyDrinkListSortOptions
 import com.example.energydeks.core.domain.Result
 import com.example.energydeks.data.energydrink.mappers.toEnergyDrink
 import com.example.energydeks.data.tag.mappers.toTag
@@ -15,8 +16,22 @@ class EnergyDrinkRepositoryImpl(
     private val energyDrinkEntityQueries: EnergyDrinkEntityQueries,
     private val energyDrinkTagQueries: EnergyDrinkTagQueries
 ) : EnergyDrinkRepository{
-    override suspend fun searchEnergyDrink(query: String): Result<List<EnergyDrink>, DataError.Local> {
-        TODO("Not yet implemented")
+    override suspend fun searchEnergyDrink(
+        query: String,
+        sortOption: EnergyDrinkListSortOptions
+    ): Result<List<EnergyDrink>, DataError.Local> = try {
+        val searchedEnergyDrinks = energyDrinkEntityQueries.searchEnenergtDrinks(
+            query,
+            sortOption.name
+        ).executeAsList().map { energyDrink ->
+            val tags = energyDrinkTagQueries.selectTagsForEnergyDrink(energyDrinkId = energyDrink.id).executeAsList().map {
+                it.toTag()
+            }
+            energyDrink.toEnergyDrink(tags)
+        }
+        Result.Success(searchedEnergyDrinks)
+    } catch (e: Exception) {
+        Result.Error(DataError.Local.DOESNT_EXISTS)
     }
 
     override suspend fun createEnergyDrink(
@@ -29,7 +44,7 @@ class EnergyDrinkRepositoryImpl(
         imagePath: String?
     ): EmptyResult<DataError.Local> =
         try {
-            energyDrinkEntityQueries.insertEnergyDrink(name, amount.toLong(), description, rating.toLong(), createdAt, updatedAt, imagePath)
+            energyDrinkEntityQueries.insertEnergyDrink(name, amount.toLong(), description, rating.toDouble(), createdAt, updatedAt, imagePath)
             Result.Success(Unit)
         } catch(e: Exception) {
             Result.Error(DataError.Local.ALREADY_EXISTS)
@@ -51,7 +66,7 @@ class EnergyDrinkRepositoryImpl(
             name = name,
             amount = amount.toLong(),
             description = description,
-            rating = rating.toLong(),
+            rating = rating.toDouble(),
             updatedAt = updatedAt,
             imagePath = imagePath
         )
@@ -79,10 +94,12 @@ class EnergyDrinkRepositoryImpl(
             Result.Error(DataError.Local.DOESNT_EXISTS)
         }
 
-    override suspend fun getAllEnergyDrinks(): Result<List<EnergyDrink>, DataError.Local> =
+    override suspend fun getAllEnergyDrinks(
+        sortOption: EnergyDrinkListSortOptions
+    ): Result<List<EnergyDrink>, DataError.Local> =
         try {
             //for energyDrinkEntity mapper we need tags from another table
-            val energyDrinks = energyDrinkEntityQueries.selectAll().executeAsList().map { energyDrink ->
+            val energyDrinks = energyDrinkEntityQueries.selectAll(sortOption.name).executeAsList().map { energyDrink ->
                 val tags = energyDrinkTagQueries.selectTagsForEnergyDrink(energyDrinkId = energyDrink.id).executeAsList().map {
                     it.toTag()
                 }

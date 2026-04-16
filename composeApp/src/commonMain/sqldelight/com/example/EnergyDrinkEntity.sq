@@ -3,11 +3,16 @@ CREATE TABLE EnergyDrinkEntity(
     name TEXT NOT NULL,
     amount INTEGER NOT NULL,
     description TEXT,
-    rating INTEGER,
+    rating REAL,
     createdAt INTEGER NOT NULL,
     updatedAt INTEGER NOT NULL,
     imagePath TEXT
 );
+
+
+CREATE INDEX idx_energy_createdAt ON EnergyDrinkEntity(createdAt);
+CREATE INDEX idx_energy_rating ON EnergyDrinkEntity(rating);
+CREATE INDEX idx_energy_name ON EnergyDrinkEntity(name);
 
 insertEnergyDrink:
 INSERT INTO EnergyDrinkEntity(name, amount,description, rating, createdAt, updatedAt, imagePath)
@@ -21,12 +26,38 @@ WHERE id = ?;
 deleteEnergyDrink:
 DELETE FROM EnergyDrinkEntity WHERE id = ?;
 
-
 selectById:
 SELECT * FROM EnergyDrinkEntity WHERE id = ?;
 
 selectAll:
-SELECT * FROM EnergyDrinkEntity;
+SELECT * FROM EnergyDrinkEntity
+ORDER BY
+    CASE :sortOption
+        WHEN 'DATE_DESC' THEN createdAt
+        WHEN 'RATING_DESC' THEN rating
+        WHEN 'NAME_DESC' THEN name
+    END DESC,
+    CASE :sortOption
+        WHEN 'DATE_ASC' THEN createdAt
+        WHEN 'RATING_ASC' THEN rating
+        WHEN 'NAME_ASC' THEN name
+    END ASC;
+
+searchEnenergtDrinks:
+SELECT * FROM EnergyDrinkEntity
+WHERE
+    (name LIKE :nameQuery || '%')
+ORDER BY
+    CASE :sortOption
+        WHEN 'DATE_DESC' THEN createdAt
+        WHEN 'RATING_DESC' THEN rating
+        WHEN 'NAME_DESC' THEN name
+    END DESC,
+    CASE :sortOption
+        WHEN 'DATE_ASC' THEN createdAt
+        WHEN 'RATING_ASC' THEN rating
+        WHEN 'NAME_ASC' THEN name
+    END ASC;
 
 lastInsertRowId:
 SELECT last_insert_rowid();

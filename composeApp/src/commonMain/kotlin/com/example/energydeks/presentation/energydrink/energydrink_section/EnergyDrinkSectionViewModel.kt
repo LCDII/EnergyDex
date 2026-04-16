@@ -3,21 +3,33 @@ package com.example.energydeks.presentation.energydrink.energydrink_section
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.energydeks.core.presentation.UiText
 import com.example.energydeks.domain.energydrink.usecase.CreateEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
+import com.example.energydeks.domain.energydrink.usecase.SearchEnergyDrinksUseCase
 import com.example.energydeks.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class EnergyDrinkSectionViewModel (
     private val deleteEnergyDrink: DeleteEnergyDrinkUseCase,
-    private val getAllEnergyDrinks: GetAllEnergyDrinksUseCase
+    private val getAllEnergyDrinks: GetAllEnergyDrinksUseCase,
+    private val searchEnergyDrinksUseCase: SearchEnergyDrinksUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkSectionState())
-
     val state = _state.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
@@ -63,4 +75,9 @@ class EnergyDrinkSectionViewModel (
             }
         }
     }
+
+    private fun observeSearchResults(query: String){
+
+    }
+
 }

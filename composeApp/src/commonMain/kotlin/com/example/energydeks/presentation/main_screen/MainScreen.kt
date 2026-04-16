@@ -147,7 +147,7 @@ fun MainScreen(
                     text = "Drinks",
                     textAlign = TextAlign.Center,
                     color = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
-                        Color(0xFFFF7700) else Color.Gray,
+                        Color(0xFFFF7700) else Color(0x73995EFF),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
                             FontWeight.SemiBold
@@ -174,7 +174,7 @@ fun MainScreen(
                     text = "Tags",
                     textAlign = TextAlign.Center,
                     color = if (state.selectedTabIndex == MainScreenTab.TAGS)
-                        Color(0xFFFF7700) else Color.Gray,
+                        Color(0xFFFF7700) else Color(0x73995EFF),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = if (state.selectedTabIndex == MainScreenTab.TAGS)
                             FontWeight.SemiBold
@@ -198,7 +198,7 @@ fun MainScreen(
                 contentAlignment = Alignment.Center
             ){
                 when(pageIndex){
-                    MainScreenTab.ENERGY_DRINKS.ordinal->{
+                    MainScreenTab.ENERGY_DRINKS.ordinal -> {
                         if(state.isLoading) {
                             CircularProgressIndicator()
                         } else {
