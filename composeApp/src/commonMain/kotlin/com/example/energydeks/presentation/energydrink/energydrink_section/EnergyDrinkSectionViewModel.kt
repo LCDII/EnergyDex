@@ -3,7 +3,10 @@ package com.example.energydeks.presentation.energydrink.energydrink_section
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.energydeks.core.domain.onError
+import com.example.energydeks.core.domain.onSuccess
 import com.example.energydeks.core.presentation.UiText
+import com.example.energydeks.core.presentation.toUiText
 import com.example.energydeks.domain.energydrink.usecase.CreateEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydeks.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
@@ -20,6 +23,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,7 +34,12 @@ class EnergyDrinkSectionViewModel (
     private val searchEnergyDrinksUseCase: SearchEnergyDrinksUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkSectionState())
-    val state = _state.stateIn(
+    private var searchJob: Job? = null
+    val state = _state
+        .onStart {
+            observeSearchQuery()
+        }
+        .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
         _state.value
@@ -76,8 +85,42 @@ class EnergyDrinkSectionViewModel (
         }
     }
 
-    private fun observeSearchResults(query: String){
-
+    private fun observeSearchQuery(){
+        state
+            .map { it.searchQuery }
+            .distinctUntilChanged()
+            .debounce(500L)
+            .onEach { query ->
+                searchJob?.cancel()
+                searchJob = searchEnergyDrinks(query)
+            }
+            .launchIn(viewModelScope)
     }
 
+    private fun searchEnergyDrinks(query: String) = viewModelScope.launch {
+        _state.update { it.copy(
+            isLoading = true
+        ) }
+
+        searchEnergyDrinksUseCase.invoke(
+            query,
+            _state.value.sortOption
+        )
+            .onSuccess { searchResult ->
+            _state.update { it.copy(
+                searchResult = searchResult,
+                isLoading = false,
+                errorMessage = null,
+            ) }
+        }
+            .onError { error->
+                _state.update {
+                    it.copy(
+                        searchResult = emptyList(),
+                        isLoading = false,
+                        errorMessage = error.toUiText()
+                    )
+                }
+            }
+    }
 }
