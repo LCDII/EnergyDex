@@ -100,7 +100,12 @@ fun EnergyDrinkItemLonged(
                 modifier = Modifier.size(32.dp)
             )
             Text(
-                text ="${energyDrink.rating}",
+                text =if(energyDrink.rating == null)
+                {
+                    "0.0"
+                } else {
+                    "${energyDrink.rating}"
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 24.sp
            )

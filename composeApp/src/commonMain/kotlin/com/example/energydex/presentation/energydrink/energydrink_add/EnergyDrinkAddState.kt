@@ -5,7 +5,7 @@ import com.example.energydex.core.presentation.UiText
 data class EnergyDrinkAddState(
     val name: String = "",
     val isNameTextValid: Boolean = false,
-    val description: String? = "",
+    val description: String = "",
     val imagePath: String? = null,
     val ratingText: String = "",
     val isRatingTextValid: Boolean = false,

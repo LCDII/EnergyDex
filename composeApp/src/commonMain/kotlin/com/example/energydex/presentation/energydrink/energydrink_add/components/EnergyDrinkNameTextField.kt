@@ -47,7 +47,7 @@ fun EnergyDrinkNameTextField(
                 text = stringResource(Res.string.energy_drink_name),
                 color = SecondaryOrange,
             ) },
-        isError = !isValid, 
+        isError = !isValid,
         singleLine = true,
         modifier = modifier
             .fillMaxWidth()
@@ -96,7 +96,7 @@ fun EnergyDrinkNameTextField(
 
 @Preview
 @Composable
-fun PreviewEnergyDrinkNameTextFieldEnpty() {
+fun PreviewEnergyDrinkNameTextFieldEmpty() {
     EnergyDrinkNameTextField(
         name = "Aboba",
         onNameChange = {},

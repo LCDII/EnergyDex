@@ -93,7 +93,12 @@ fun EnergyDrinkItemSquared(
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text ="${energyDrink.rating}",
+                        text =if(energyDrink.rating == null)
+                        {
+                            "0.0"
+                        } else {
+                            "${energyDrink.rating}"
+                        },
                         style = MaterialTheme.typography.bodyLarge,
                         fontSize = 18.sp
                     )
