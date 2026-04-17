@@ -1,4 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -69,7 +69,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.energydeks"
+    namespace = "com.example.energydex"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

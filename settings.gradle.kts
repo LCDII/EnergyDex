@@ -1,4 +1,4 @@
-rootProject.name = "EnergyDeks"
+rootProject.name = "EnergyDex"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
