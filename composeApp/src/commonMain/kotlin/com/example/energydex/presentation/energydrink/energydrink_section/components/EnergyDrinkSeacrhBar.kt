@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.close_hint
@@ -21,7 +20,8 @@ import energydex.composeapp.generated.resources.ic_search
 import energydex.composeapp.generated.resources.search_hint
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-
+import com.example.energydex.core.presentation.SecondaryPurple
+import com.example.energydex.core.presentation.AccentWhite
 
 @Composable
 fun EnergyDrinkSearchBar(
@@ -36,20 +36,20 @@ fun EnergyDrinkSearchBar(
         onValueChange = onSearchQueryChange,
         shape = RoundedCornerShape(100),
         colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = Color(0xFFFFFFFF),
-            focusedBorderColor = Color(0xFFFFFFFF)
+            cursorColor = AccentWhite,
+            focusedBorderColor = AccentWhite
         ),
         placeholder = {
             Text(
                 text = stringResource(Res.string.search_hint),
-                color = Color(0xFFFFFFFF)
+                color = AccentWhite
             )
         },
         leadingIcon = {
             Icon(
                 painter = painterResource(Res.drawable.ic_search),
                 contentDescription = null,
-                tint = Color(0xFFFFFFFF)
+                tint = AccentWhite
             )
         },
         singleLine = true,
@@ -70,7 +70,7 @@ fun EnergyDrinkSearchBar(
                     Icon(
                         painter = painterResource(Res.drawable.ic_close),
                         contentDescription = stringResource(Res.string.close_hint),
-                        tint = Color(0xFFFFFFFF)
+                        tint = AccentWhite
                     )
                 }
             }
@@ -78,7 +78,7 @@ fun EnergyDrinkSearchBar(
         modifier = modifier
             .background(
                 shape = RoundedCornerShape(100),
-                color = Color(0x73995EFF)
+                color = SecondaryPurple
             )
             .minimumInteractiveComponentSize()
     )

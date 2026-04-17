@@ -21,6 +21,7 @@ import com.example.energydex.domain.tag.usecase.DeleteTagUseCase
 import com.example.energydex.domain.tag.usecase.GetAllTagsUseCase
 import com.example.energydex.domain.tag.usecase.GetTagByIdUseCase
 import com.example.energydex.domain.tag.usecase.UpdateTagUseCase
+import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddViewModel
 import com.example.energydex.presentation.energydrink.energydrink_section.EnergyDrinkSectionViewModel
 import com.example.energydex.presentation.main_screen.MainScreenViewModel
 import org.koin.core.module.Module
@@ -69,7 +70,7 @@ val repositoryModule = module {
         )
     }
 
-    single <TagRepository>{
+    single<TagRepository>{
         TagRepositoryImpl(
             get()
         )
@@ -86,4 +87,5 @@ val repositoryModule = module {
 val viewModelModule = module {
     viewModelOf(::EnergyDrinkSectionViewModel)
     viewModelOf(::MainScreenViewModel)
+    viewModelOf(::EnergyDrinkAddViewModel)
 }

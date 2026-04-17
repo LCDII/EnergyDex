@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddAddScreenRoot
+import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddViewModel
 import com.example.energydex.presentation.main_screen.MainScreenRoot
 import com.example.energydex.presentation.main_screen.MainScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -38,7 +40,7 @@ fun App(){
                         },
                         onAddEnergyDrinkButtonClick = {
                             navController.navigate(
-                                Route.CreateEnergyDrink
+                                Route.AddEnergyDrink
                             )
                         },
                         onTagClick = {
@@ -49,10 +51,20 @@ fun App(){
                     )
                 }
 
-                composable<Route.CreateEnergyDrink>(
-                    //TODO slides
+                composable<Route.AddEnergyDrink>(
+                    //TODO
                 ) {
+                    val viewModel = koinViewModel<EnergyDrinkAddViewModel>()
 
+                    EnergyDrinkAddAddScreenRoot(
+                        viewModel = viewModel,
+                        onSaveClick = {
+                            navController.navigateUp()
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
                 }
 
                 composable<Route.CreateTag>(

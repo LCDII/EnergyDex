@@ -11,6 +11,7 @@ import com.example.energydex.data.energydrink.mappers.toEnergyDrink
 import com.example.energydex.data.tag.mappers.toTag
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
+import kotlin.time.Clock
 
 class EnergyDrinkRepositoryImpl(
     private val energyDrinkEntityQueries: EnergyDrinkEntityQueries,
@@ -38,13 +39,19 @@ class EnergyDrinkRepositoryImpl(
         name: String,
         amount: Int,
         description: String?,
-        rating: Int,
-        createdAt: Long,
-        updatedAt: Long,
+        rating: Double?,
         imagePath: String?
     ): EmptyResult<DataError.Local> =
         try {
-            energyDrinkEntityQueries.insertEnergyDrink(name, amount.toLong(), description, rating.toDouble(), createdAt, updatedAt, imagePath)
+            energyDrinkEntityQueries.insertEnergyDrink(
+                name = name,
+                amount = amount.toLong(),
+                description = description,
+                rating = rating,
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                updatedAt = Clock.System.now().toEpochMilliseconds(),
+                imagePath = imagePath
+            )
             Result.Success(Unit)
         } catch(e: Exception) {
             Result.Error(DataError.Local.ALREADY_EXISTS)
@@ -56,8 +63,7 @@ class EnergyDrinkRepositoryImpl(
         name: String,
         amount: Int,
         description: String?,
-        rating: Int,
-        updatedAt: Long,
+        rating: Double?,
         imagePath: String?
     ): EmptyResult<DataError.Local> =
        try {
@@ -66,8 +72,8 @@ class EnergyDrinkRepositoryImpl(
             name = name,
             amount = amount.toLong(),
             description = description,
-            rating = rating.toDouble(),
-            updatedAt = updatedAt,
+            rating = rating,
+            updatedAt = Clock.System.now().toEpochMilliseconds(),
             imagePath = imagePath
         )
             Result.Success(Unit)

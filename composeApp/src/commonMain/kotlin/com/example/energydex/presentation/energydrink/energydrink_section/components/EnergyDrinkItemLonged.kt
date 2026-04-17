@@ -29,7 +29,7 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_gem
 import org.jetbrains.compose.resources.painterResource
-
+import com.example.energydex.core.presentation.SecondaryPurple
 @Composable
 fun EnergyDrinkItemLonged(
     energyDrink: EnergyDrink,
@@ -40,7 +40,7 @@ fun EnergyDrinkItemLonged(
         shape = RoundedCornerShape(32.dp),
         modifier = modifier
             .clickable(onClick = onClick),
-        color = Color(0x73995EFF)
+        color = SecondaryPurple
     ) {
         Row(
             modifier = Modifier

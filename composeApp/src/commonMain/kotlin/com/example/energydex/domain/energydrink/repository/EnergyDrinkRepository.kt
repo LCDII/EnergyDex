@@ -15,9 +15,7 @@ interface EnergyDrinkRepository {
         name: String,
         amount: Int,
         description: String?,
-        rating: Int,
-        createdAt: Long,
-        updatedAt: Long,
+        rating: Double?,
         imagePath: String?
     ): EmptyResult<DataError.Local>
     suspend fun updateEnergyDrink(
@@ -25,8 +23,7 @@ interface EnergyDrinkRepository {
         name: String,
         amount: Int,
         description: String?,
-        rating: Int,
-        updatedAt: Long,
+        rating: Double?,
         imagePath: String?
     ) : EmptyResult<DataError.Local>
     suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local>

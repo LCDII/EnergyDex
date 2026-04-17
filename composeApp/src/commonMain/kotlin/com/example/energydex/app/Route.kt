@@ -12,7 +12,7 @@ sealed interface Route{
     @Serializable
     data class TagDetail(val id: Long): Route
     @Serializable
-    data object CreateEnergyDrink: Route
+    data object AddEnergyDrink: Route
     @Serializable
     data object CreateTag: Route
     @Serializable

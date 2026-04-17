@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListLonged
@@ -55,19 +56,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Instant
+import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.SecondaryOrange
+import com.example.energydex.core.presentation.SecondaryPurple
 
-@Preview
-@Composable
-fun TmpEnergyDrinkSectionRootPreview() {
-    //Calling the stateless EnergyDrinkSection instead of EnergyDrinkSectionRoot
-    // to avoid the "KoinApplication has not been started" error in the preview.
-    MaterialTheme {
-        EnergyDrinkSectionRoot(
-            onEnergyDrinkClick = {},
-            onAddEnergyDrinkButtonClick = {},
-        )
-    }
-}
 @Preview
 @Composable
 fun TmpEnergyDrinkSectionPreview() {
@@ -148,7 +141,7 @@ fun EnergyDrinkSection(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(),
-                color = Color(0xFF1F1038),
+                color = PrimaryPurple,
             ) {
                 Column {
                     Row(
@@ -197,7 +190,7 @@ fun EnergyDrinkSection(
                                         text = state.errorMessage.asString(),
                                         textAlign = TextAlign.Center,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        color = Color(0xFFFF7700)
+                                        color = PrimaryOrange
                                     )
                                 }
 
@@ -206,7 +199,7 @@ fun EnergyDrinkSection(
                                         text = stringResource(Res.string.no_search_results),
                                         textAlign = TextAlign.Center,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        color = Color(0xFFFF7700)
+                                        color = PrimaryOrange
                                     )
                                 }
 
@@ -275,7 +268,7 @@ private fun TabToggleButtons(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, Color(0x73995EFF), RoundedCornerShape(12.dp)),
+            .border(1.dp, SecondaryPurple, RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -287,7 +280,7 @@ private fun TabToggleButtons(
                 .weight(1f)
                 .background(
                     color = if (selectedTab == EnergyDrinkSectionTab.SQUARED)
-                        Color(0x73995EFF)
+                        SecondaryPurple
                     else
                         Color.Transparent,
                     shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
@@ -310,7 +303,7 @@ private fun TabToggleButtons(
                 .weight(1f)
                 .background(
                     color = if (selectedTab == EnergyDrinkSectionTab.LONGED)
-                        Color(0x73995EFF)
+                        SecondaryPurple
                     else
                         Color.Transparent,
                     shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
@@ -351,14 +344,14 @@ private fun FloatingActionButtons(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        Color(0xFFFF7700),
+                        PrimaryOrange,
                         shape = CircleShape
                     )
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_energy_drinks_filter),
                     contentDescription = "Create",
-                    tint = Color.White,
+                    tint = AccentWhite,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -379,8 +372,8 @@ private fun FloatingActionButtons(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFFFF7700), // оранжевый
-                                Color(0xFFFFCC00)
+                                PrimaryOrange, // оранжевый
+                                SecondaryOrange
                             )
                         ),
                         shape = CircleShape
@@ -389,7 +382,7 @@ private fun FloatingActionButtons(
                 Icon(
                     painter = painterResource(Res.drawable.ic_energy_drink_add),
                     contentDescription = "Sort",
-                    tint = Color.White,
+                    tint = AccentWhite,
                     modifier = Modifier.padding(16.dp)
                 )
             }

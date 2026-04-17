@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_gem
@@ -39,7 +40,7 @@ fun EnergyDrinkItemSquared(
         shape = RoundedCornerShape(32.dp),
         modifier = modifier
             .clickable(onClick = onClick),
-        color = Color(0x73995EFF)
+        color = SecondaryPurple
     ) {
         Row(
             modifier = Modifier

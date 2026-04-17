@@ -9,17 +9,13 @@ class CreateEnergyDrinkUseCase(
         name: String,
         amount: Int,
         description: String?,
-        rating: Int,
-        createdAt: Long,
-        updatedAt: Long,
+        rating: Double?,
         imagePath: String?
     ) = energyDrinkRepository.createEnergyDrink(
         name = name,
         amount = amount,
         description = description,
         rating = rating,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
         imagePath = imagePath
     )
 

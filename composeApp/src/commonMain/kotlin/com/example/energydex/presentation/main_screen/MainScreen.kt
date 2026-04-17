@@ -36,6 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.energydrink.energydrink_section.EnergyDrinkSectionRoot
@@ -102,12 +105,12 @@ fun MainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1F1038))//TODO
+            .background(PrimaryPurple)//TODO
             .statusBarsPadding(),
     ) {
         PrimaryTabRow(
             selectedTabIndex = state.selectedTabIndex.ordinal,
-            containerColor = Color(0xFF1F1038),//TODO
+            containerColor = PrimaryPurple,//TODO
             modifier = Modifier
                 .padding(vertical = 12.dp)
                 .widthIn(max = 700.dp)
@@ -122,7 +125,7 @@ fun MainScreen(
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
-                                    Color(0xFFFF7700),
+                                    PrimaryOrange,
                                     Color(0xFFFF5500)
                                 )
                             )
@@ -146,7 +149,7 @@ fun MainScreen(
                     text = "Drinks",
                     textAlign = TextAlign.Center,
                     color = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
-                        Color(0xFFFF7700) else Color(0x73995EFF),
+                        PrimaryOrange else SecondaryPurple,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
                             FontWeight.SemiBold
@@ -173,7 +176,7 @@ fun MainScreen(
                     text = "Tags",
                     textAlign = TextAlign.Center,
                     color = if (state.selectedTabIndex == MainScreenTab.TAGS)
-                        Color(0xFFFF7700) else Color(0x73995EFF),
+                        PrimaryOrange else SecondaryPurple,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = if (state.selectedTabIndex == MainScreenTab.TAGS)
                             FontWeight.SemiBold
