@@ -5,12 +5,16 @@ import com.example.energydex.core.domain.EmptyResult
 import com.example.energydex.core.domain.EnergyDrinkListSortOptions
 import com.example.energydex.core.domain.Result
 import com.example.energydex.domain.energydrink.model.EnergyDrink
+import kotlinx.coroutines.flow.Flow
 
 interface EnergyDrinkRepository {
-    suspend fun searchEnergyDrink(
+    fun searchEnergyDrinks(
         query: String,
         sortOption: EnergyDrinkListSortOptions
-    ): Result<List<EnergyDrink>, DataError.Local>
+    ): Flow<List<EnergyDrink>>
+    fun observeAllEnergyDrinks(
+        sortOption: EnergyDrinkListSortOptions
+    ): Flow<List<EnergyDrink>>
     suspend fun createEnergyDrink(
         name: String,
         amount: Int,
@@ -28,5 +32,4 @@ interface EnergyDrinkRepository {
     ) : EmptyResult<DataError.Local>
     suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local>
     suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local>
-    suspend fun getAllEnergyDrinks(sortOption: EnergyDrinkListSortOptions): Result<List<EnergyDrink>, DataError.Local>
 }

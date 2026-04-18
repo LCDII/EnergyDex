@@ -11,12 +11,15 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
 import com.example.energydex.domain.energydrink.usecase.SearchEnergyDrinksUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -29,10 +32,9 @@ import kotlin.collections.copy
 class EnergyDrinkSectionViewModel (
     private val deleteEnergyDrink: DeleteEnergyDrinkUseCase,
     private val getAllEnergyDrinks: GetAllEnergyDrinksUseCase,
-    private val searchEnergyDrinks: SearchEnergyDrinksUseCase
+    private val searchEnergyDrinks: SearchEnergyDrinksUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkSectionState())
-    private var searchJob: Job? = null
     val state = _state
         .onStart {
             observeSearchQuery()
@@ -83,51 +85,29 @@ class EnergyDrinkSectionViewModel (
         }
     }
 
-    @OptIn(FlowPreview::class)
-    private fun observeSearchQuery(){
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private fun observeSearchQuery() {
         _state
-            .map { it.searchQuery to it.sortOption}
+            .map { it.searchQuery to it.sortOption }
             .distinctUntilChanged()
-            .debounce(500L)
-            .onEach { (query, sortOption) ->
-                searchJob?.cancel()
-                searchJob = loadEnergyDrinks(
-                    query,
-                    sortOption
-                )
+            .debounce(300L)
+            .flatMapLatest { (query, sortOption) ->
+                if (query.isBlank()) {
+                    getAllEnergyDrinks(sortOption)
+                } else {
+                    searchEnergyDrinks(query, sortOption)
+                }
             }
-            .launchIn(viewModelScope)
-    }
-
-    private fun loadEnergyDrinks(
-        query: String,
-        sortOption: EnergyDrinkListSortOptions
-    ) = viewModelScope.launch {
-
-        _state.update {
-            it.copy(
-                isLoading = true,
-                errorMessage = null
-            )
-        }
-
-        val result =
-            if (query.isBlank()) {
-                getAllEnergyDrinks(sortOption)
-            } else {
-                searchEnergyDrinks(query, sortOption)
-            }
-
-        result
-            .onSuccess { list ->
+            .onEach { list ->
                 _state.update {
                     it.copy(
                         searchResult = list,
-                        isLoading = false
+                        isLoading = false,
+                        errorMessage = null
                     )
                 }
             }
-            .onError { error ->
+            .catch { error ->
                 _state.update {
                     it.copy(
                         searchResult = emptyList(),
@@ -136,5 +116,8 @@ class EnergyDrinkSectionViewModel (
                     )
                 }
             }
+            .launchIn(viewModelScope)
     }
+
+
 }

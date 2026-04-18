@@ -23,6 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkDescriptionTextField
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkNameTextField
+import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkRatingTextField
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
@@ -80,6 +81,13 @@ fun EnergyDrinkAddScreen(
             onDescriptionChange = {
                 onAction(EnergyDrinkAddAction.OnDescriptionChange(it))
             }
+        )
+        EnergyDrinkRatingTextField(
+            ratingText = state.ratingText,
+            onRatingChange = {
+                onAction(EnergyDrinkAddAction.OnRatingTextChange(it))
+            },
+            isValid = state.isRatingTextValid
         )
 
         FloatingActionButton(

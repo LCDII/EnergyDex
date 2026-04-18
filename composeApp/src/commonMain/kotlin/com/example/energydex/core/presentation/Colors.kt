@@ -15,3 +15,4 @@ val PrimaryPurple = Color(0xFF1F1038)
 val SecondaryPurple = Color(0x73995EFF)
 
 val AccentWhite = Color(0xFFFFFFFF)
+val ErrorRed = Color(0xFFFF0000)

@@ -2,16 +2,12 @@ package com.example.energydex.domain.energydrink.usecase
 
 import com.example.energydex.core.domain.EnergyDrinkListSortOptions
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
-
 class SearchEnergyDrinksUseCase(
-    private val repository: EnergyDrinkRepository
+    private val energyDrinkRepository: EnergyDrinkRepository
 ) {
-
-    suspend operator fun invoke(
+    operator fun invoke(
         query: String,
         sortOption: EnergyDrinkListSortOptions
-    ) = repository.searchEnergyDrink(
-            query = query,
-            sortOption = sortOption
-    )
+    ) = energyDrinkRepository.searchEnergyDrinks(query, sortOption)
+
 }

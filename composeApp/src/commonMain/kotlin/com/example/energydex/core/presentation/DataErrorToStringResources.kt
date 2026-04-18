@@ -16,3 +16,9 @@ fun DataError.toUiText(): UiText{
 
     return UiText.StringResourceId(stringRes)
 }
+
+fun Throwable.toUiText(): UiText {
+    return when (this) {
+        else -> UiText.StringResourceId(Res.string.error_unknown)
+    }
+}

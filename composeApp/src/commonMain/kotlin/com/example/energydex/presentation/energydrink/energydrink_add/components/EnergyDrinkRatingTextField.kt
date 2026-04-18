@@ -11,7 +11,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -19,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
@@ -30,14 +30,14 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EnergyDrinkRatingTextField(
-    rating: String,
+    ratingText: String,
     onRatingChange: (String) -> Unit,
     isValid: Boolean,
     modifier: Modifier = Modifier
 ) {
 
     OutlinedTextField(
-        value = rating,
+        value = ratingText,
         onValueChange = onRatingChange,
         shape = RoundedCornerShape(8.dp),
         placeholder = {
@@ -57,34 +57,35 @@ fun EnergyDrinkRatingTextField(
             focusedTextColor = PrimaryOrange,
             unfocusedTextColor = SecondaryOrange,
             cursorColor = AccentWhite,
+            errorTextColor = ErrorRed,
             focusedBorderColor = if (isValid)
                 AccentWhite
             else
-                Color.Red,
+                ErrorRed,
             ),
-        textStyle = TextStyle(
-            letterSpacing = 0.5.sp,
-            fontSize = 18.sp
-            ),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next
-            ),
-        leadingIcon = {
-            Icon(
-                painter = painterResource(Res.drawable.ic_gem),
-                contentDescription = null,
-                tint = AccentWhite
-                )
-            },
-        )
+            textStyle = TextStyle(
+                letterSpacing = 0.5.sp,
+                fontSize = 18.sp
+                ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+                ),
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_gem),
+                    contentDescription = null,
+                    tint = AccentWhite
+                    )
+                },
+            )
 }
 
 @Preview
 @Composable
 fun PreviewEnergyDrinkRatingTextFieldEmpty() {
     EnergyDrinkRatingTextField(
-        rating = "",
+        ratingText = "",
         onRatingChange = {},
         isValid = true,
 
@@ -95,7 +96,7 @@ fun PreviewEnergyDrinkRatingTextFieldEmpty() {
 @Composable
 fun PreviewEnergyDrinkRatingTextField() {
     EnergyDrinkRatingTextField(
-        rating = "2.0",
+        ratingText = "2.0",
         onRatingChange = {},
         isValid = true,
 
