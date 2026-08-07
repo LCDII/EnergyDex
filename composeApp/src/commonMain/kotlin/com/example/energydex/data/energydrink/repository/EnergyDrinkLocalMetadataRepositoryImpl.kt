@@ -21,4 +21,25 @@ class EnergyDrinkLocalMetadataRepositoryImpl(
     } catch (_: Exception) {
         Result.Error(DataError.Local.UNKNOWN)
     }
+
+    override suspend fun getImagePath(
+        energyDrinkId: Long
+    ): Result<String?, DataError.Local> = try {
+        Result.Success(
+            queries.selectByEnergyDrinkId(energyDrinkId)
+                .executeAsOneOrNull()
+                ?.localImagePath
+        )
+    } catch (_: Exception) {
+        Result.Error(DataError.Local.UNKNOWN)
+    }
+
+    override suspend fun deleteImagePath(
+        energyDrinkId: Long
+    ): EmptyResult<DataError.Local> = try {
+        queries.deleteByEnergyDrinkId(energyDrinkId)
+        Result.Success(Unit)
+    } catch (_: Exception) {
+        Result.Error(DataError.Local.UNKNOWN)
+    }
 }

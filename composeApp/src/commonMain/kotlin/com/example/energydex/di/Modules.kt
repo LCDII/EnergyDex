@@ -25,10 +25,13 @@ import com.example.energydex.domain.tag.usecase.GetTagByIdUseCase
 import com.example.energydex.domain.tag.usecase.UpdateTagUseCase
 import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddViewModel
 import com.example.energydex.presentation.energydrink.energydrink_section.EnergyDrinkSectionViewModel
+import com.example.energydex.presentation.energydrink.energydrink_detail.EnergyDrinkDetailViewModel
+import com.example.energydex.presentation.energydrink.energydrink_update.EnergyDrinkUpdateViewModel
 import com.example.energydex.presentation.main_screen.MainScreenViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -96,4 +99,10 @@ val viewModelModule = module {
     viewModelOf(::EnergyDrinkSectionViewModel)
     viewModelOf(::MainScreenViewModel)
     viewModelOf(::EnergyDrinkAddViewModel)
+    viewModel { parameters ->
+        EnergyDrinkDetailViewModel(parameters.get(), get(), get())
+    }
+    viewModel { parameters ->
+        EnergyDrinkUpdateViewModel(parameters.get(), get(), get())
+    }
 }
