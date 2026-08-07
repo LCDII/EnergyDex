@@ -12,6 +12,7 @@
     <string name="error_unknown">Oops, something went wrong.</string>
     <string name="error_serialization">Couldn't parse data.</string>
     <string name="energy_drink_name">Burn Guava...</string>
+    <string name="energy_drink_name_required">Name is required</string>
     <string name="energy_drink_description">Lowkey fine shyt...</string>
     <string name="energy_drink_rating">0.0</string>
 </resources>

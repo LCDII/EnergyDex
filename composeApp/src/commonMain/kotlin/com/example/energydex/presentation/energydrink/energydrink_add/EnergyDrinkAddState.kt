@@ -4,11 +4,11 @@ import com.example.energydex.core.presentation.UiText
 
 data class EnergyDrinkAddState(
     val name: String = "",
-    val isNameTextValid: Boolean = false,
+    val isNameTextValid: Boolean = true,
     val description: String = "",
     val imagePath: String? = null,
     val ratingText: String = "",
-    val isRatingTextValid: Boolean = false,
+    val isRatingTextValid: Boolean = true,
     val rating: Double? = null,
     val amount: Int = 1,
     val isLoadingImage: Boolean = false,

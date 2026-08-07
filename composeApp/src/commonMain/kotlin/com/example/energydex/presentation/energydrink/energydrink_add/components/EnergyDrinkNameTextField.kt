@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.close_hint
 import energydex.composeapp.generated.resources.energy_drink_name
+import energydex.composeapp.generated.resources.energy_drink_name_required
 import energydex.composeapp.generated.resources.ic_close
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -48,6 +49,13 @@ fun EnergyDrinkNameTextField(
                 color = SecondaryOrange,
             ) },
         isError = !isValid,
+        supportingText = if (!isValid) {
+            {
+                Text(stringResource(Res.string.energy_drink_name_required))
+            }
+        } else {
+            null
+        },
         singleLine = true,
         modifier = modifier
             .fillMaxWidth()

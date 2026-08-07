@@ -36,12 +36,14 @@ class EnergyDrinkAddViewModel(
             is EnergyDrinkAddAction.OnNameChange -> {
                 _state.update { it.copy(
                     name = action.name,
-                    isNameTextValid = action.name.isNotBlank()
+                    isNameTextValid = action.name.isNotBlank(),
+                    errorMessage = null
                 ) }
             }
             is EnergyDrinkAddAction.OnDescriptionChange -> {
                 _state.update { it.copy(
                     description = action.description,
+                    errorMessage = null
                 ) }
             }
             is EnergyDrinkAddAction.OnRatingTextChange -> {
@@ -90,22 +92,39 @@ class EnergyDrinkAddViewModel(
     }
 
     private fun save() = viewModelScope.launch {
+        val currentState = _state.value
+        val name = currentState.name.trim()
+
+        if (currentState.isSaving) {
+            return@launch
+        }
+
+        val isNameValid = name.isNotEmpty()
+        if (!isNameValid || !currentState.isRatingTextValid) {
+            _state.update {
+                it.copy(
+                    isNameTextValid = isNameValid,
+                    errorMessage = null
+                )
+            }
+            return@launch
+        }
 
         _state.update { it.copy(
             isSaving = true
         ) }
 
         createEnergyDrinkUseCase.invoke(
-            name = _state.value.name,
-            amount = _state.value.amount,
-            description = _state.value.description,
-            rating = _state.value.rating,
-            imagePath = _state.value.imagePath
+            name = name,
+            amount = currentState.amount,
+            description = currentState.description,
+            rating = currentState.rating,
+            imagePath = currentState.imagePath
         )
             .onSuccess {
                 _state.update { it.copy(
                     isSaving = false,
-                    isSaved = true,
+                    isSaved = true
                 ) }
             }
             .onError { error->
@@ -118,4 +137,3 @@ class EnergyDrinkAddViewModel(
     }
 
 }
-

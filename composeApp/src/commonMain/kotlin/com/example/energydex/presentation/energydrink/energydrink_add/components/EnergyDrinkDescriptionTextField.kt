@@ -60,7 +60,7 @@ fun EnergyDrinkDescriptionTextField(
         maxLines = 5,
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(300.dp)
+            .heightIn(min = 140.dp)
             .background(
                 color = SecondaryPurple,
                 shape = RoundedCornerShape(8.dp),
