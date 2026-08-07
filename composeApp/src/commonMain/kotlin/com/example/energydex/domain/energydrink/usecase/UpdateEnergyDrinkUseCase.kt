@@ -11,14 +11,12 @@ class UpdateEnergyDrinkUseCase(
         amount: Int,
         description: String?,
         rating: Double?,
-        updatedAt: Long,
-        imagePath: String?
+        updatedAt: Long
     ) = energyDrinkRepository.updateEnergyDrink(
         id = id,
         name = name,
         amount = amount,
         description = description,
-        rating = rating,
-        imagePath = imagePath
+        rating = rating
     )
 }

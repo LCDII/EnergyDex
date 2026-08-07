@@ -20,6 +20,7 @@ ktor = "3.4.1"
 sqlDelight = "2.3.2"
 navigationCompose = "2.9.2"
 kotlinSerialization = "1.11.0"
+coil = "3.3.0"
 
 
 [libraries]
@@ -57,6 +58,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 
 jetbrains-compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref= "navigationCompose"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

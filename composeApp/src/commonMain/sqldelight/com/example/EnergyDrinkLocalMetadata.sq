@@ -1,0 +1,20 @@
+CREATE TABLE EnergyDrinkLocalMetadata(
+    energyDrinkId INTEGER PRIMARY KEY
+        REFERENCES EnergyDrinkEntity(id) ON DELETE CASCADE,
+    localImagePath TEXT
+);
+
+selectByEnergyDrinkId:
+SELECT * FROM EnergyDrinkLocalMetadata
+WHERE energyDrinkId = ?;
+
+selectAll:
+SELECT * FROM EnergyDrinkLocalMetadata;
+
+upsert:
+INSERT OR REPLACE INTO EnergyDrinkLocalMetadata(energyDrinkId, localImagePath)
+VALUES (?, ?);
+
+deleteByEnergyDrinkId:
+DELETE FROM EnergyDrinkLocalMetadata
+WHERE energyDrinkId = ?;

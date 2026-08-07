@@ -4,5 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>EnergyDex uses the camera to add a drink photo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>EnergyDex uses your photo library to add a drink photo.</string>
 </dict>
 </plist>

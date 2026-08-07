@@ -61,6 +61,7 @@ kotlin {
 
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.coil.compose)
 
         }
         commonTest.dependencies {
@@ -109,4 +110,3 @@ sqldelight {
         }
     }
 }
-

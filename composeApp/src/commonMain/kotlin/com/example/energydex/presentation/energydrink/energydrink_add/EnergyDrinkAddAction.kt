@@ -8,6 +8,7 @@ interface EnergyDrinkAddAction {
     data class OnStarClick(val value: Double) : EnergyDrinkAddAction
     data object OnPickImage: EnergyDrinkAddAction
     data class OnImageSelected(val path: String?) : EnergyDrinkAddAction
+    data object OnRemoveImage: EnergyDrinkAddAction
     data object OnSaveClick: EnergyDrinkAddAction
     data object OnBackClick: EnergyDrinkAddAction
 }

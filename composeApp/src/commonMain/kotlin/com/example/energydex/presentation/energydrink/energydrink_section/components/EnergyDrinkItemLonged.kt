@@ -1,6 +1,7 @@
 package com.example.energydex.presentation.energydrink.energydrink_section.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,15 +22,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_gem
+import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
 import com.example.energydex.core.presentation.SecondaryPurple
+import com.example.energydex.core.presentation.SecondaryOrange
 @Composable
 fun EnergyDrinkItemLonged(
     energyDrink: EnergyDrink,
@@ -53,12 +58,31 @@ fun EnergyDrinkItemLonged(
             Box(
                 modifier = Modifier
                     .height(110.dp)
-                    .width(110.dp),
+                    .width(110.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .border(
+                        width = 1.dp,
+                        color = SecondaryOrange,
+                        shape = RoundedCornerShape(20.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text="Image"
-                )
+                if (energyDrink.imagePath == null) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_image_placeholder),
+                        contentDescription = null,
+                        tint = SecondaryOrange,
+                        modifier = Modifier.size(48.dp)
+                    )
+                } else {
+                    AsyncImage(
+                        model = energyDrink.imagePath,
+                        contentDescription = energyDrink.name,
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        error = painterResource(Res.drawable.ic_image_placeholder)
+                    )
+                }
             }
             Column(
                 modifier = Modifier
@@ -112,5 +136,3 @@ fun EnergyDrinkItemLonged(
         }
     }
 }
-
-

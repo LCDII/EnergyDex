@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS EnergyDrinkLocalMetadata(
+    energyDrinkId INTEGER PRIMARY KEY
+        REFERENCES EnergyDrinkEntity(id) ON DELETE CASCADE,
+    localImagePath TEXT
+);

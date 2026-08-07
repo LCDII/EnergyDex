@@ -5,8 +5,7 @@ CREATE TABLE EnergyDrinkEntity(
     description TEXT,
     rating REAL,
     createdAt INTEGER NOT NULL,
-    updatedAt INTEGER NOT NULL,
-    imagePath TEXT
+    updatedAt INTEGER NOT NULL
 );
 
 
@@ -15,12 +14,12 @@ CREATE INDEX idx_energy_rating ON EnergyDrinkEntity(rating);
 CREATE INDEX idx_energy_name ON EnergyDrinkEntity(name);
 
 insertEnergyDrink:
-INSERT INTO EnergyDrinkEntity(name, amount,description, rating, createdAt, updatedAt, imagePath)
-VALUES (?,?,?,?,?,?,?);
+INSERT INTO EnergyDrinkEntity(name, amount,description, rating, createdAt, updatedAt)
+VALUES (?,?,?,?,?,?);
 
 updateEnergyDrink:
 UPDATE EnergyDrinkEntity
-SET name = ?, amount = ?, description = ?, rating = ?, updatedAt = ?, imagePath = ?
+SET name = ?, amount = ?, description = ?, rating = ?, updatedAt = ?
 WHERE id = ?;
 
 deleteEnergyDrink:

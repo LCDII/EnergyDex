@@ -4,9 +4,11 @@ import com.example.EnergyDexDatabase
 import com.example.energydex.data.energydrink.database.DatabaseDriverFactory
 import com.example.energydex.data.energydrink.repository.EnergyDrinkRepositoryImpl
 import com.example.energydex.data.energydrink.repository.EnergyDrinkTagRepositoryImpl
+import com.example.energydex.data.energydrink.repository.EnergyDrinkLocalMetadataRepositoryImpl
 import com.example.energydex.data.tag.repository.TagRepositoryImpl
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkTagRepository
+import com.example.energydex.domain.energydrink.repository.EnergyDrinkLocalMetadataRepository
 import com.example.energydex.domain.energydrink.usecase.AttachTagToEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.CreateEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
@@ -60,6 +62,7 @@ val databaseModule = module {
     single { get<EnergyDexDatabase>().energyDrinkEntityQueries }
     single { get<EnergyDexDatabase>().tagEntityQueries }
     single { get<EnergyDexDatabase>().energyDrinkTagQueries }
+    single { get<EnergyDexDatabase>().energyDrinkLocalMetadataQueries }
 }
 
 val repositoryModule = module {
@@ -67,7 +70,12 @@ val repositoryModule = module {
         EnergyDrinkRepositoryImpl(
             get(),
             get(),
+            get(),
         )
+    }
+
+    single<EnergyDrinkLocalMetadataRepository> {
+        EnergyDrinkLocalMetadataRepositoryImpl(get())
     }
 
     single<TagRepository>{

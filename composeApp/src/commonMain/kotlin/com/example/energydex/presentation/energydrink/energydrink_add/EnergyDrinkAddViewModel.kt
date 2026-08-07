@@ -57,6 +57,9 @@ class EnergyDrinkAddViewModel(
                     imagePath = action.path
                 ) }
             }
+            is EnergyDrinkAddAction.OnRemoveImage -> {
+                _state.update { it.copy(imagePath = null) }
+            }
             else -> Unit
         }
     }

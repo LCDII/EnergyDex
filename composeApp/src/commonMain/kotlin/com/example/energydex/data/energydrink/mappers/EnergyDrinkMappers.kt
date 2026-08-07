@@ -5,7 +5,10 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import kotlin.time.Instant
 
-fun EnergyDrinkEntity.toEnergyDrink(tags: List<Tag>): EnergyDrink = EnergyDrink(
+fun EnergyDrinkEntity.toEnergyDrink(
+    tags: List<Tag>,
+    imagePath: String?
+): EnergyDrink = EnergyDrink(
     id = id,
     name = name,
     amount = amount.toInt(),
