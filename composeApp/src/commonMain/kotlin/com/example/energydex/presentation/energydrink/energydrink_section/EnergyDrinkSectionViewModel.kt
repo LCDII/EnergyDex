@@ -69,13 +69,27 @@ class EnergyDrinkSectionViewModel (
 //            }
             is EnergyDrinkSectionAction.OnSortButtonClick->{
                 _state.update { it.copy(
-                    isSortMode = !it.isSortMode
+                    isSortMenuVisible = !it.isSortMenuVisible
                 ) }
             }
             is EnergyDrinkSectionAction.OnSortOptionSelected->{
-                _state.update { it.copy(
-                    sortOption = action.option
-                ) }
+                val current = _state.value.sortOption
+                val selectedField = action.option.name.substringBefore("_")
+                val currentField = current.name.substringBefore("_")
+                val newOption = if (selectedField == currentField) {
+                    val newDirection =
+                        if (current.name.substringAfter("_") == "ASC") "DESC" else "ASC"
+                    EnergyDrinkListSortOptions.valueOf("${selectedField}_$newDirection")
+                } else {
+                    val defaultDirection = if (selectedField == "TITLE") "ASC" else "DESC"
+                    EnergyDrinkListSortOptions.valueOf("${selectedField}_$defaultDirection")
+                }
+                _state.update {
+                    it.copy(
+                        sortOption = newOption,
+                        isSortMenuVisible = false
+                    )
+                }
             }
             is EnergyDrinkSectionAction.OnTabSelected->{
                 _state.update { it.copy(

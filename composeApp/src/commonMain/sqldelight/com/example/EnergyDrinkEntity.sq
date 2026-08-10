@@ -34,12 +34,12 @@ ORDER BY
     CASE :sortOption
         WHEN 'DATE_DESC' THEN createdAt
         WHEN 'RATING_DESC' THEN rating
-        WHEN 'NAME_DESC' THEN name
+        WHEN 'TITLE_DESC' THEN name
     END DESC,
     CASE :sortOption
         WHEN 'DATE_ASC' THEN createdAt
         WHEN 'RATING_ASC' THEN rating
-        WHEN 'NAME_ASC' THEN name
+        WHEN 'TITLE_ASC' THEN name
     END ASC;
 
 searchEnenergtDrinks:
@@ -50,12 +50,12 @@ ORDER BY
     CASE :sortOption
         WHEN 'DATE_DESC' THEN createdAt
         WHEN 'RATING_DESC' THEN rating
-        WHEN 'NAME_DESC' THEN name
+        WHEN 'TITLE_DESC' THEN name
     END DESC,
     CASE :sortOption
         WHEN 'DATE_ASC' THEN createdAt
         WHEN 'RATING_ASC' THEN rating
-        WHEN 'NAME_ASC' THEN name
+        WHEN 'TITLE_ASC' THEN name
     END ASC;
 
 lastInsertRowId:

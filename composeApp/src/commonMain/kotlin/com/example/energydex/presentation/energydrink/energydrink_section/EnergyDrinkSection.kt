@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.energydex.core.domain.EnergyDrinkListSortOptions
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
@@ -254,7 +257,15 @@ fun EnergyDrinkSection(
                 onAction(EnergyDrinkSectionAction.OnAddEnergyDrink)
             },
             onSortClick = {
-                //TODO
+                onAction(EnergyDrinkSectionAction.OnSortButtonClick)
+            },
+            isSortMenuVisible = state.isSortMenuVisible,
+            onDismissSortMenu = {
+                onAction(EnergyDrinkSectionAction.OnSortButtonClick)
+            },
+            sortOption = state.sortOption,
+            onSortOptionSelected = { option ->
+                onAction(EnergyDrinkSectionAction.OnSortOptionSelected(option))
             }
         )
     }
@@ -264,7 +275,11 @@ fun EnergyDrinkSection(
 private fun FloatingActionButtons(
     modifier: Modifier = Modifier,
     onCreateClick: () -> Unit,
-    onSortClick: () -> Unit
+    onSortClick: () -> Unit,
+    isSortMenuVisible: Boolean,
+    onDismissSortMenu: () -> Unit,
+    sortOption: EnergyDrinkListSortOptions,
+    onSortOptionSelected: (EnergyDrinkListSortOptions) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -293,6 +308,39 @@ private fun FloatingActionButtons(
                     contentDescription = "Create",
                     tint = AccentWhite,
                     modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+
+        DropdownMenu(
+            expanded = isSortMenuVisible,
+            onDismissRequest = onDismissSortMenu
+        ) {
+            listOf(
+                EnergyDrinkListSortOptions.TITLE_ASC,
+                EnergyDrinkListSortOptions.DATE_ASC,
+                EnergyDrinkListSortOptions.RATING_ASC
+            ).forEach { option ->
+                val isCurrent = option.fieldGroup() == sortOption.fieldGroup()
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = option.label(),
+                                color = if (isCurrent) PrimaryOrange else Color.Unspecified
+                            )
+                            if (isCurrent) {
+                                Text(
+                                    text = if (sortOption.isAscending()) "↓" else "↑",
+                                    color = PrimaryOrange
+                                )
+                            }
+                        }
+                    },
+                    onClick = { onSortOptionSelected(option) }
                 )
             }
         }
@@ -328,4 +376,17 @@ private fun FloatingActionButtons(
             }
         }
     }
+}
+
+private fun EnergyDrinkListSortOptions.fieldGroup(): String = name.substringBefore("_")
+
+private fun EnergyDrinkListSortOptions.isAscending(): Boolean = name.endsWith("_ASC")
+
+private fun EnergyDrinkListSortOptions.label(): String = when (this) {
+    EnergyDrinkListSortOptions.TITLE_ASC,
+    EnergyDrinkListSortOptions.TITLE_DESC -> "Title"
+    EnergyDrinkListSortOptions.DATE_ASC,
+    EnergyDrinkListSortOptions.DATE_DESC -> "Date"
+    EnergyDrinkListSortOptions.RATING_ASC,
+    EnergyDrinkListSortOptions.RATING_DESC -> "Rating"
 }
