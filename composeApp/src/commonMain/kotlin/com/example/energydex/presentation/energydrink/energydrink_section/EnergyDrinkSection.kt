@@ -42,10 +42,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListLonged
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSquared
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkSearchBar
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkSectionTab
+import com.example.energydex.presentation.shared.components.EnergyDrinkListLonged
+import com.example.energydex.presentation.shared.components.EnergyDrinkListSquared
+import com.example.energydex.presentation.shared.components.EnergyDrinkSearchBar
+import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab
+import com.example.energydex.presentation.shared.components.EnergyDrinkViewModeToggle
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
@@ -166,7 +167,7 @@ fun EnergyDrinkSection(
                             }
                         )
 
-                        TabToggleButtons(
+                        EnergyDrinkViewModeToggle(
                             modifier = Modifier.weight(1f),
                             selectedTab = state.selectedTabIndex,
                             onTabSelected = { tab ->
@@ -256,67 +257,6 @@ fun EnergyDrinkSection(
                 //TODO
             }
         )
-    }
-}
-
-@Composable
-private fun TabToggleButtons(
-    modifier: Modifier = Modifier,
-    selectedTab: EnergyDrinkSectionTab,
-    onTabSelected: (EnergyDrinkSectionTab) -> Unit
-) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, SecondaryPurple, RoundedCornerShape(12.dp)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        // Первая кнопка (SQUARED)
-        IconToggleButton(
-            checked = selectedTab == EnergyDrinkSectionTab.SQUARED,
-            onCheckedChange = { onTabSelected(EnergyDrinkSectionTab.SQUARED) },
-            modifier = Modifier
-                .weight(1f)
-                .background(
-                    color = if (selectedTab == EnergyDrinkSectionTab.SQUARED)
-                        SecondaryPurple
-                    else
-                        Color.Transparent,
-                    shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
-                )
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_energy_drinks_list_view_squared),
-                contentDescription = "Squared",
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
-
-        // Вторая кнопка (LONGED)
-        IconToggleButton(
-            checked = selectedTab == EnergyDrinkSectionTab.LONGED,
-            onCheckedChange = { onTabSelected(EnergyDrinkSectionTab.LONGED) },
-            modifier = Modifier
-                .weight(1f)
-                .background(
-                    color = if (selectedTab == EnergyDrinkSectionTab.LONGED)
-                        SecondaryPurple
-                    else
-                        Color.Transparent,
-                    shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
-                ),
-
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_energy_drinks_list_view_longed),
-                contentDescription = "Longed",
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-        }
     }
 }
 

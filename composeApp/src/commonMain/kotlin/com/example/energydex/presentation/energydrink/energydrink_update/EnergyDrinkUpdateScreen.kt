@@ -40,12 +40,12 @@ import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
-import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddAction
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkDescriptionTextField
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkNameTextField
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkRatingTextField
 import com.example.energydex.presentation.energydrink.image.ImagePickerSource
 import com.example.energydex.presentation.energydrink.image.PlatformImagePicker
+import com.example.energydex.presentation.tag.components.TagSelector
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
@@ -60,15 +60,15 @@ fun EnergyDrinkUpdateScreenRoot(
     var pickerSource by remember { mutableStateOf<ImagePickerSource?>(null) }
     var showSourceDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.form.isSaved) {
-        if (state.form.isSaved) onSaveClick()
+    LaunchedEffect(state.isSaved) {
+        if (state.isSaved) onSaveClick()
     }
 
     PlatformImagePicker(
         source = pickerSource,
         onImageSelected = { path ->
             pickerSource = null
-            viewModel.onAction(EnergyDrinkAddAction.OnImageSelected(path))
+             viewModel.onAction(EnergyDrinkUpdateAction.OnImageSelected(path))
         },
         onDismiss = { pickerSource = null }
     )
@@ -97,8 +97,12 @@ fun EnergyDrinkUpdateScreenRoot(
         EnergyDrinkUpdateScreen(
             state = state,
             onPickImage = { showSourceDialog = true },
-            onBackClick = onBackClick,
-            onAction = viewModel::onAction
+            onAction = { action ->
+                if (action is EnergyDrinkUpdateAction.OnBackClick) {
+                    onBackClick()
+                }
+                viewModel.onAction(action)
+            }
         )
     }
 }
@@ -107,10 +111,8 @@ fun EnergyDrinkUpdateScreenRoot(
 private fun EnergyDrinkUpdateScreen(
     state: EnergyDrinkUpdateState,
     onPickImage: () -> Unit,
-    onBackClick: () -> Unit,
-    onAction: (EnergyDrinkAddAction) -> Unit
+    onAction: (EnergyDrinkUpdateAction) -> Unit
 ) {
-    val form = state.form
     val imageShape = RoundedCornerShape(24.dp)
 
     Column(
@@ -128,7 +130,7 @@ private fun EnergyDrinkUpdateScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = onBackClick,
+                onClick = { onAction(EnergyDrinkUpdateAction.OnBackClick) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = SecondaryPurple,
                     contentColor = AccentWhite
@@ -142,9 +144,9 @@ private fun EnergyDrinkUpdateScreen(
 
         EnergyDrinkNameTextField(
             modifier = Modifier.fillMaxWidth(),
-            name = form.name,
-            onNameChange = { onAction(EnergyDrinkAddAction.OnNameChange(it)) },
-            isValid = form.isNameTextValid
+            name = state.name,
+            onNameChange = { onAction(EnergyDrinkUpdateAction.OnNameChange(it)) },
+            isValid = state.isNameTextValid
         )
 
         Button(
@@ -155,7 +157,7 @@ private fun EnergyDrinkUpdateScreen(
                 contentColor = AccentWhite
             )
         ) {
-            Text(if (form.imagePath == null) "Add photo" else "Change photo")
+            Text(if (state.imagePath == null) "Add photo" else "Change photo")
         }
 
         Box(
@@ -166,7 +168,7 @@ private fun EnergyDrinkUpdateScreen(
                 .border(1.dp, SecondaryOrange, imageShape),
             contentAlignment = Alignment.Center
         ) {
-            if (form.imagePath == null) {
+            if (state.imagePath == null) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_image_placeholder),
                     contentDescription = null,
@@ -175,8 +177,8 @@ private fun EnergyDrinkUpdateScreen(
                 )
             } else {
                 AsyncImage(
-                    model = form.imagePath,
-                    contentDescription = form.name,
+                    model = state.imagePath,
+                    contentDescription = state.name,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     error = painterResource(Res.drawable.ic_image_placeholder)
@@ -184,9 +186,9 @@ private fun EnergyDrinkUpdateScreen(
             }
         }
 
-        if (form.imagePath != null) {
+        if (state.imagePath != null) {
             TextButton(
-                onClick = { onAction(EnergyDrinkAddAction.OnRemoveImage) },
+                onClick = { onAction(EnergyDrinkUpdateAction.OnRemoveImage) },
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text("Remove photo", color = SecondaryOrange)
@@ -195,9 +197,9 @@ private fun EnergyDrinkUpdateScreen(
 
         EnergyDrinkDescriptionTextField(
             modifier = Modifier.fillMaxWidth(),
-            description = form.description,
+            description = state.description,
             onDescriptionChange = {
-                onAction(EnergyDrinkAddAction.OnDescriptionChange(it))
+                onAction(EnergyDrinkUpdateAction.OnDescriptionChange(it))
             }
         )
 
@@ -208,28 +210,37 @@ private fun EnergyDrinkUpdateScreen(
         ) {
             Text("Rating from 0 to 10", color = SecondaryOrange, fontSize = 16.sp)
             EnergyDrinkRatingTextField(
-                ratingText = form.ratingText,
+                ratingText = state.ratingText,
                 onRatingChange = {
-                    onAction(EnergyDrinkAddAction.OnRatingTextChange(it))
+                    onAction(EnergyDrinkUpdateAction.OnRatingTextChange(it))
                 },
-                isValid = form.isRatingTextValid
+                isValid = state.isRatingTextValid
             )
         }
 
-        form.errorMessage?.let { error ->
+        if (state.availableTags.isNotEmpty()) {
+            Text("Tags", color = SecondaryOrange, fontSize = 16.sp)
+            TagSelector(
+                availableTags = state.availableTags,
+                selectedTagIds = state.selectedTagIds,
+                onTagToggle = { onAction(EnergyDrinkUpdateAction.OnTagToggle(it)) }
+            )
+        }
+
+        state.errorMessage?.let { error ->
             Text(error.asString(), color = ErrorRed, fontSize = 14.sp)
         }
 
         Button(
-            onClick = { onAction(EnergyDrinkAddAction.OnSaveClick) },
-            enabled = !form.isSaving,
+            onClick = { onAction(EnergyDrinkUpdateAction.OnSaveClick) },
+            enabled = !state.isSaving,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = PrimaryOrange,
                 contentColor = AccentWhite
             )
         ) {
-            Text(if (form.isSaving) "Saving..." else "Save")
+            Text(if (state.isSaving) "Saving..." else "Save")
         }
     }
 }

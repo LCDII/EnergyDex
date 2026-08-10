@@ -19,4 +19,6 @@ sealed interface Route{
     data class UpdateEnergyDrink(val id: Long): Route
     @Serializable
     data class UpdateTag(val id: Long): Route
+    @Serializable
+    data class TagDrinkSelection(val tagId: Long): Route
 }

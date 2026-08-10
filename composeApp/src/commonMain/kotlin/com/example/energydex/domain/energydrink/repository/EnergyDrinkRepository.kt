@@ -30,4 +30,5 @@ interface EnergyDrinkRepository {
     ) : EmptyResult<DataError.Local>
     suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local>
     suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local>
+    suspend fun getEnergyDrinksForTag(tagId: Long): Result<List<EnergyDrink>, DataError.Local>
 }

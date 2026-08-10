@@ -15,18 +15,25 @@ import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.DetachTagFromEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
 import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
+import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinksForTagUseCase
 import com.example.energydex.domain.energydrink.usecase.SearchEnergyDrinksUseCase
 import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
+import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkTagRelationsUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinkTagRelationsUseCase
 import com.example.energydex.domain.tag.repository.TagRepository
 import com.example.energydex.domain.tag.usecase.CreateTagUseCase
 import com.example.energydex.domain.tag.usecase.DeleteTagUseCase
-import com.example.energydex.domain.tag.usecase.GetAllTagsUseCase
 import com.example.energydex.domain.tag.usecase.GetTagByIdUseCase
 import com.example.energydex.domain.tag.usecase.UpdateTagUseCase
+import com.example.energydex.domain.tag.usecase.ObserveTagsUseCase
 import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddViewModel
 import com.example.energydex.presentation.energydrink.energydrink_section.EnergyDrinkSectionViewModel
 import com.example.energydex.presentation.energydrink.energydrink_detail.EnergyDrinkDetailViewModel
 import com.example.energydex.presentation.energydrink.energydrink_update.EnergyDrinkUpdateViewModel
+import com.example.energydex.presentation.tag.tag_section.TagSectionViewModel
+import com.example.energydex.presentation.tag.tag_detail.TagDetailViewModel
+import com.example.energydex.presentation.tag.tag_create_edit.TagCreateEditViewModel
+import com.example.energydex.presentation.tag.tag_drink_selection.TagDrinkSelectionViewModel
 import com.example.energydex.presentation.main_screen.MainScreenViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -40,6 +47,7 @@ val useCaseModule = module {
     factoryOf(::UpdateEnergyDrinkUseCase)
     factoryOf(::DeleteEnergyDrinkUseCase)
     factoryOf(::GetEnergyDrinkByIdUseCase)
+    factoryOf(::GetEnergyDrinksForTagUseCase)
     factoryOf(::GetAllEnergyDrinksUseCase)
     factoryOf(::AttachTagToEnergyDrinkUseCase)
     factoryOf(::DetachTagFromEnergyDrinkUseCase)
@@ -49,7 +57,9 @@ val useCaseModule = module {
     factoryOf(::UpdateTagUseCase)
     factoryOf(::DeleteTagUseCase)
     factoryOf(::GetTagByIdUseCase)
-    factoryOf(::GetAllTagsUseCase)
+    factoryOf(::ObserveTagsUseCase)
+    factoryOf(::UpdateEnergyDrinkTagRelationsUseCase)
+    factoryOf(::ObserveEnergyDrinkTagRelationsUseCase)
 
 }
 
@@ -99,10 +109,20 @@ val viewModelModule = module {
     viewModelOf(::EnergyDrinkSectionViewModel)
     viewModelOf(::MainScreenViewModel)
     viewModelOf(::EnergyDrinkAddViewModel)
+    viewModelOf(::TagSectionViewModel)
     viewModel { parameters ->
         EnergyDrinkDetailViewModel(parameters.get(), get(), get())
     }
     viewModel { parameters ->
-        EnergyDrinkUpdateViewModel(parameters.get(), get(), get())
+        EnergyDrinkUpdateViewModel(parameters.get(), get(), get(), get())
+    }
+    viewModel { parameters ->
+        TagDetailViewModel(parameters.get(), get(), get(), get())
+    }
+    viewModel { parameters ->
+        TagCreateEditViewModel(parameters.getOrNull(), get(), get(), get())
+    }
+    viewModel { parameters ->
+        TagDrinkSelectionViewModel(parameters.get(), get(), get(), get())
     }
 }

@@ -3,7 +3,7 @@ package com.example.energydex.presentation.energydrink.energydrink_section.previ
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.energydex.domain.energydrink.model.EnergyDrink
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkItemLonged
+import com.example.energydex.presentation.shared.components.EnergyDrinkItemLonged
 import com.example.energydex.domain.tag.model.Tag
 import kotlin.time.Instant
 

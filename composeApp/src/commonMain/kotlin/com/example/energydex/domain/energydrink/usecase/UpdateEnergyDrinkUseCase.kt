@@ -3,7 +3,9 @@ package com.example.energydex.domain.energydrink.usecase
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkLocalMetadataRepository
 import com.example.energydex.data.energydrink.image.ImageStorage
+import com.example.energydex.domain.energydrink.repository.EnergyDrinkTagRepository
 import com.example.energydex.core.domain.DataError
+import com.example.energydex.core.domain.EmptyResult
 import com.example.energydex.core.domain.Result
 import kotlin.time.Clock
 
@@ -11,6 +13,7 @@ class UpdateEnergyDrinkUseCase(
     private val energyDrinkRepository: EnergyDrinkRepository
     ,private val localMetadataRepository: EnergyDrinkLocalMetadataRepository
     ,private val imageStorage: ImageStorage
+    ,private val energyDrinkTagRepository: EnergyDrinkTagRepository
 ) {
     suspend operator fun invoke(
         id: Long,
@@ -20,8 +23,10 @@ class UpdateEnergyDrinkUseCase(
         rating: Double?,
         updatedAt: Long,
         imagePath: String?,
-        imageChanged: Boolean
-    ): Result<Unit, DataError.Local> {
+        imageChanged: Boolean,
+        initialTagIds: Set<Long>,
+        selectedTagIds: Set<Long>
+    ): EmptyResult<DataError.Local> {
         val oldImagePath = when (val result = localMetadataRepository.getImagePath(id)) {
             is Result.Error -> return Result.Error(result.error)
             is Result.Success -> result.data
@@ -62,6 +67,14 @@ class UpdateEnergyDrinkUseCase(
 
         if (metadataResult is Result.Error) {
             return Result.Error(metadataResult.error)
+        }
+        for (tagId in initialTagIds - selectedTagIds) {
+            val result = energyDrinkTagRepository.detachTagFromEnergyDrink(tagId, id)
+            if (result is Result.Error) return Result.Error(result.error)
+        }
+        for (tagId in selectedTagIds - initialTagIds) {
+            val result = energyDrinkTagRepository.attachTagToEnergyDrink(tagId, id)
+            if (result is Result.Error) return Result.Error(result.error)
         }
         if (imageChanged && oldImagePath != null && oldImagePath != newImagePath) {
             imageStorage.delete(oldImagePath)

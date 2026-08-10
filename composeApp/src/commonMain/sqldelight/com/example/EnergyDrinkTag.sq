@@ -25,3 +25,6 @@ SELECT EnergyDrinkEntity.*
 FROM EnergyDrinkEntity
 INNER JOIN EnergyDrinkTag ON EnergyDrinkEntity.id = EnergyDrinkTag.energyDrinkId
 WHERE EnergyDrinkTag.tagId = ?;
+
+selectAllRelations:
+SELECT * FROM EnergyDrinkTag;

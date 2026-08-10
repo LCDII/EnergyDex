@@ -7,14 +7,19 @@ import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
 import com.example.energydex.domain.energydrink.usecase.CreateEnergyDrinkUseCase
+import com.example.energydex.domain.tag.usecase.ObserveTagsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class EnergyDrinkAddViewModel(
-    private val createEnergyDrinkUseCase: CreateEnergyDrinkUseCase
+    private val createEnergyDrinkUseCase: CreateEnergyDrinkUseCase,
+    private val observeTags: ObserveTagsUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(EnergyDrinkAddState())
@@ -23,6 +28,17 @@ class EnergyDrinkAddViewModel(
         SharingStarted.WhileSubscribed(5000L),
         _state.value
     )
+
+    init {
+        startObservingTags()
+    }
+
+    private fun startObservingTags() {
+        observeTags()
+            .onEach { tags -> _state.update { it.copy(availableTags = tags) } }
+            .catch { error -> _state.update { it.copy(errorMessage = error.toUiText()) } }
+            .launchIn(viewModelScope)
+    }
 
     fun onAction(action: EnergyDrinkAddAction){
         when(action){
@@ -49,9 +65,6 @@ class EnergyDrinkAddViewModel(
             is EnergyDrinkAddAction.OnRatingTextChange -> {
                 updateRating(action.ratingText)
             }
-            is EnergyDrinkAddAction.OnPickImage -> {
-                //TODO??
-            }
             is EnergyDrinkAddAction.OnImageSelected -> {
                 _state.update { it.copy(
                     imagePath = action.path
@@ -59,6 +72,13 @@ class EnergyDrinkAddViewModel(
             }
             is EnergyDrinkAddAction.OnRemoveImage -> {
                 _state.update { it.copy(imagePath = null) }
+            }
+            is EnergyDrinkAddAction.OnTagToggle -> {
+                _state.update {
+                    val selected = it.selectedTagIds.toMutableSet()
+                    if (!selected.add(action.tagId)) selected.remove(action.tagId)
+                    it.copy(selectedTagIds = selected)
+                }
             }
             else -> Unit
         }
@@ -122,7 +142,8 @@ class EnergyDrinkAddViewModel(
             amount = currentState.amount,
             description = currentState.description,
             rating = currentState.rating,
-            imagePath = currentState.imagePath
+            imagePath = currentState.imagePath,
+            selectedTagIds = currentState.selectedTagIds
         )
             .onSuccess {
                 _state.update { it.copy(

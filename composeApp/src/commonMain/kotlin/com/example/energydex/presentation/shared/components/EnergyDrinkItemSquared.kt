@@ -1,4 +1,4 @@
-package com.example.energydex.presentation.energydrink.energydrink_section.components
+package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
@@ -22,13 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
+import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_gem
@@ -39,11 +40,17 @@ import org.jetbrains.compose.resources.painterResource
 fun EnergyDrinkItemSquared(
     energyDrink: EnergyDrink,
     onClick: () -> Unit,
-    modifier: Modifier  = Modifier
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false
 ) {
     Surface (
         shape = RoundedCornerShape(32.dp),
         modifier = modifier
+            .border(
+                width = if (isSelected) 3.dp else 0.dp,
+                color = PrimaryOrange,
+                shape = RoundedCornerShape(32.dp)
+            )
             .clickable(onClick = onClick),
         color = SecondaryPurple
     ) {
@@ -134,7 +141,7 @@ fun EnergyDrinkItemSquared(
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            color = Color.White,
+                            color = AccentWhite,
                         )
                     }
                 }

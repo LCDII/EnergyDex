@@ -75,8 +75,12 @@ class EnergyDrinkDetailViewModel(
             EnergyDrinkDetailAction.OnDeclineDeleteClick -> {
                 _state.update { it.copy(showDeleteConfirmation = false) }
             }
-            EnergyDrinkDetailAction.OnBackClick,
-            EnergyDrinkDetailAction.OnUpdateClick -> Unit
+            EnergyDrinkDetailAction.OnBackClick->{
+
+            }
+            EnergyDrinkDetailAction.OnUpdateClick ->{
+
+            }
         }
     }
 }

@@ -39,10 +39,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
+import com.example.energydex.core.presentation.PrimaryOrangeGradientEnd
+import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.energydrink.energydrink_section.EnergyDrinkSectionRoot
 import com.example.energydex.presentation.main_screen.components.MainScreenTab
+import com.example.energydex.presentation.tag.tag_section.TagSectionRoot
 import org.koin.compose.viewmodel.koinViewModel
 
 @Preview
@@ -60,7 +63,8 @@ fun MainScreenRoot(
     viewModel: MainScreenViewModel = koinViewModel(),
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     onAddEnergyDrinkButtonClick: () -> Unit,
-    onTagClick: (Tag) -> Unit
+    onTagClick: (Tag) -> Unit,
+    onCreateTagClick: () -> Unit = {}
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
     MainScreen(
@@ -74,7 +78,8 @@ fun MainScreenRoot(
         },
         onEnergyDrinkClick = onEnergyDrinkClick,
         onAddEnergyDrinkButtonClick = onAddEnergyDrinkButtonClick,
-        onTagClick = onTagClick
+        onTagClick = onTagClick,
+        onCreateTagClick = onCreateTagClick
     )
 }
 
@@ -87,7 +92,8 @@ fun MainScreen(
     onAction: (MainScreenAction)-> Unit,
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     onAddEnergyDrinkButtonClick: () -> Unit,
-    onTagClick: (Tag) -> Unit
+    onTagClick: (Tag) -> Unit,
+    onCreateTagClick: () -> Unit
 ){
 
     val pagerState = rememberPagerState{ MainScreenTab.entries.size }
@@ -126,7 +132,7 @@ fun MainScreen(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
                                     PrimaryOrange,
-                                    Color(0xFFFF5500)
+                                    PrimaryOrangeGradientEnd
                                 )
                             )
                         )
@@ -237,16 +243,16 @@ fun MainScreen(
                                         text = state.errorMessage.asString(),
                                         textAlign = TextAlign.Center,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        color = MaterialTheme.colorScheme.error
+                                         color = ErrorRed
                                     )
                                 }
 
                                 else -> {
-                                    Surface {
-                                        Text(
-                                            text="Tags"
-                                        )
-                                    }
+                                    TagSectionRoot(
+                                        onTagClick = onTagClick,
+                                        onDrinkClick = onEnergyDrinkClick,
+                                        onCreateTagClick = onCreateTagClick
+                                    )
                                 }
                             }
                         }

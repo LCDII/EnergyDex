@@ -5,7 +5,7 @@ CREATE TABLE TagEntity (
 );
 
 insertTag:
-INSERT OR IGNORE INTO TagEntity(name, color) VALUES (?,?);
+INSERT INTO TagEntity(name, color) VALUES (?,?);
 
 deleteTag:
 DELETE FROM TagEntity WHERE id = ?;

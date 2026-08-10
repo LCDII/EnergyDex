@@ -12,7 +12,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,6 +29,7 @@ import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.SecondaryOrange
+import com.example.energydex.core.presentation.ErrorRed
 
 @Composable
 fun EnergyDrinkNameTextField(
@@ -70,7 +70,7 @@ fun EnergyDrinkNameTextField(
             focusedBorderColor = if (isValid)
                 AccentWhite
             else
-                Color.Red,
+                ErrorRed,
         ),
         textStyle = TextStyle(
             letterSpacing = 0.5.sp,

@@ -31,18 +31,20 @@ class EnergyDrinkRepositoryImpl(
         amount: Int,
         description: String?,
         rating: Double?
-    ): Result<Long, DataError.Local> = try {
-        energyDrinkEntityQueries.insertEnergyDrink(
-            name = name,
-            amount = amount.toLong(),
-            description = description,
-            rating = rating,
-            createdAt = Clock.System.now().toEpochMilliseconds(),
-            updatedAt = Clock.System.now().toEpochMilliseconds()
-        )
-        Result.Success(energyDrinkEntityQueries.lastInsertRowId().executeAsOne())
-    } catch (_: Exception) {
-        Result.Error(DataError.Local.ALREADY_EXISTS)
+    ): Result<Long, DataError.Local> = withContext(Dispatchers.IO) {
+        try {
+            energyDrinkEntityQueries.insertEnergyDrink(
+                name = name,
+                amount = amount.toLong(),
+                description = description,
+                rating = rating,
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                updatedAt = Clock.System.now().toEpochMilliseconds()
+            )
+            Result.Success(energyDrinkEntityQueries.lastInsertRowId().executeAsOne())
+        } catch (_: Exception) {
+            Result.Error(DataError.Local.ALREADY_EXISTS)
+        }
     }
 
     override suspend fun updateEnergyDrink(
@@ -51,40 +53,62 @@ class EnergyDrinkRepositoryImpl(
         amount: Int,
         description: String?,
         rating: Double?
-    ): EmptyResult<DataError.Local> = try {
-        energyDrinkEntityQueries.updateEnergyDrink(
-            id = id,
-            name = name,
-            amount = amount.toLong(),
-            description = description,
-            rating = rating,
-            updatedAt = Clock.System.now().toEpochMilliseconds()
-        )
-        Result.Success(Unit)
-    } catch (_: Exception) {
-        Result.Error(DataError.Local.DOESNT_EXISTS)
+    ): EmptyResult<DataError.Local> = withContext(Dispatchers.IO) {
+        try {
+            energyDrinkEntityQueries.updateEnergyDrink(
+                id = id,
+                name = name,
+                amount = amount.toLong(),
+                description = description,
+                rating = rating,
+                updatedAt = Clock.System.now().toEpochMilliseconds()
+            )
+            Result.Success(Unit)
+        } catch (_: Exception) {
+            Result.Error(DataError.Local.DOESNT_EXISTS)
+        }
     }
 
-    override suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local> = try {
-        energyDrinkEntityQueries.deleteEnergyDrink(id = id)
-        energyDrinkTagQueries.deleteAllTagsForEnergyDrink(energyDrinkId = id)
-        Result.Success(Unit)
-    } catch (_: Exception) {
-        Result.Error(DataError.Local.DOESNT_EXISTS)
-    }
+    override suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local> =
+        withContext(Dispatchers.IO) {
+            try {
+                energyDrinkEntityQueries.deleteEnergyDrink(id = id)
+                energyDrinkTagQueries.deleteAllTagsForEnergyDrink(energyDrinkId = id)
+                Result.Success(Unit)
+            } catch (_: Exception) {
+                Result.Error(DataError.Local.DOESNT_EXISTS)
+            }
+        }
 
-    override suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local> = try {
-        val energyDrink = energyDrinkEntityQueries.selectById(id = id).executeAsOne()
-        val tags = energyDrinkTagQueries
-            .selectTagsForEnergyDrink(energyDrinkId = id)
+    override suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local> =
+        withContext(Dispatchers.IO) {
+            try {
+                val energyDrink = energyDrinkEntityQueries.selectById(id = id).executeAsOne()
+                val tags = energyDrinkTagQueries
+                    .selectTagsForEnergyDrink(energyDrinkId = id)
+                    .executeAsList()
+                    .map { it.toTag() }
+                val imagePath = localMetadataQueries
+                    .selectByEnergyDrinkId(id)
+                    .executeAsOneOrNull()
+                    ?.localImagePath
+
+                Result.Success(energyDrink.toEnergyDrink(tags, imagePath))
+            } catch (_: Exception) {
+                Result.Error(DataError.Local.DOESNT_EXISTS)
+            }
+        }
+
+    override suspend fun getEnergyDrinksForTag(
+        tagId: Long
+    ): Result<List<EnergyDrink>, DataError.Local> = try {
+        val entities = energyDrinkTagQueries
+            .selectEnergyDrinksForTag(tagId)
             .executeAsList()
-            .map { it.toTag() }
-        val imagePath = localMetadataQueries
-            .selectByEnergyDrinkId(id)
-            .executeAsOneOrNull()
-            ?.localImagePath
-
-        Result.Success(energyDrink.toEnergyDrink(tags, imagePath))
+        val imagePaths = localMetadataQueries.selectAll()
+            .executeAsList()
+            .associate { it.energyDrinkId to it.localImagePath }
+        Result.Success(entities.toEnergyDrinks(imagePaths))
     } catch (_: Exception) {
         Result.Error(DataError.Local.DOESNT_EXISTS)
     }

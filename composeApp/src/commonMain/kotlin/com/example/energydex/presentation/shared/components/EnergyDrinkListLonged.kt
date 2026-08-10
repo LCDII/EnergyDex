@@ -1,4 +1,4 @@
-package com.example.energydex.presentation.energydrink.energydrink_section.components
+package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +19,7 @@ fun EnergyDrinkListLonged (
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     modifier: Modifier = Modifier,
     scrollState: LazyListState = rememberLazyListState(),
+    selectedDrinkIds: Set<Long> = emptySet(),
 ) {
     LazyColumn(
             modifier = modifier,
@@ -37,7 +38,8 @@ fun EnergyDrinkListLonged (
                     },
                     modifier = Modifier
                         .widthIn(max = 800.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    isSelected = energyDrink.id in selectedDrinkIds
                 )
             }
     }

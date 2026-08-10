@@ -1,4 +1,4 @@
-package com.example.energydex.presentation.energydrink.energydrink_section.components
+package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +19,7 @@ fun EnergyDrinkListSquared (
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     modifier: Modifier = Modifier,
     scrollState: LazyGridState = rememberLazyGridState(),
+    selectedDrinkIds: Set<Long> = emptySet(),
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -36,10 +37,11 @@ fun EnergyDrinkListSquared (
                 onClick = {
                     onEnergyDrinkClick(energyDrink)
                 },
-                modifier = Modifier
-                    .widthIn(max = 600.dp)
-                    .fillMaxWidth()
-            )
+                    modifier = Modifier
+                        .widthIn(max = 600.dp)
+                        .fillMaxWidth(),
+                    isSelected = energyDrink.id in selectedDrinkIds
+                )
         }
     }
 }

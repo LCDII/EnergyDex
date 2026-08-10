@@ -2,6 +2,7 @@ package com.example.energydex.domain.energydrink.repository
 
 import com.example.energydex.core.domain.DataError
 import com.example.energydex.core.domain.EmptyResult
+import kotlinx.coroutines.flow.Flow
 
 interface EnergyDrinkTagRepository {
     suspend fun attachTagToEnergyDrink(
@@ -12,4 +13,5 @@ interface EnergyDrinkTagRepository {
         tagId: Long,
         energyDrinkId: Long
     ): EmptyResult<DataError.Local>
+    fun observeAllRelations(): Flow<Unit>
 }

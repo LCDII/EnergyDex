@@ -4,6 +4,7 @@ import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkLocalMetadataRepository
 import com.example.energydex.data.energydrink.image.ImageStorage
 import com.example.energydex.core.domain.DataError
+import com.example.energydex.core.domain.EmptyResult
 import com.example.energydex.core.domain.Result
 
 class DeleteEnergyDrinkUseCase(
@@ -11,7 +12,7 @@ class DeleteEnergyDrinkUseCase(
     private val localMetadataRepository: EnergyDrinkLocalMetadataRepository,
     private val imageStorage: ImageStorage
 ) {
-    suspend operator fun invoke(id: Long): Result<Unit, DataError.Local> {
+    suspend operator fun invoke(id: Long): EmptyResult<DataError.Local> {
         val imagePath = when (val result = localMetadataRepository.getImagePath(id)) {
             is Result.Error -> null
             is Result.Success -> result.data

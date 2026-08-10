@@ -1,4 +1,4 @@
-package com.example.energydex.presentation.energydrink.energydrink_section.components
+package com.example.energydex.presentation.shared.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

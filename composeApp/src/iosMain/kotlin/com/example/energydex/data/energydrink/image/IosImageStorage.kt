@@ -1,6 +1,7 @@
 package com.example.energydex.data.energydrink.image
 
 import com.example.energydex.core.domain.DataError
+import com.example.energydex.core.domain.EmptyResult
 import com.example.energydex.core.domain.Result
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -39,7 +40,7 @@ class IosImageStorage : ImageStorage {
         Result.Error(DataError.Local.UNKNOWN)
     }
 
-    override suspend fun delete(path: String): Result<Unit, DataError.Local> = try {
+    override suspend fun delete(path: String): EmptyResult<DataError.Local> = try {
         val filePath = NSURL(string = path).path
             ?: return Result.Error(DataError.Local.DOESNT_EXISTS)
         if (NSFileManager.defaultManager.removeItemAtPath(filePath, error = null)) {

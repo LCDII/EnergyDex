@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,14 +50,29 @@ import com.example.energydex.presentation.energydrink.energydrink_add.components
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkRatingTextField
 import com.example.energydex.presentation.energydrink.image.ImagePickerSource
 import com.example.energydex.presentation.energydrink.image.PlatformImagePicker
+import com.example.energydex.presentation.tag.components.TagSelector
 import energydex.composeapp.generated.resources.Res
+import energydex.composeapp.generated.resources.add_energy_drink_title
+import energydex.composeapp.generated.resources.add_image
+import energydex.composeapp.generated.resources.change_image
+import energydex.composeapp.generated.resources.close_hint
+import energydex.composeapp.generated.resources.done
+import energydex.composeapp.generated.resources.go_back
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_image_placeholder
+import energydex.composeapp.generated.resources.image_source_camera
+import energydex.composeapp.generated.resources.image_source_gallery
+import energydex.composeapp.generated.resources.image_source_selection
+import energydex.composeapp.generated.resources.rate_hint
+import energydex.composeapp.generated.resources.remove_image
+import energydex.composeapp.generated.resources.selected_image
+import energydex.composeapp.generated.resources.tags_title
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun EnergyDrinkAddAddScreenRoot(
+fun EnergyDrinkAddScreenRoot(
     viewModel: EnergyDrinkAddViewModel = koinViewModel(),
     onSaveClick: () -> Unit,
     onBackClick: () -> Unit
@@ -85,7 +99,7 @@ fun EnergyDrinkAddAddScreenRoot(
     if (isImageSourceDialogVisible) {
         AlertDialog(
             onDismissRequest = { isImageSourceDialogVisible = false },
-            title = { Text("Choose image source") },
+            title = { Text(stringResource(Res.string.image_source_selection)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     TextButton(
@@ -94,7 +108,7 @@ fun EnergyDrinkAddAddScreenRoot(
                             pickerSource = ImagePickerSource.CAMERA
                         }
                     ) {
-                        Text("Take photo")
+                        Text(stringResource(Res.string.image_source_camera))
                     }
                     TextButton(
                         onClick = {
@@ -102,7 +116,7 @@ fun EnergyDrinkAddAddScreenRoot(
                             pickerSource = ImagePickerSource.GALLERY
                         }
                     ) {
-                        Text("Choose from gallery")
+                        Text(stringResource(Res.string.image_source_gallery))
                     }
                 }
             },
@@ -149,11 +163,11 @@ fun EnergyDrinkAddScreen(
                     contentColor = AccentWhite
                 )
             ) {
-                Text("Back")
+                Text(stringResource(Res.string.go_back))
             }
 
             Text(
-                text = "Add energy drink",
+                text = stringResource(Res.string.add_energy_drink_title),
                 color = AccentWhite,
                 fontSize = 22.sp
             )
@@ -176,7 +190,12 @@ fun EnergyDrinkAddScreen(
                 contentColor = AccentWhite
             )
         ) {
-            Text(if (state.imagePath == null) "Add photo" else "Change photo")
+            Text(
+                if (state.imagePath == null)
+                    stringResource(Res.string.add_image)
+                else
+                    stringResource(Res.string.change_image)
+            )
         }
 
         val imageShape = RoundedCornerShape(24.dp)
@@ -198,7 +217,7 @@ fun EnergyDrinkAddScreen(
             } else {
                 AsyncImage(
                     model = state.imagePath,
-                    contentDescription = "Selected energy drink image",
+                    contentDescription = stringResource(Res.string.selected_image),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     error = painterResource(Res.drawable.ic_image_placeholder)
@@ -211,7 +230,7 @@ fun EnergyDrinkAddScreen(
                 onClick = { onAction(EnergyDrinkAddAction.OnRemoveImage) },
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Remove photo", color = SecondaryOrange)
+                Text(stringResource(Res.string.remove_image), color = SecondaryOrange)
             }
         }
 
@@ -229,7 +248,7 @@ fun EnergyDrinkAddScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Rating from 0 to 10",
+                text = stringResource(Res.string.rate_hint),
                 color = SecondaryOrange,
                 fontSize = 16.sp
             )
@@ -240,6 +259,15 @@ fun EnergyDrinkAddScreen(
                     onAction(EnergyDrinkAddAction.OnRatingTextChange(it))
                 },
                 isValid = state.isRatingTextValid
+            )
+        }
+
+        if (state.availableTags.isNotEmpty()) {
+            Text(stringResource(Res.string.tags_title), color = SecondaryOrange, fontSize = 16.sp)
+            TagSelector(
+                availableTags = state.availableTags,
+                selectedTagIds = state.selectedTagIds,
+                onTagToggle = { onAction(EnergyDrinkAddAction.OnTagToggle(it)) }
             )
         }
 
@@ -265,12 +293,12 @@ fun EnergyDrinkAddScreen(
             shape = CircleShape
         ) {
             if (state.isSaving) {
-                Text("...", color = AccentWhite)
+                Text("...", color = AccentWhite)//TODO change animation
             } else {
                 Icon(
                     painter = painterResource(Res.drawable.ic_energy_drink_add),
-                    contentDescription = "Save",
-                    tint = Color.White,
+                    contentDescription = stringResource(Res.string.done),
+                    tint = AccentWhite,
                     modifier = Modifier.padding(16.dp)
                 )
             }

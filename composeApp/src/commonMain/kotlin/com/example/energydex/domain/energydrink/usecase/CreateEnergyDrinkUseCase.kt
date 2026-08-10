@@ -5,19 +5,22 @@ import com.example.energydex.domain.energydrink.repository.EnergyDrinkLocalMetad
 import com.example.energydex.core.domain.DataError
 import com.example.energydex.core.domain.Result
 import com.example.energydex.data.energydrink.image.ImageStorage
+import com.example.energydex.domain.energydrink.repository.EnergyDrinkTagRepository
 import kotlin.time.Clock
 
 class CreateEnergyDrinkUseCase(
     private val energyDrinkRepository: EnergyDrinkRepository,
     private val localMetadataRepository: EnergyDrinkLocalMetadataRepository,
-    private val imageStorage: ImageStorage
+    private val imageStorage: ImageStorage,
+    private val energyDrinkTagRepository: EnergyDrinkTagRepository
 ) {
     suspend operator fun invoke(
         name: String,
         amount: Int,
         description: String?,
         rating: Double?,
-        imagePath: String?
+        imagePath: String?,
+        selectedTagIds: Set<Long> = emptySet()
     ): Result<Long, DataError.Local> {
         val localImagePath = if (imagePath == null) {
             null
@@ -43,7 +46,7 @@ class CreateEnergyDrinkUseCase(
             }
             is Result.Success -> {
                 if (localImagePath == null) {
-                    result
+                    attachTags(result.data, selectedTagIds, result)
                 } else {
                     when (val metadataResult = localMetadataRepository.saveImagePath(
                         energyDrinkId = result.data,
@@ -53,11 +56,25 @@ class CreateEnergyDrinkUseCase(
                             imageStorage.delete(localImagePath)
                             Result.Error(metadataResult.error)
                         }
-                        is Result.Success -> result
+                        is Result.Success -> attachTags(result.data, selectedTagIds, result)
                     }
                 }
             }
         }
+    }
+
+    private suspend fun attachTags(
+        energyDrinkId: Long,
+        tagIds: Set<Long>,
+        success: Result<Long, DataError.Local>
+    ): Result<Long, DataError.Local> {
+        for (tagId in tagIds) {
+            when (val result = energyDrinkTagRepository.attachTagToEnergyDrink(tagId, energyDrinkId)) {
+                is Result.Error -> return Result.Error(result.error)
+                is Result.Success -> Unit
+            }
+        }
+        return success
     }
 
 }

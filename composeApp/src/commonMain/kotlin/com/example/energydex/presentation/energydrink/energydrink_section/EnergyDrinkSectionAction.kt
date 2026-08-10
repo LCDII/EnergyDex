@@ -2,7 +2,7 @@ package com.example.energydex.presentation.energydrink.energydrink_section
 
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.core.domain.EnergyDrinkListSortOptions
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkSectionTab
+import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab
 
 sealed interface EnergyDrinkSectionAction {
     data class OnSearchQueryChange(val query: String) : EnergyDrinkSectionAction

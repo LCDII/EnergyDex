@@ -3,6 +3,7 @@ package com.example.energydex.data.energydrink.image
 import android.content.Context
 import android.net.Uri
 import com.example.energydex.core.domain.DataError
+import com.example.energydex.core.domain.EmptyResult
 import com.example.energydex.core.domain.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,7 +28,7 @@ class AndroidImageStorage(
         }
     }
 
-    override suspend fun delete(path: String): Result<Unit, DataError.Local> = withContext(Dispatchers.IO) {
+    override suspend fun delete(path: String): EmptyResult<DataError.Local> = withContext(Dispatchers.IO) {
         try {
             val deleted = Uri.parse(path).path?.let(::File)?.delete() ?: false
             if (deleted) Result.Success(Unit) else Result.Error(DataError.Local.DOESNT_EXISTS)

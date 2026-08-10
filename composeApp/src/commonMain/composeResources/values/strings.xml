@@ -7,6 +7,7 @@
     <string name="rating">Rating</string>
     <string name="pages">Pages</string>
     <string name="go_back">Go back</string>
+    <string name="done">DONE</string>
     <string name="description_unavailable">Description not available.</string>
     <string name="error_disk_full">Oops, it seems like your disk is full.</string>
     <string name="error_unknown">Oops, something went wrong.</string>
@@ -15,4 +16,16 @@
     <string name="energy_drink_name_required">Name is required</string>
     <string name="energy_drink_description">Lowkey fine shyt...</string>
     <string name="energy_drink_rating">0.0</string>
+
+    <string name="image_source_selection">Choose image source"</string>
+    <string name="image_source_camera">Take photo</string>
+    <string name="image_source_gallery">Choose from gallery</string>
+    <string name="add_image">ADD IMAGE</string>
+    <string name="change_image">CHANGE IMAGE</string>
+    <string name="remove_image">REMOVE IMAGE</string>
+    <string name="selected_image">SELECTED IMAGE</string>
+    <string name="rate_hint">RATE FROM 0.0 TO 10.0</string>
+
+    <string name="add_energy_drink_title">ADD ENERGY DRINK</string>
+    <string name="tags_title">TAGS</string>
 </resources>

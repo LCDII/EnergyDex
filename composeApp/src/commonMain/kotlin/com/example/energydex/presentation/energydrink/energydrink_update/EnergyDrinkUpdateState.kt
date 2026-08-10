@@ -1,10 +1,22 @@
 package com.example.energydex.presentation.energydrink.energydrink_update
 
 import com.example.energydex.core.presentation.UiText
-import com.example.energydex.presentation.energydrink.energydrink_add.EnergyDrinkAddState
+import com.example.energydex.domain.tag.model.Tag
 
 data class EnergyDrinkUpdateState(
     val isLoading: Boolean = true,
-    val form: EnergyDrinkAddState = EnergyDrinkAddState(),
-    val errorMessage: UiText? = null
+    val name: String = "",
+    val isNameTextValid: Boolean = true,
+    val description: String = "",
+    val imagePath: String? = null,
+    val ratingText: String = "",
+    val isRatingTextValid: Boolean = true,
+    val rating: Double? = null,
+    val amount: Int = 1,
+    val isSaved: Boolean = false,
+    val isSaving: Boolean = false,
+    val errorMessage: UiText? = null,
+    val availableTags: List<Tag> = emptyList(),
+    val selectedTagIds: Set<Long> = emptySet(),
+    val initialTagIds: Set<Long> = emptySet()
 )

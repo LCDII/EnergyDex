@@ -1,6 +1,7 @@
 package com.example.energydex.presentation.energydrink.energydrink_add
 
 import com.example.energydex.core.presentation.UiText
+import com.example.energydex.domain.tag.model.Tag
 
 data class EnergyDrinkAddState(
     val name: String = "",
@@ -11,8 +12,9 @@ data class EnergyDrinkAddState(
     val isRatingTextValid: Boolean = true,
     val rating: Double? = null,
     val amount: Int = 1,
-    val isLoadingImage: Boolean = false,
     val isSaved: Boolean = false,
     val isSaving: Boolean = false,
-    val errorMessage: UiText? = null
+    val errorMessage: UiText? = null,
+    val availableTags: List<Tag> = emptyList(),
+    val selectedTagIds: Set<Long> = emptySet()
 )
