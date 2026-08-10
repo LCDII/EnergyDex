@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.tag.tag_section.components.TagCard
 import org.koin.compose.viewmodel.koinViewModel
@@ -29,14 +28,12 @@ import org.koin.compose.viewmodel.koinViewModel
 fun TagSectionRoot(
     viewModel: TagSectionViewModel = koinViewModel(),
     onTagClick: (Tag) -> Unit,
-    onDrinkClick: (EnergyDrink) -> Unit,
     onCreateTagClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     TagSection(
         state = state,
         onTagClick = onTagClick,
-        onDrinkClick = onDrinkClick,
         onCreateTagClick = onCreateTagClick
     )
 }
@@ -45,7 +42,6 @@ fun TagSectionRoot(
 private fun TagSection(
     state: TagSectionState,
     onTagClick: (Tag) -> Unit,
-    onDrinkClick: (EnergyDrink) -> Unit,
     onCreateTagClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -69,8 +65,7 @@ private fun TagSection(
                 items(state.tags, key = { it.tag.id }) { model ->
                     TagCard(
                         model = model,
-                        onTagClick = { onTagClick(model.tag) },
-                        onDrinkClick = onDrinkClick
+                        onTagClick = { onTagClick(model.tag) }
                     )
                 }
             }

@@ -58,3 +58,12 @@ fun tagColor(value: String): Color = when (value) {
     TagPinkValue -> TagPinkColor
     else -> SecondaryOrange
 }
+
+fun tagTextColor(value: String): Color = tagTextColor(tagColor(value))
+
+fun tagTextColor(background: Color): Color {
+    val luminance = 0.2126 * background.red +
+        0.7152 * background.green +
+        0.0722 * background.blue
+    return if (luminance > 0.5) Color.Black else Color.White
+}

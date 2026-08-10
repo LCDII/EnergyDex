@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +46,7 @@ import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
+import com.example.energydex.presentation.shared.components.TagChip
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
@@ -205,6 +207,17 @@ fun EnergyDrinkDetailScreen(
                     }
                 }
 
+                if (drink.tags.isNotEmpty()) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        drink.tags.forEach { tag ->
+                            TagChip(tag = tag)
+                        }
+                    }
+                }
+
                 Text(
                     text = drink.name,
                     color = AccentWhite,
@@ -215,20 +228,6 @@ fun EnergyDrinkDetailScreen(
                     color = SecondaryOrange,
                     fontSize = 18.sp
                 )
-
-                if (drink.tags.isNotEmpty()) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        drink.tags.forEach { tag ->
-                            Text(
-                                text = tag.name,
-                                color = AccentWhite,
-                                modifier = Modifier
-                                    .background(SecondaryPurple, RoundedCornerShape(12.dp))
-                                    .padding(horizontal = 10.dp, vertical = 6.dp)
-                            )
-                        }
-                    }
-                }
 
                 Text(
                     text = drink.description?.takeIf { it.isNotBlank() }

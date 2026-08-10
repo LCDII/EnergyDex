@@ -1,7 +1,6 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +33,8 @@ import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
-import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.tagColor
+import energydex.composeapp.generated.resources.ic_tag
 @Composable
 fun EnergyDrinkItemLonged(
     energyDrink: EnergyDrink,
@@ -45,13 +44,7 @@ fun EnergyDrinkItemLonged(
 ) {
     Surface(
         shape = RoundedCornerShape(32.dp),
-        modifier = modifier
-            .border(
-                width = if (isSelected) 3.dp else 0.dp,
-                color = PrimaryOrange,
-                shape = RoundedCornerShape(32.dp)
-            )
-            .clickable(onClick = onClick),
+        modifier = modifier.clickable(onClick = onClick),
         color = SecondaryPurple
     ) {
         Row(
@@ -66,12 +59,7 @@ fun EnergyDrinkItemLonged(
                 modifier = Modifier
                     .height(110.dp)
                     .width(110.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .border(
-                        width = 1.dp,
-                        color = SecondaryOrange,
-                        shape = RoundedCornerShape(20.dp)
-                    ),
+                    .clip(RoundedCornerShape(20.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 if (energyDrink.imagePath == null) {
@@ -110,15 +98,12 @@ fun EnergyDrinkItemLonged(
                 )
                 {
                     if (energyDrink.tags.isNotEmpty()) {
-                        energyDrink.tags.forEach { tag ->
-                            Text(
-                                text = tag.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                 color = AccentWhite
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_tag),
+                            contentDescription = "Tags",
+                            tint = tagColor(energyDrink.tags.first().color),
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 }
                 Text(

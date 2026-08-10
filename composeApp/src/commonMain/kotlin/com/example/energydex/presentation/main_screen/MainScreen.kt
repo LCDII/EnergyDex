@@ -250,7 +250,6 @@ fun MainScreen(
                                 else -> {
                                     TagSectionRoot(
                                         onTagClick = onTagClick,
-                                        onDrinkClick = onEnergyDrinkClick,
                                         onCreateTagClick = onCreateTagClick
                                     )
                                 }
