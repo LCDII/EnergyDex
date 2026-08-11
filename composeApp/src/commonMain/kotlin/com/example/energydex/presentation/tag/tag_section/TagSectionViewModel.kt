@@ -7,6 +7,7 @@ import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinksForTagUseCase
 import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinkTagRelationsUseCase
 import com.example.energydex.domain.tag.model.Tag
+import com.example.energydex.domain.tag.model.TagWithEnergyDrinks
 import com.example.energydex.domain.tag.usecase.ObserveTagsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,8 +37,8 @@ class TagSectionViewModel(
 
     fun onAction(action: TagSectionAction) {
         when (action) {
-            TagSectionAction.OnRefresh -> Unit
-            else -> Unit
+            is TagSectionAction.OnTagClick -> Unit
+            TagSectionAction.OnCreateTagClick -> Unit
         }
     }
 
@@ -55,10 +56,10 @@ class TagSectionViewModel(
     }
 
     private suspend fun loadTagCards(tags: List<Tag>) {
-        val cards = mutableListOf<TagCardUiModel>()
+        val cards = mutableListOf<TagWithEnergyDrinks>()
         for (tag in tags) {
             getEnergyDrinksForTag(tag.id).onSuccess { drinks ->
-                cards += TagCardUiModel(tag = tag, drinks = drinks)
+                cards += TagWithEnergyDrinks(tag = tag, drinks = drinks)
             }
         }
         _state.update { it.copy(isLoading = false, tags = cards) }

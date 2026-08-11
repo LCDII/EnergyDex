@@ -28,7 +28,7 @@ import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.tagColor
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.domain.energydrink.model.EnergyDrink
-import com.example.energydex.presentation.tag.tag_section.TagCardUiModel
+import com.example.energydex.domain.tag.model.TagWithEnergyDrinks
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
@@ -41,7 +41,7 @@ private sealed interface TagCardSlot {
 
 @Composable
 fun TagCard(
-    model: TagCardUiModel,
+    model: TagWithEnergyDrinks,
     onTagClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
