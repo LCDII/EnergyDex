@@ -24,7 +24,19 @@ selectEnergyDrinksForTag:
 SELECT EnergyDrinkEntity.*
 FROM EnergyDrinkEntity
 INNER JOIN EnergyDrinkTag ON EnergyDrinkEntity.id = EnergyDrinkTag.energyDrinkId
-WHERE EnergyDrinkTag.tagId = ?;
+WHERE EnergyDrinkTag.tagId = ?
+  AND (:nameQuery = '' OR EnergyDrinkEntity.name LIKE :nameQuery || '%')
+ORDER BY
+    CASE :sortOption
+        WHEN 'DATE_DESC' THEN createdAt
+        WHEN 'RATING_DESC' THEN rating
+        WHEN 'TITLE_DESC' THEN name
+    END DESC,
+    CASE :sortOption
+        WHEN 'DATE_ASC' THEN createdAt
+        WHEN 'RATING_ASC' THEN rating
+        WHEN 'TITLE_ASC' THEN name
+    END ASC;
 
 selectAllRelations:
 SELECT * FROM EnergyDrinkTag;

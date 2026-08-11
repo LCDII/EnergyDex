@@ -1,5 +1,7 @@
 package com.example.energydex.app
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.core.tween
@@ -33,7 +35,10 @@ fun App(){
         val navController = rememberNavController()
         NavHost(
             navController = navController,
-            startDestination = Route.EnergyDexGraph
+            startDestination = Route.EnergyDexGraph,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+
         ) {
             navigation<Route.EnergyDexGraph>(
                 startDestination = Route.MainScreen

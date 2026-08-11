@@ -99,39 +99,14 @@ class EnergyDrinkRepositoryImpl(
             }
         }
 
-    override suspend fun getEnergyDrinksForTag(
-        tagId: Long
-    ): Result<List<EnergyDrink>, DataError.Local> = try {
-        val entities = energyDrinkTagQueries
-            .selectEnergyDrinksForTag(tagId)
-            .executeAsList()
-        val imagePaths = localMetadataQueries.selectAll()
-            .executeAsList()
-            .associate { it.energyDrinkId to it.localImagePath }
-        Result.Success(entities.toEnergyDrinks(imagePaths))
-    } catch (_: Exception) {
-        Result.Error(DataError.Local.DOESNT_EXISTS)
-    }
-
-    override fun searchEnergyDrinks(
+    override fun observeEnergyDrinks(
         query: String,
         sortOption: EnergyDrinkListSortOptions
     ): Flow<List<EnergyDrink>> = combine(
-        energyDrinkEntityQueries.searchEnenergtDrinks(
+        energyDrinkEntityQueries.observeEnergyDrinks(
             nameQuery = query,
             sortOption = sortOption.name
         ).asFlow().mapToList(Dispatchers.IO),
-        observeLocalImagePaths()
-    ) { entities, imagePaths ->
-        entities.toEnergyDrinks(imagePaths)
-    }
-
-    override fun observeAllEnergyDrinks(
-        sortOption: EnergyDrinkListSortOptions
-    ): Flow<List<EnergyDrink>> = combine(
-        energyDrinkEntityQueries.selectAll(sortOption.name)
-            .asFlow()
-            .mapToList(Dispatchers.IO),
         observeLocalImagePaths()
     ) { entities, imagePaths ->
         entities.toEnergyDrinks(imagePaths)

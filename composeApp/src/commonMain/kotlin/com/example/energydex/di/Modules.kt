@@ -9,14 +9,11 @@ import com.example.energydex.data.tag.repository.TagRepositoryImpl
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkTagRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkLocalMetadataRepository
-import com.example.energydex.domain.energydrink.usecase.AttachTagToEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.CreateEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
-import com.example.energydex.domain.energydrink.usecase.DetachTagFromEnergyDrinkUseCase
-import com.example.energydex.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
 import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
-import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinksForTagUseCase
-import com.example.energydex.domain.energydrink.usecase.SearchEnergyDrinksUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksForTagUseCase
 import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkTagRelationsUseCase
 import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinkTagRelationsUseCase
@@ -47,11 +44,8 @@ val useCaseModule = module {
     factoryOf(::UpdateEnergyDrinkUseCase)
     factoryOf(::DeleteEnergyDrinkUseCase)
     factoryOf(::GetEnergyDrinkByIdUseCase)
-    factoryOf(::GetEnergyDrinksForTagUseCase)
-    factoryOf(::GetAllEnergyDrinksUseCase)
-    factoryOf(::AttachTagToEnergyDrinkUseCase)
-    factoryOf(::DetachTagFromEnergyDrinkUseCase)
-    factoryOf(::SearchEnergyDrinksUseCase)
+    factoryOf(::ObserveEnergyDrinksUseCase)
+    factoryOf(::ObserveEnergyDrinksForTagUseCase)
 
     factoryOf(::CreateTagUseCase)
     factoryOf(::UpdateTagUseCase)
@@ -98,9 +92,7 @@ val repositoryModule = module {
     }
 
     single<EnergyDrinkTagRepository> {
-        EnergyDrinkTagRepositoryImpl(
-            get()
-        )
+        EnergyDrinkTagRepositoryImpl(get(), get())
     }
 }
 

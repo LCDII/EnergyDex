@@ -3,8 +3,7 @@ package com.example.energydex.presentation.tag.tag_section
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.energydex.core.presentation.toUiText
-import com.example.energydex.core.domain.onSuccess
-import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinksForTagUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksForTagUseCase
 import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinkTagRelationsUseCase
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.domain.tag.model.TagWithEnergyDrinks
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class TagSectionViewModel(
     private val observeTags: ObserveTagsUseCase,
     private val observeTagRelations: ObserveEnergyDrinkTagRelationsUseCase,
-    private val getEnergyDrinksForTag: GetEnergyDrinksForTagUseCase
+    private val observeEnergyDrinksForTag: ObserveEnergyDrinksForTagUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(TagSectionState())
     val state = _state.stateIn(
@@ -58,9 +58,8 @@ class TagSectionViewModel(
     private suspend fun loadTagCards(tags: List<Tag>) {
         val cards = mutableListOf<TagWithEnergyDrinks>()
         for (tag in tags) {
-            getEnergyDrinksForTag(tag.id).onSuccess { drinks ->
-                cards += TagWithEnergyDrinks(tag = tag, drinks = drinks)
-            }
+            val drinks = observeEnergyDrinksForTag(tag.id).first()
+            cards += TagWithEnergyDrinks(tag = tag, drinks = drinks)
         }
         _state.update { it.copy(isLoading = false, tags = cards) }
     }

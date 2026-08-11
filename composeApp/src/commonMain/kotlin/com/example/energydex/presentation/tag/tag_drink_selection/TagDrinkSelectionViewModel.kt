@@ -6,8 +6,8 @@ import com.example.energydex.core.domain.EnergyDrinkListSortOptions
 import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
-import com.example.energydex.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
-import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinksForTagUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksForTagUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksUseCase
 import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkTagRelationsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 
 class TagDrinkSelectionViewModel(
     private val tagId: Long,
-    private val getAllEnergyDrinks: GetAllEnergyDrinksUseCase,
-    private val getEnergyDrinksForTag: GetEnergyDrinksForTagUseCase,
+    private val observeEnergyDrinks: ObserveEnergyDrinksUseCase,
+    private val observeEnergyDrinksForTag: ObserveEnergyDrinksForTagUseCase,
     private val updateRelations: UpdateEnergyDrinkTagRelationsUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(TagDrinkSelectionState())
@@ -51,22 +51,23 @@ class TagDrinkSelectionViewModel(
     }
 
     private fun load() = viewModelScope.launch {
-        val allDrinks = getAllEnergyDrinks(EnergyDrinkListSortOptions.RATING_DESC).first()
-        getEnergyDrinksForTag(tagId)
-            .onSuccess { selected ->
-                val selectedIds = selected.map { it.id }.toSet()
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        drinks = allDrinks,
-                        selectedDrinkIds = selectedIds,
-                        initialDrinkIds = selectedIds
-                    )
-                }
+        try {
+            val allDrinks = observeEnergyDrinks(
+                sortOption = EnergyDrinkListSortOptions.RATING_DESC
+            ).first()
+            val selected = observeEnergyDrinksForTag(tagId).first()
+            val selectedIds = selected.map { it.id }.toSet()
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                    drinks = allDrinks,
+                    selectedDrinkIds = selectedIds,
+                    initialDrinkIds = selectedIds
+                )
             }
-            .onError { error ->
-                _state.update { it.copy(isLoading = false, errorMessage = error.toUiText()) }
-            }
+        } catch (error: Throwable) {
+            _state.update { it.copy(isLoading = false, errorMessage = error.toUiText()) }
+        }
     }
 
     private fun save() = viewModelScope.launch {

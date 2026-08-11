@@ -4,16 +4,10 @@ package com.example.energydex.presentation.energydrink.energydrink_section
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.energydex.core.domain.EnergyDrinkListSortOptions
-import com.example.energydex.core.domain.onError
-import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
-import com.example.energydex.domain.energydrink.model.EnergyDrink
-import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
-import com.example.energydex.domain.energydrink.usecase.GetAllEnergyDrinksUseCase
-import com.example.energydex.domain.energydrink.usecase.SearchEnergyDrinksUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -27,12 +21,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.copy
 
 class EnergyDrinkSectionViewModel (
-    private val deleteEnergyDrink: DeleteEnergyDrinkUseCase,
-    private val getAllEnergyDrinks: GetAllEnergyDrinksUseCase,
-    private val searchEnergyDrinks: SearchEnergyDrinksUseCase,
+    private val observeEnergyDrinks: ObserveEnergyDrinksUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkSectionState())
     val state = _state
@@ -106,11 +97,7 @@ class EnergyDrinkSectionViewModel (
             .distinctUntilChanged()
             .debounce(300L)
             .flatMapLatest { (query, sortOption) ->
-                if (query.isBlank()) {
-                    getAllEnergyDrinks(sortOption)
-                } else {
-                    searchEnergyDrinks(query, sortOption)
-                }
+                observeEnergyDrinks(query, sortOption)
             }
             .onEach { list ->
                 _state.update {

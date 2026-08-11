@@ -8,11 +8,8 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 import kotlinx.coroutines.flow.Flow
 
 interface EnergyDrinkRepository {
-    fun searchEnergyDrinks(
+    fun observeEnergyDrinks(
         query: String,
-        sortOption: EnergyDrinkListSortOptions
-    ): Flow<List<EnergyDrink>>
-    fun observeAllEnergyDrinks(
         sortOption: EnergyDrinkListSortOptions
     ): Flow<List<EnergyDrink>>
     suspend fun createEnergyDrink(
@@ -30,5 +27,4 @@ interface EnergyDrinkRepository {
     ) : EmptyResult<DataError.Local>
     suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local>
     suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local>
-    suspend fun getEnergyDrinksForTag(tagId: Long): Result<List<EnergyDrink>, DataError.Local>
 }

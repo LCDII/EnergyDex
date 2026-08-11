@@ -28,24 +28,9 @@ DELETE FROM EnergyDrinkEntity WHERE id = ?;
 selectById:
 SELECT * FROM EnergyDrinkEntity WHERE id = ?;
 
-selectAll:
+observeEnergyDrinks:
 SELECT * FROM EnergyDrinkEntity
-ORDER BY
-    CASE :sortOption
-        WHEN 'DATE_DESC' THEN createdAt
-        WHEN 'RATING_DESC' THEN rating
-        WHEN 'TITLE_DESC' THEN name
-    END DESC,
-    CASE :sortOption
-        WHEN 'DATE_ASC' THEN createdAt
-        WHEN 'RATING_ASC' THEN rating
-        WHEN 'TITLE_ASC' THEN name
-    END ASC;
-
-searchEnenergtDrinks:
-SELECT * FROM EnergyDrinkEntity
-WHERE
-    (name LIKE :nameQuery || '%')
+WHERE :nameQuery = '' OR name LIKE :nameQuery || '%'
 ORDER BY
     CASE :sortOption
         WHEN 'DATE_DESC' THEN createdAt

@@ -2,14 +2,26 @@ package com.example.energydex.presentation.tag.tag_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.energydex.core.domain.EnergyDrinkListSortOptions
 import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
-import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinksForTagUseCase
+import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksForTagUseCase
 import com.example.energydex.domain.tag.usecase.DeleteTagUseCase
 import com.example.energydex.domain.tag.usecase.GetTagByIdUseCase
+import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,7 +29,7 @@ import kotlinx.coroutines.launch
 class TagDetailViewModel(
     private val id: Long,
     private val getTagById: GetTagByIdUseCase,
-    private val getEnergyDrinksForTag: GetEnergyDrinksForTagUseCase,
+    private val observeEnergyDrinksForTag: ObserveEnergyDrinksForTagUseCase,
     private val deleteTag: DeleteTagUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(TagDetailState())
@@ -28,32 +40,98 @@ class TagDetailViewModel(
     )
 
     init {
-        load()
-    }
-
-    private fun load() = viewModelScope.launch {
-        getTagById(id).onSuccess { tag ->
-            getEnergyDrinksForTag(id).onSuccess { drinks ->
-                _state.update {
-                    it.copy(isLoading = false, tag = tag, drinks = drinks, errorMessage = null)
-                }
-            }.onError { error -> showError(error) }
-        }.onError { error -> showError(error) }
-    }
-
-    private fun showError(error: com.example.energydex.core.domain.DataError.Local) {
-        _state.update { it.copy(isLoading = false, errorMessage = error.toUiText()) }
+        loadCurrentTag()
+        observeDrinks()
     }
 
     fun onAction(action: TagDetailAction) {
         when (action) {
-            TagDetailAction.OnDeleteClick -> _state.update { it.copy(errorMessage = null) }
+            TagDetailAction.OnBackClick -> Unit
+            TagDetailAction.OnEditClick -> Unit
+            TagDetailAction.OnAddDrinksClick -> Unit
+            is TagDetailAction.OnEnergyDrinkNavigateClick -> Unit
+            is TagDetailAction.OnSearchQueryChange -> _state.update {
+                it.copy(searchQuery = action.query)
+            }
+            is TagDetailAction.OnTabSelected -> _state.update {
+                it.copy(selectedTabIndex = action.tab)
+            }
+            TagDetailAction.OnSortButtonClick -> _state.update {
+                it.copy(isSortMenuVisible = !it.isSortMenuVisible)
+            }
+            is TagDetailAction.OnSortOptionSelected -> {
+                val current = _state.value.sortOption
+                val selectedField = action.option.name.substringBefore("_")
+                val currentField = current.name.substringBefore("_")
+                val newOption = if (selectedField == currentField) {
+                    val direction =
+                        if (current.name.substringAfter("_") == "ASC") "DESC" else "ASC"
+                    EnergyDrinkListSortOptions.valueOf("${selectedField}_$direction")
+                } else {
+                    val direction = if (selectedField == "TITLE") "ASC" else "DESC"
+                    EnergyDrinkListSortOptions.valueOf("${selectedField}_$direction")
+                }
+                _state.update {
+                    it.copy(sortOption = newOption, isSortMenuVisible = false)
+                }
+            }
+            TagDetailAction.OnDeleteClick -> _state.update {
+                it.copy(isDeleteDialogVisible = true, errorMessage = null)
+            }
             TagDetailAction.OnConfirmDeleteClick -> viewModelScope.launch {
+                _state.update { it.copy(isDeleteDialogVisible = false) }
                 deleteTag(id).onSuccess {
                     _state.update { it.copy(isDeleted = true) }
                 }.onError { error -> showError(error) }
             }
-            else -> Unit
+            TagDetailAction.OnDeclineDeleteClick -> _state.update {
+                it.copy(isDeleteDialogVisible = false)
+            }
         }
+    }
+
+    private fun loadCurrentTag() = viewModelScope.launch {
+        getTagById(id).onSuccess { tag ->
+            _state.update {
+                it.copy(currentTag = tag, errorMessage = null)
+            }
+        }.onError { error -> showError(error) }
+    }
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private fun observeDrinks() {
+        _state
+            .map { it.searchQuery to it.sortOption }
+            .distinctUntilChanged()
+            .debounce(300L)
+            .flatMapLatest { (query, sortOption) ->
+                observeEnergyDrinksForTag(id, query, sortOption)
+            }
+            .onStart {
+                _state.update { it.copy(isLoading = true, errorMessage = null) }
+            }
+            .onEach { drinks ->
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        energyDrinks = drinks,
+                        errorMessage = null
+                    )
+                }
+            }
+            .catch { error ->
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        energyDrinks = emptyList(),
+                        errorMessage = error.toUiText()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun showError(error: com.example.energydex.core.domain.DataError.Local) {
+        _state.update { it.copy(isLoading = false, errorMessage = error.toUiText()) }
     }
 }
