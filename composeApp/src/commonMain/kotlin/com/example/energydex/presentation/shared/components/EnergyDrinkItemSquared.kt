@@ -1,5 +1,6 @@
 package com.example.energydex.presentation.shared.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.border
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
+import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.tagColor
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import energydex.composeapp.generated.resources.Res
@@ -42,17 +48,30 @@ fun EnergyDrinkItemSquared(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false
 ) {
-    Surface (
-        shape = RoundedCornerShape(32.dp),
-        modifier = modifier.clickable(onClick = onClick),
-        color = SecondaryPurple
-    ) {
-        Row(
+    val shape = RoundedCornerShape(32.dp)
+
+    Box(modifier = modifier) {
+        Surface (
+            shape = shape,
             modifier = Modifier
-                .padding(12.dp)
-                .height(IntrinsicSize.Min)
-        )
-        {
+                .fillMaxWidth()
+                .border(
+                    width = if (isSelected) 3.dp else 0.dp,
+                    color = if (isSelected) PrimaryOrange else Color.Transparent,
+                    shape = shape
+                )
+                .clickable(onClick = onClick),
+            color = if (isSelected) {
+                PrimaryOrange.copy(alpha = 0.28f)
+            } else {
+                SecondaryPurple
+            }
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .height(IntrinsicSize.Min)
+            ) {
             Column(
                 modifier = Modifier
                     .width(IntrinsicSize.Min),
@@ -136,6 +155,20 @@ fun EnergyDrinkItemSquared(
                     text = energyDrink.createdAt.toString().substring(0,10),
                     modifier = Modifier
                 )
+            }
+            }
+        }
+
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(30.dp)
+                    .background(PrimaryOrange, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("✓", color = AccentWhite, fontSize = 18.sp)
             }
         }
     }

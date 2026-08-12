@@ -50,6 +50,30 @@ class EnergyDrinkTagRepositoryImpl(
             Result.Error(DataError.Local.DOESNT_EXISTS)//TODO something else
         }
 
+    override suspend fun updateTagRelations(
+        tagId: Long,
+        previousDrinkIds: Set<Long>,
+        selectedDrinkIds: Set<Long>
+    ): EmptyResult<DataError.Local> = try {
+        energyDrinkTagQueries.transaction {
+            for (drinkId in previousDrinkIds - selectedDrinkIds) {
+                energyDrinkTagQueries.deleteEnergyDrinkTag(
+                    tagId = tagId,
+                    energyDrinkId = drinkId
+                )
+            }
+            for (drinkId in selectedDrinkIds - previousDrinkIds) {
+                energyDrinkTagQueries.insertEnergyDrinkTag(
+                    tagId = tagId,
+                    energyDrinkId = drinkId
+                )
+            }
+        }
+        Result.Success(Unit)
+    } catch (_: Exception) {
+        Result.Error(DataError.Local.DOESNT_EXISTS)
+    }
+
     override fun observeAllRelations(): Flow<Unit> =
         energyDrinkTagQueries.selectAllRelations()
             .asFlow()

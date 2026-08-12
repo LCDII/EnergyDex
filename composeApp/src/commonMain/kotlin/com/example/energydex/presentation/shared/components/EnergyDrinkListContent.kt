@@ -56,6 +56,7 @@ fun EnergyDrinkListContent(
     selectedTab: EnergyDrinkSectionTab,
     isLoading: Boolean,
     errorMessage: UiText?,
+    selectedDrinkIds: Set<Long> = emptySet(),
     sortOption: EnergyDrinkListSortOptions,
     isSortMenuVisible: Boolean,
     onSearchQueryChange: (String) -> Unit,
@@ -63,8 +64,8 @@ fun EnergyDrinkListContent(
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     onSortButtonClick: () -> Unit,
     onSortOptionSelected: (EnergyDrinkListSortOptions) -> Unit,
-    onPrimaryActionClick: () -> Unit,
-    primaryActionDescription: String
+    onPrimaryActionClick: (() -> Unit)? = null,
+    primaryActionDescription: String = ""
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -129,7 +130,8 @@ fun EnergyDrinkListContent(
                                 EnergyDrinkListSquared(
                                     energyDrinks = searchResult,
                                     onEnergyDrinkClick = onEnergyDrinkClick,
-                                    scrollState = scrollState
+                                    scrollState = scrollState,
+                                    selectedDrinkIds = selectedDrinkIds
                                 )
                             }
                             else -> {
@@ -140,7 +142,8 @@ fun EnergyDrinkListContent(
                                 EnergyDrinkListLonged(
                                     energyDrinks = searchResult,
                                     onEnergyDrinkClick = onEnergyDrinkClick,
-                                    scrollState = scrollState
+                                    scrollState = scrollState,
+                                    selectedDrinkIds = selectedDrinkIds
                                 )
                             }
                         }
@@ -166,7 +169,7 @@ private fun EnergyDrinkFloatingActionButtons(
     sortOption: EnergyDrinkListSortOptions,
     onSortButtonClick: () -> Unit,
     onSortOptionSelected: (EnergyDrinkListSortOptions) -> Unit,
-    onPrimaryActionClick: () -> Unit,
+    onPrimaryActionClick: (() -> Unit)?,
     primaryActionDescription: String
 ) {
     Row(
@@ -229,28 +232,30 @@ private fun EnergyDrinkFloatingActionButtons(
             }
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        onPrimaryActionClick?.let { onClick ->
+            Spacer(modifier = Modifier.width(16.dp))
 
-        FloatingActionButton(
-            onClick = onPrimaryActionClick,
-            containerColor = Color.Transparent,
-            elevation = FloatingActionButtonDefaults.elevation(4.dp),
-            modifier = Modifier.size(56.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(listOf(PrimaryOrange, SecondaryOrange)),
-                        CircleShape
-                    )
+            FloatingActionButton(
+                onClick = onClick,
+                containerColor = Color.Transparent,
+                elevation = FloatingActionButtonDefaults.elevation(4.dp),
+                modifier = Modifier.size(56.dp)
             ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_energy_drink_add),
-                    contentDescription = primaryActionDescription,
-                    tint = AccentWhite,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(listOf(PrimaryOrange, SecondaryOrange)),
+                            CircleShape
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_energy_drink_add),
+                        contentDescription = primaryActionDescription,
+                        tint = AccentWhite,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }

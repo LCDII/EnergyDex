@@ -15,6 +15,11 @@ interface EnergyDrinkTagRepository {
         tagId: Long,
         energyDrinkId: Long
     ): EmptyResult<DataError.Local>
+    suspend fun updateTagRelations(
+        tagId: Long,
+        previousDrinkIds: Set<Long>,
+        selectedDrinkIds: Set<Long>
+    ): EmptyResult<DataError.Local>
     fun observeEnergyDrinksForTag(
         tagId: Long,
         query: String,

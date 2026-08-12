@@ -115,6 +115,6 @@ val viewModelModule = module {
         TagCreateEditViewModel(parameters.getOrNull(), get(), get(), get())
     }
     viewModel { parameters ->
-        TagDrinkSelectionViewModel(parameters.get(), get(), get(), get())
+        TagDrinkSelectionViewModel(parameters.get(), get(), get(), get(), get())
     }
 }
