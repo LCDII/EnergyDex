@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import platform.Foundation.NSDate
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSURL
+import platform.Foundation.timeIntervalSince1970
+import platform.Foundation.writeToFile
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
@@ -31,7 +33,7 @@ actual fun PlatformImagePicker(
                 didFinishPickingMediaWithInfo: Map<Any?, *>
             ) {
                 val image = didFinishPickingMediaWithInfo[
-                    UIImagePickerControllerOriginalImage
+                    "UIImagePickerControllerOriginalImage"
                 ] as? UIImage
                 val data = image?.let { UIImageJPEGRepresentation(it, 0.9) }
                 if (data == null) {

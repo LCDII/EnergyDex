@@ -1,6 +1,6 @@
 package com.example.energydex.presentation.tag.tag_drink_selection
 
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab
 
 sealed interface TagDrinkSelectionAction {

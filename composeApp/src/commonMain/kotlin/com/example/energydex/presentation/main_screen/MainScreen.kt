@@ -226,6 +226,9 @@ fun MainScreen(
                                         },
                                         onAddEnergyDrinkButtonClick = {
                                             onAddEnergyDrinkButtonClick()
+                                        },
+                                        onCreateTagClick = {
+                                            onCreateTagClick()
                                         }
                                     )
                                 }

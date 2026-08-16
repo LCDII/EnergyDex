@@ -17,6 +17,9 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 fun EnergyDrinkListLonged (
     energyDrinks: List<EnergyDrink>,
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
+    onEnergyDrinkLongClick: (EnergyDrink) -> Unit = {},
+    onEnergyDrinkSelectionClick: (EnergyDrink) -> Unit = {},
+    isSelectionMode: Boolean = false,
     modifier: Modifier = Modifier,
     scrollState: LazyListState = rememberLazyListState(),
     selectedDrinkIds: Set<Long> = emptySet(),
@@ -33,9 +36,10 @@ fun EnergyDrinkListLonged (
             ) { energyDrink ->
                 EnergyDrinkItemLonged(
                     energyDrink = energyDrink,
-                    onClick = {
-                        onEnergyDrinkClick(energyDrink)
-                    },
+                    onClick = { onEnergyDrinkClick(energyDrink) },
+                    onLongClick = { onEnergyDrinkLongClick(energyDrink) },
+                    onSelectionClick = { onEnergyDrinkSelectionClick(energyDrink) },
+                    isSelectionMode = isSelectionMode,
                     modifier = Modifier
                         .widthIn(max = 800.dp)
                         .fillMaxWidth(),

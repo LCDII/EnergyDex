@@ -2,7 +2,7 @@ package com.example.energydex.domain.energydrink.repository
 
 import com.example.energydex.core.domain.DataError
 import com.example.energydex.core.domain.EmptyResult
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.core.domain.Result
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import kotlinx.coroutines.flow.Flow

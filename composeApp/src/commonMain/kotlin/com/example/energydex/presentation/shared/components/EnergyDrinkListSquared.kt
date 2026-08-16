@@ -17,6 +17,9 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 fun EnergyDrinkListSquared (
     energyDrinks: List<EnergyDrink>,
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
+    onEnergyDrinkLongClick: (EnergyDrink) -> Unit = {},
+    onEnergyDrinkSelectionClick: (EnergyDrink) -> Unit = {},
+    isSelectionMode: Boolean = false,
     modifier: Modifier = Modifier,
     scrollState: LazyGridState = rememberLazyGridState(),
     selectedDrinkIds: Set<Long> = emptySet(),
@@ -34,9 +37,10 @@ fun EnergyDrinkListSquared (
         ) { energyDrink ->
             EnergyDrinkItemSquared(
                 energyDrink = energyDrink,
-                onClick = {
-                    onEnergyDrinkClick(energyDrink)
-                },
+                onClick = { onEnergyDrinkClick(energyDrink) },
+                onLongClick = { onEnergyDrinkLongClick(energyDrink) },
+                onSelectionClick = { onEnergyDrinkSelectionClick(energyDrink) },
+                isSelectionMode = isSelectionMode,
                     modifier = Modifier
                         .widthIn(max = 600.dp)
                         .fillMaxWidth(),

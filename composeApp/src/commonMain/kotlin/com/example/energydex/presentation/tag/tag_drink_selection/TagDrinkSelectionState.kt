@@ -1,7 +1,7 @@
 package com.example.energydex.presentation.tag.tag_drink_selection
 
 import com.example.energydex.core.presentation.UiText
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab

@@ -10,6 +10,7 @@ import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkTagRepository
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkLocalMetadataRepository
 import com.example.energydex.domain.energydrink.usecase.CreateEnergyDrinkUseCase
+import com.example.energydex.domain.energydrink.usecase.AddTagsToEnergyDrinksUseCase
 import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
 import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksUseCase
@@ -41,6 +42,7 @@ import org.koin.dsl.module
 val useCaseModule = module {
 
     factoryOf(::CreateEnergyDrinkUseCase)
+    factoryOf(::AddTagsToEnergyDrinksUseCase)
     factoryOf(::UpdateEnergyDrinkUseCase)
     factoryOf(::DeleteEnergyDrinkUseCase)
     factoryOf(::GetEnergyDrinkByIdUseCase)

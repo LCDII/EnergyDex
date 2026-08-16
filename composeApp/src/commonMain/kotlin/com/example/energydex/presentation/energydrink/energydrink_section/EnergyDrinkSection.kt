@@ -11,50 +11,13 @@ import com.example.energydex.presentation.shared.components.EnergyDrinkListConte
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Instant
 
-@Preview
-@Composable
-fun TmpEnergyDrinkSectionPreview() {
-    //Calling the stateless EnergyDrinkSection instead of EnergyDrinkSectionRoot
-    // to avoid the "KoinApplication has not been started" error in the preview.
-    MaterialTheme {
-        EnergyDrinkSection(
-            state = EnergyDrinkSectionState(
-                isLoading = false,
-                searchResult = List(100) { index ->
-                    EnergyDrink(
-                        id = index.toLong(),
-                        name = "Monster Energy White",
-                        amount = 1,
-                        description=null,
-                        rating = 10.0,
-                        createdAt = Instant.parse("2006-10-05T12:00:00Z"),
-                        updatedAt = Instant.parse("2006-10-05T12:00:00Z"),
-                        imagePath = null,
-                        tags = listOf(
-                            Tag(
-                                id = 0,
-                                name = "Good AF",
-                                color = "#000000"
-                            ),
-                            Tag(
-                                id = 0,
-                                name = "Chuds Drink",
-                                color = "#000000"
-                            )
-                        )
-                    )
-                }
-            ),
-            onAction = {}
-        )
-    }
-}
 
 @Composable
 fun EnergyDrinkSectionRoot(
     viewModel: EnergyDrinkSectionViewModel = koinViewModel(),
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
-    onAddEnergyDrinkButtonClick: () -> Unit
+    onAddEnergyDrinkButtonClick: () -> Unit,
+    onCreateTagClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -69,7 +32,8 @@ fun EnergyDrinkSectionRoot(
                 else -> Unit
             }//can redo it
             viewModel.onAction(action)
-        }
+        },
+        onCreateTagClick = onCreateTagClick
     )
 
 }
@@ -77,11 +41,19 @@ fun EnergyDrinkSectionRoot(
 @Composable
 fun EnergyDrinkSection(
     state: EnergyDrinkSectionState,
-    onAction: (EnergyDrinkSectionAction) -> Unit
+    onAction: (EnergyDrinkSectionAction) -> Unit,
+    onCreateTagClick: () -> Unit = {}
 ) {
     EnergyDrinkListContent(
         searchQuery = state.searchQuery,
         searchResult = state.searchResult,
+        selectedDrinkIds = state.selectedEnergyDrinkIds.toSet(),
+        isSelectionMode = state.isSelectionMode,
+        isDeleteDialogVisible = state.isDeleteDialogVisible,
+        isTagDialogVisible = state.isTagDialogVisible,
+        tags = state.tags,
+        selectedTagIds = state.selectedTagIds,
+        isBulkOperationRunning = state.isBulkOperationRunning,
         selectedTab = state.selectedTabIndex,
         isLoading = state.isLoading,
         errorMessage = state.errorMessage,
@@ -96,6 +68,37 @@ fun EnergyDrinkSection(
         onEnergyDrinkClick = {
             onAction(EnergyDrinkSectionAction.OnEnergyDrinkNavigateClick(it))
         },
+        onEnergyDrinkLongClick = {
+            onAction(EnergyDrinkSectionAction.OnEnergyDrinkHold(it))
+        },
+        onEnergyDrinkSelectionClick = {
+            onAction(EnergyDrinkSectionAction.OnSelectEnergyDrink(it))
+        },
+        onCancelSelectionClick = {
+            onAction(EnergyDrinkSectionAction.OnCancelSelectionClick)
+        },
+        onDeleteSelectedClick = {
+            onAction(EnergyDrinkSectionAction.OnDeleteSelectedClick)
+        },
+        onConfirmDeleteSelectedClick = {
+            onAction(EnergyDrinkSectionAction.OnConfirmDeleteSelectedClick)
+        },
+        onDismissDeleteDialogClick = {
+            onAction(EnergyDrinkSectionAction.OnDismissDeleteDialogClick)
+        },
+        onTagSelectedClick = {
+            onAction(EnergyDrinkSectionAction.OnTagSelectedClick)
+        },
+        onToggleTag = {
+            onAction(EnergyDrinkSectionAction.OnToggleTag(it))
+        },
+        onConfirmTagSelectedClick = {
+            onAction(EnergyDrinkSectionAction.OnConfirmTagSelectedClick)
+        },
+        onDismissTagDialogClick = {
+            onAction(EnergyDrinkSectionAction.OnDismissTagDialogClick)
+        },
+        onCreateTagClick = onCreateTagClick,
         onSortButtonClick = {
             onAction(EnergyDrinkSectionAction.OnSortButtonClick)
         },

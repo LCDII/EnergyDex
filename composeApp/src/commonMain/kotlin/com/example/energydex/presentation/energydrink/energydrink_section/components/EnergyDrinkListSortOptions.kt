@@ -1,4 +1,4 @@
-package com.example.energydex.core.domain
+package com.example.energydex.presentation.energydrink.energydrink_section.components
 
 enum class EnergyDrinkListSortOptions {
     TITLE_ASC,

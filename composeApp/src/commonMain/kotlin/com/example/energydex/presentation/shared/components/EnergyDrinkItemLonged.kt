@@ -1,7 +1,7 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,8 +45,11 @@ import energydex.composeapp.generated.resources.ic_tag
 fun EnergyDrinkItemLonged(
     energyDrink: EnergyDrink,
     onClick: () -> Unit,
+    onLongClick: () -> Unit = {},
+    onSelectionClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    isSelectionMode: Boolean = false
 ) {
     val shape = RoundedCornerShape(32.dp)
 
@@ -60,7 +63,10 @@ fun EnergyDrinkItemLonged(
                     color = if (isSelected) PrimaryOrange else Color.Transparent,
                     shape = shape
                 )
-                .clickable(onClick = onClick),
+                .combinedClickable(
+                    onClick = if (isSelectionMode) onSelectionClick else onClick,
+                    onLongClick = onLongClick
+                ),
             color = if (isSelected) {
                 PrimaryOrange.copy(alpha = 0.28f)
             } else {

@@ -3,7 +3,7 @@ package com.example.energydex.data.energydrink.repository
 import com.example.EnergyDrinkTagQueries
 import com.example.energydex.core.domain.DataError
 import com.example.energydex.core.domain.EmptyResult
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.core.domain.Result
 import com.example.energydex.data.energydrink.mappers.toEnergyDrink
 import com.example.energydex.data.tag.mappers.toTag
@@ -36,6 +36,25 @@ class EnergyDrinkTagRepositoryImpl(
         } catch (e: Exception) {
             Result.Error(DataError.Local.DOESNT_EXISTS)//TODO something else
         }
+
+    override suspend fun attachTagsToEnergyDrinks(
+        energyDrinkIds: Set<Long>,
+        tagIds: Set<Long>
+    ): EmptyResult<DataError.Local> = try {
+        energyDrinkTagQueries.transaction {
+            for (energyDrinkId in energyDrinkIds) {
+                for (tagId in tagIds) {
+                    energyDrinkTagQueries.insertEnergyDrinkTag(
+                        tagId = tagId,
+                        energyDrinkId = energyDrinkId
+                    )
+                }
+            }
+        }
+        Result.Success(Unit)
+    } catch (_: Exception) {
+        Result.Error(DataError.Local.DOESNT_EXISTS)
+    }
 
     override suspend fun detachTagFromEnergyDrink(
         tagId: Long,

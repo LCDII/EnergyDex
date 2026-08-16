@@ -56,17 +56,17 @@ fun App(){
                                 Route.EnergyDrinkDetail(energyDrink.id)
                             )
                         },
-                        onAddEnergyDrinkButtonClick = {
-                            navController.navigate(
-                                Route.AddEnergyDrink
-                            )
-                        },
-                        onTagClick = { tag ->
+                                        onAddEnergyDrinkButtonClick = {
+                                            navController.navigate(
+                                                Route.AddEnergyDrink
+                                            )
+                                        },
+                                        onCreateTagClick = {
+                                            navController.navigate(Route.CreateTag)
+                                        },
+                                        onTagClick = { tag ->
                             navController.navigate(Route.TagDetail(tag.id))
                         },
-                        onCreateTagClick = {
-                            navController.navigate(Route.CreateTag)
-                        }
                     )
                 }
 

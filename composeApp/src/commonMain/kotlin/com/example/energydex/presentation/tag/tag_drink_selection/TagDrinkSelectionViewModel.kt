@@ -2,7 +2,7 @@ package com.example.energydex.presentation.tag.tag_drink_selection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
@@ -10,7 +10,6 @@ import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksUseCa
 import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksForTagUseCase
 import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkTagRelationsUseCase
 import com.example.energydex.domain.tag.usecase.GetTagByIdUseCase
-import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow

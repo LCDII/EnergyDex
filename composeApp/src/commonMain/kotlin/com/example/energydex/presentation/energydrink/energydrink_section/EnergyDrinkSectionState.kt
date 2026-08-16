@@ -2,7 +2,8 @@ package com.example.energydex.presentation.energydrink.energydrink_section
 
 import com.example.energydex.core.presentation.UiText
 import com.example.energydex.domain.energydrink.model.EnergyDrink
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.domain.tag.model.Tag
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.presentation.shared.components.EnergyDrinkSectionTab
 
 data class EnergyDrinkSectionState(
@@ -13,6 +14,11 @@ data class EnergyDrinkSectionState(
     val sortOption: EnergyDrinkListSortOptions = EnergyDrinkListSortOptions.DATE_DESC,
     val isLoading: Boolean = true,
     val isSelectionMode: Boolean = false,
+    val isDeleteDialogVisible: Boolean = false,
+    val isTagDialogVisible: Boolean = false,
+    val tags: List<Tag> = emptyList(),
+    val selectedTagIds: Set<Long> = emptySet(),
+    val isBulkOperationRunning: Boolean = false,
     val selectedTabIndex: EnergyDrinkSectionTab = EnergyDrinkSectionTab.SQUARED,
     val errorMessage: UiText? = null
 )

@@ -17,6 +17,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
@@ -25,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -34,13 +38,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.energydex.core.domain.EnergyDrinkListSortOptions
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.UiText
 import com.example.energydex.domain.energydrink.model.EnergyDrink
+import com.example.energydex.domain.tag.model.Tag
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
@@ -57,11 +62,28 @@ fun EnergyDrinkListContent(
     isLoading: Boolean,
     errorMessage: UiText?,
     selectedDrinkIds: Set<Long> = emptySet(),
+    isSelectionMode: Boolean = false,
+    isDeleteDialogVisible: Boolean = false,
+    isTagDialogVisible: Boolean = false,
+    tags: List<Tag> = emptyList(),
+    selectedTagIds: Set<Long> = emptySet(),
+    isBulkOperationRunning: Boolean = false,
     sortOption: EnergyDrinkListSortOptions,
     isSortMenuVisible: Boolean,
     onSearchQueryChange: (String) -> Unit,
     onTabSelected: (EnergyDrinkSectionTab) -> Unit,
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
+    onEnergyDrinkLongClick: (EnergyDrink) -> Unit = {},
+    onEnergyDrinkSelectionClick: (EnergyDrink) -> Unit = {},
+    onCancelSelectionClick: () -> Unit = {},
+    onDeleteSelectedClick: () -> Unit = {},
+    onConfirmDeleteSelectedClick: () -> Unit = {},
+    onDismissDeleteDialogClick: () -> Unit = {},
+    onTagSelectedClick: () -> Unit = {},
+    onToggleTag: (Long) -> Unit = {},
+    onConfirmTagSelectedClick: () -> Unit = {},
+    onDismissTagDialogClick: () -> Unit = {},
+    onCreateTagClick: () -> Unit = {},
     onSortButtonClick: () -> Unit,
     onSortOptionSelected: (EnergyDrinkListSortOptions) -> Unit,
     onPrimaryActionClick: (() -> Unit)? = null,
@@ -74,6 +96,15 @@ fun EnergyDrinkListContent(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (isSelectionMode) {
+                EnergyDrinkSelectionToolbar(
+                    selectedCount = selectedDrinkIds.size,
+                    isBusy = isBulkOperationRunning,
+                    onDeleteClick = onDeleteSelectedClick,
+                    onTagClick = onTagSelectedClick,
+                    onCancelClick = onCancelSelectionClick
+                )
+            }
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 color = PrimaryPurple
@@ -127,9 +158,12 @@ fun EnergyDrinkListContent(
                                 LaunchedEffect(searchResult) {
                                     scrollState.animateScrollToItem(0)
                                 }
-                                EnergyDrinkListSquared(
-                                    energyDrinks = searchResult,
-                                    onEnergyDrinkClick = onEnergyDrinkClick,
+                    EnergyDrinkListSquared(
+                        energyDrinks = searchResult,
+                        onEnergyDrinkClick = onEnergyDrinkClick,
+                        onEnergyDrinkLongClick = onEnergyDrinkLongClick,
+                        onEnergyDrinkSelectionClick = onEnergyDrinkSelectionClick,
+                        isSelectionMode = isSelectionMode,
                                     scrollState = scrollState,
                                     selectedDrinkIds = selectedDrinkIds
                                 )
@@ -139,9 +173,12 @@ fun EnergyDrinkListContent(
                                 LaunchedEffect(searchResult) {
                                     scrollState.animateScrollToItem(0)
                                 }
-                                EnergyDrinkListLonged(
-                                    energyDrinks = searchResult,
-                                    onEnergyDrinkClick = onEnergyDrinkClick,
+                    EnergyDrinkListLonged(
+                        energyDrinks = searchResult,
+                        onEnergyDrinkClick = onEnergyDrinkClick,
+                        onEnergyDrinkLongClick = onEnergyDrinkLongClick,
+                        onEnergyDrinkSelectionClick = onEnergyDrinkSelectionClick,
+                        isSelectionMode = isSelectionMode,
                                     scrollState = scrollState,
                                     selectedDrinkIds = selectedDrinkIds
                                 )
@@ -160,6 +197,89 @@ fun EnergyDrinkListContent(
             onPrimaryActionClick = onPrimaryActionClick,
             primaryActionDescription = primaryActionDescription
         )
+
+        if (isDeleteDialogVisible) {
+            AlertDialog(
+                onDismissRequest = onDismissDeleteDialogClick,
+                title = { Text("Delete drinks?") },
+                text = { Text("Delete ${selectedDrinkIds.size} selected drinks?") },
+                confirmButton = {
+                    Button(onClick = onConfirmDeleteSelectedClick) { Text("Delete") }
+                },
+                dismissButton = {
+                    TextButton(onClick = onDismissDeleteDialogClick) { Text("Cancel") }
+                }
+            )
+        }
+
+        if (isTagDialogVisible) {
+            AlertDialog(
+                onDismissRequest = onDismissTagDialogClick,
+                title = { Text("Add tags") },
+                                text = {
+                                    Column {
+                                        TextButton(onClick = onCreateTagClick) {
+                                            Text("Create new tag")
+                                        }
+                                        if (tags.isEmpty()) {
+                            Text("No tags available")
+                        } else {
+                            tags.forEach { tag ->
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Checkbox(
+                                        checked = tag.id in selectedTagIds,
+                                        onCheckedChange = { onToggleTag(tag.id) }
+                                    )
+                                    Text(tag.name)
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = onConfirmTagSelectedClick,
+                        enabled = selectedTagIds.isNotEmpty() && !isBulkOperationRunning
+                    ) { Text("Add") }
+                },
+                dismissButton = {
+                    TextButton(onClick = onDismissTagDialogClick) { Text("Cancel") }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun EnergyDrinkSelectionToolbar(
+    selectedCount: Int,
+    isBusy: Boolean,
+    onDeleteClick: () -> Unit,
+    onTagClick: () -> Unit,
+    onCancelClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(PrimaryPurple)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(onClick = onCancelClick, enabled = !isBusy) {
+            Text("Cancel", color = AccentWhite)
+        }
+        Text(
+            text = "$selectedCount selected",
+            color = AccentWhite,
+            modifier = Modifier.weight(1f)
+        )
+        TextButton(onClick = onTagClick, enabled = !isBusy) {
+            Text("Tag", color = AccentWhite)
+        }
+        TextButton(onClick = onDeleteClick, enabled = !isBusy) {
+            Text("Delete", color = PrimaryOrange)
+        }
     }
 }
 
