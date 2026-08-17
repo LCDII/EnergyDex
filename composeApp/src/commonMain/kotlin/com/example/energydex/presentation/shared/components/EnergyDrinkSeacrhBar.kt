@@ -1,7 +1,6 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Icon
@@ -20,7 +19,6 @@ import energydex.composeapp.generated.resources.ic_search
 import energydex.composeapp.generated.resources.search_hint
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.AccentWhite
 
 @Composable
@@ -76,10 +74,6 @@ fun EnergyDrinkSearchBar(
             }
         },
         modifier = modifier
-            .background(
-                shape = RoundedCornerShape(100),
-                color = SecondaryPurple
-            )
             .minimumInteractiveComponentSize()
     )
 }

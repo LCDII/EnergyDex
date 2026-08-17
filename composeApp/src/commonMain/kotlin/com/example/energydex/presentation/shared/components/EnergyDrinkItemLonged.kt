@@ -35,11 +35,14 @@ import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_gem
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
-import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.GlassCardTint
+import com.example.energydex.core.presentation.backdropGlass
 import com.example.energydex.core.presentation.tagColor
+import com.kashif_e.backdrop.Backdrop
+import com.kashif_e.backdrop.shadow.InnerShadow
 import energydex.composeapp.generated.resources.ic_tag
 @Composable
 fun EnergyDrinkItemLonged(
@@ -49,15 +52,30 @@ fun EnergyDrinkItemLonged(
     onSelectionClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
-    isSelectionMode: Boolean = false
+    isSelectionMode: Boolean = false,
+    cardBackdrop: Backdrop
 ) {
     val shape = RoundedCornerShape(32.dp)
+    val cardInnerShadow = InnerShadow(radius = 4.dp)
 
     Box(modifier = modifier) {
         Surface(
             shape = shape,
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(shape)
+                .backdropGlass(
+                    backdrop = cardBackdrop,
+                    shape = shape,
+                    tint = if (isSelected) {
+                        PrimaryOrange.copy(alpha = 0.28f)
+                    } else {
+                        GlassCardTint
+                    },
+                    blurRadius = 14.dp,
+                    saturation = 1.15f,
+                    innerShadow = cardInnerShadow
+                )
                 .border(
                     width = if (isSelected) 3.dp else 0.dp,
                     color = if (isSelected) PrimaryOrange else Color.Transparent,
@@ -67,11 +85,7 @@ fun EnergyDrinkItemLonged(
                     onClick = if (isSelectionMode) onSelectionClick else onClick,
                     onLongClick = onLongClick
                 ),
-            color = if (isSelected) {
-                PrimaryOrange.copy(alpha = 0.28f)
-            } else {
-                SecondaryPurple
-            }
+            color = Color.Transparent
         ) {
             Row(
                 modifier = Modifier

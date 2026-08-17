@@ -1,57 +1,68 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
 import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.GlassButtonGradient
+import com.example.energydex.core.presentation.GlassChipTint
+import com.example.energydex.core.presentation.GlassEdgeHighlight
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.PrimaryPurple
-import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.UiText
+import com.example.energydex.core.presentation.backdropGlass
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
+import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
+import com.kashif_e.backdrop.Backdrop
+import com.kashif_e.backdrop.backdrops.layerBackdrop
+import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
+import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
+import com.kashif_e.backdrop.drawBackdrop
+import com.kashif_e.backdrop.effects.blur
+import com.kashif_e.backdrop.effects.colorControls
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
 import energydex.composeapp.generated.resources.no_search_results
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private val SearchRowTopPadding = 84.dp
+private val ListContentTopPadding = 166.dp
 
 @Composable
 fun EnergyDrinkListContent(
@@ -91,112 +102,180 @@ fun EnergyDrinkListContent(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Box(modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (isSelectionMode) {
-                EnergyDrinkSelectionToolbar(
-                    selectedCount = selectedDrinkIds.size,
-                    isBusy = isBulkOperationRunning,
-                    onDeleteClick = onDeleteSelectedClick,
-                    onTagClick = onTagSelectedClick,
-                    onCancelClick = onCancelSelectionClick
-                )
-            }
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = PrimaryPurple
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        EnergyDrinkSearchBar(
-                            modifier = Modifier
-                                .widthIn(max = 400.dp)
-                                .weight(3f)
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            searchQuery = searchQuery,
-                            onSearchQueryChange = onSearchQueryChange,
-                            onImeSearch = { keyboardController?.hide() }
-                        )
-                        EnergyDrinkViewModeToggle(
-                            modifier = Modifier.weight(1f),
-                            selectedTab = selectedTab,
-                            onTabSelected = onTabSelected
-                        )
-                    }
+    val listGlassState = rememberLayerBackdrop()
 
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        when {
-                            isLoading -> CircularProgressIndicator()
-                            errorMessage != null -> Text(
-                                text = errorMessage.asString(),
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = PrimaryOrange
-                            )
+    val cardBackdrop = rememberCanvasBackdrop {
+        drawRect(PrimaryPurple)
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        when {
+            isLoading -> CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
+            errorMessage != null -> Text(
+                text = errorMessage.asString(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall,
+                color = PrimaryOrange,
+                modifier = Modifier.align(Alignment.Center)
+            )
             searchResult.isEmpty() -> Text(
-                                text = stringResource(Res.string.no_search_results),
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = PrimaryOrange
-                            )
-                            selectedTab == EnergyDrinkSectionTab.SQUARED -> {
-                                val scrollState = rememberLazyGridState()
-                                LaunchedEffect(searchResult) {
-                                    scrollState.animateScrollToItem(0)
-                                }
+                text = stringResource(Res.string.no_search_results),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall,
+                color = PrimaryOrange,
+                modifier = Modifier.align(Alignment.Center)
+            )
+            else -> when (selectedTab) {
+                EnergyDrinkSectionTab.SQUARED -> {
+                    val scrollState = rememberLazyGridState()
+                    LaunchedEffect(searchResult) {
+                        scrollState.animateScrollToItem(0)
+                    }
                     EnergyDrinkListSquared(
                         energyDrinks = searchResult,
                         onEnergyDrinkClick = onEnergyDrinkClick,
                         onEnergyDrinkLongClick = onEnergyDrinkLongClick,
                         onEnergyDrinkSelectionClick = onEnergyDrinkSelectionClick,
                         isSelectionMode = isSelectionMode,
-                                    scrollState = scrollState,
-                                    selectedDrinkIds = selectedDrinkIds
-                                )
-                            }
-                            else -> {
-                                val scrollState = rememberLazyListState()
-                                LaunchedEffect(searchResult) {
-                                    scrollState.animateScrollToItem(0)
-                                }
+                        scrollState = scrollState,
+                        selectedDrinkIds = selectedDrinkIds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .layerBackdrop(listGlassState),
+                        cardBackdrop = cardBackdrop,
+                        contentPadding = PaddingValues(
+                            start = 8.dp,
+                            end = 8.dp,
+                            top = ListContentTopPadding,
+                            bottom = 8.dp
+                        )
+                    )
+                }
+                else -> {
+                    val scrollState = rememberLazyListState()
+                    LaunchedEffect(searchResult) {
+                        scrollState.animateScrollToItem(0)
+                    }
                     EnergyDrinkListLonged(
                         energyDrinks = searchResult,
                         onEnergyDrinkClick = onEnergyDrinkClick,
                         onEnergyDrinkLongClick = onEnergyDrinkLongClick,
                         onEnergyDrinkSelectionClick = onEnergyDrinkSelectionClick,
                         isSelectionMode = isSelectionMode,
-                                    scrollState = scrollState,
-                                    selectedDrinkIds = selectedDrinkIds
-                                )
-                            }
-                        }
+                        scrollState = scrollState,
+                        selectedDrinkIds = selectedDrinkIds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .layerBackdrop(listGlassState),
+                        cardBackdrop = cardBackdrop,
+                        contentPadding = PaddingValues(
+                            start = 8.dp,
+                            end = 8.dp,
+                            top = ListContentTopPadding,
+                            bottom = 8.dp
+                        )
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
+                .padding(start = 16.dp, end = 16.dp, top = SearchRowTopPadding, bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            EnergyDrinkSearchBar(
+                modifier = Modifier
+                    .weight(1f)
+                    .widthIn(max = 520.dp)
+                    .backdropGlass(
+                        backdrop = listGlassState,
+                        shape = RoundedCornerShape(100),
+                        tint = GlassChipTint
+                    ),
+                searchQuery = searchQuery,
+                onSearchQueryChange = onSearchQueryChange,
+                onImeSearch = { keyboardController?.hide() }
+            )
+            EnergyDrinkViewModeToggle(
+                selectedTab = selectedTab,
+                onTabSelected = onTabSelected,
+                modifier = Modifier.backdropGlass(
+                    backdrop = listGlassState,
+                    shape = RoundedCornerShape(12.dp),
+                    tint = GlassChipTint
+                )
+            )
+            Box {
+                GlassCircleButton(
+                    onClick = onSortButtonClick,
+                    contentDescription = "Sort",
+                    icon = Res.drawable.ic_energy_drinks_filter,
+backdrop = listGlassState,
+                )
+
+                DropdownMenu(
+                    expanded = isSortMenuVisible,
+                    onDismissRequest = onSortButtonClick
+                ) {
+                    listOf(
+                        EnergyDrinkListSortOptions.TITLE_ASC,
+                        EnergyDrinkListSortOptions.DATE_ASC,
+                        EnergyDrinkListSortOptions.RATING_ASC
+                    ).forEach { option ->
+                        val isCurrent = option.fieldGroup() == sortOption.fieldGroup()
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        text = option.label(),
+                                        color = if (isCurrent) PrimaryOrange else Color.Unspecified
+                                    )
+                                    if (isCurrent) {
+                                        Text(
+                                            text = if (sortOption.isAscending()) "↓" else "↑",
+                                            color = PrimaryOrange
+                                        )
+                                    }
+                                }
+                            },
+                            onClick = { onSortOptionSelected(option) }
+                        )
                     }
                 }
             }
         }
 
-        EnergyDrinkFloatingActionButtons(
-            isSortMenuVisible = isSortMenuVisible,
-            sortOption = sortOption,
-            onSortButtonClick = onSortButtonClick,
-            onSortOptionSelected = onSortOptionSelected,
-            onPrimaryActionClick = onPrimaryActionClick,
-            primaryActionDescription = primaryActionDescription
-        )
+        if (isSelectionMode) {
+            EnergyDrinkSelectionToolbar(
+                selectedCount = selectedDrinkIds.size,
+                isBusy = isBulkOperationRunning,
+                onDeleteClick = onDeleteSelectedClick,
+                onTagClick = onTagSelectedClick,
+                onCancelClick = onCancelSelectionClick,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
+        }
+
+        onPrimaryActionClick?.let { onClick ->
+            GlassCircleButton(
+                onClick = onClick,
+                contentDescription = primaryActionDescription,
+                icon = Res.drawable.ic_energy_drink_add,
+                backdrop = listGlassState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp)
+            )
+        }
 
         if (isDeleteDialogVisible) {
             AlertDialog(
@@ -216,12 +295,12 @@ fun EnergyDrinkListContent(
             AlertDialog(
                 onDismissRequest = onDismissTagDialogClick,
                 title = { Text("Add tags") },
-                                text = {
-                                    Column {
-                                        TextButton(onClick = onCreateTagClick) {
-                                            Text("Create new tag")
-                                        }
-                                        if (tags.isEmpty()) {
+                text = {
+                    Column {
+                        TextButton(onClick = onCreateTagClick) {
+                            Text("Create new tag")
+                        }
+                        if (tags.isEmpty()) {
                             Text("No tags available")
                         } else {
                             tags.forEach { tag ->
@@ -256,10 +335,11 @@ private fun EnergyDrinkSelectionToolbar(
     isBusy: Boolean,
     onDeleteClick: () -> Unit,
     onTagClick: () -> Unit,
-    onCancelClick: () -> Unit
+    onCancelClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(PrimaryPurple)
             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -284,100 +364,47 @@ private fun EnergyDrinkSelectionToolbar(
 }
 
 @Composable
-private fun EnergyDrinkFloatingActionButtons(
-    isSortMenuVisible: Boolean,
-    sortOption: EnergyDrinkListSortOptions,
-    onSortButtonClick: () -> Unit,
-    onSortOptionSelected: (EnergyDrinkListSortOptions) -> Unit,
-    onPrimaryActionClick: (() -> Unit)?,
-    primaryActionDescription: String
+private fun GlassCircleButton(
+    onClick: () -> Unit,
+    contentDescription: String,
+    icon: DrawableResource,
+    backdrop: Backdrop,
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.Bottom
-    ) {
-        FloatingActionButton(
-            onClick = onSortButtonClick,
-            elevation = FloatingActionButtonDefaults.elevation(4.dp),
-            containerColor = Color.Transparent,
-            modifier = Modifier.size(56.dp)
+    val circle = CircleShape
+    Box(modifier = modifier.size(58.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBackdrop(
+                    backdrop = backdrop,
+                    shape = { circle },
+                    effects = {
+                        blur(radius = 18.dp.toPx())
+                        colorControls(brightness = 0.02f, contrast = 1.1f, saturation = 1.25f)
+                    }
+                )
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(GlassButtonGradient, circle),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(PrimaryOrange, CircleShape)
-            ) {
+            IconButton(onClick = onClick) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_energy_drinks_filter),
-                    contentDescription = "Sort",
+                    painter = painterResource(icon),
+                    contentDescription = contentDescription,
                     tint = AccentWhite,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.size(26.dp)
                 )
             }
         }
-
-        DropdownMenu(
-            expanded = isSortMenuVisible,
-            onDismissRequest = onSortButtonClick
-        ) {
-            listOf(
-                EnergyDrinkListSortOptions.TITLE_ASC,
-                EnergyDrinkListSortOptions.DATE_ASC,
-                EnergyDrinkListSortOptions.RATING_ASC
-            ).forEach { option ->
-                val isCurrent = option.fieldGroup() == sortOption.fieldGroup()
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                text = option.label(),
-                                color = if (isCurrent) PrimaryOrange else Color.Unspecified
-                            )
-                            if (isCurrent) {
-                                Text(
-                                    text = if (sortOption.isAscending()) "↓" else "↑",
-                                    color = PrimaryOrange
-                                )
-                            }
-                        }
-                    },
-                    onClick = { onSortOptionSelected(option) }
-                )
-            }
-        }
-
-        onPrimaryActionClick?.let { onClick ->
-            Spacer(modifier = Modifier.width(16.dp))
-
-            FloatingActionButton(
-                onClick = onClick,
-                containerColor = Color.Transparent,
-                elevation = FloatingActionButtonDefaults.elevation(4.dp),
-                modifier = Modifier.size(56.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(listOf(PrimaryOrange, SecondaryOrange)),
-                            CircleShape
-                        )
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_energy_drink_add),
-                        contentDescription = primaryActionDescription,
-                        tint = AccentWhite,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .border(1.5.dp, GlassEdgeHighlight, circle)
+        )
     }
 }
 

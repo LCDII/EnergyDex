@@ -62,6 +62,7 @@ kotlin {
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil.compose)
+            implementation(libs.backdrop)
 
         }
         commonTest.dependencies {

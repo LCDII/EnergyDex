@@ -30,12 +30,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.GlassCardTint
+import com.example.energydex.core.presentation.backdropGlass
 import com.example.energydex.core.presentation.tagColor
 import com.example.energydex.domain.energydrink.model.EnergyDrink
+import com.kashif_e.backdrop.Backdrop
+import com.kashif_e.backdrop.shadow.InnerShadow
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_gem
 import energydex.composeapp.generated.resources.ic_image_placeholder
@@ -50,15 +53,30 @@ fun EnergyDrinkItemSquared(
     onSelectionClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
-    isSelectionMode: Boolean = false
+    isSelectionMode: Boolean = false,
+    cardBackdrop: Backdrop
 ) {
     val shape = RoundedCornerShape(32.dp)
+    val cardInnerShadow = InnerShadow(radius = 4.dp)
 
     Box(modifier = modifier) {
         Surface (
             shape = shape,
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(shape)
+                .backdropGlass(
+                    backdrop = cardBackdrop,
+                    shape = shape,
+                    tint = if (isSelected) {
+                        PrimaryOrange.copy(alpha = 0.28f)
+                    } else {
+                        GlassCardTint
+                    },
+                    blurRadius = 14.dp,
+                    saturation = 1.15f,
+                    innerShadow = cardInnerShadow
+                )
                 .border(
                     width = if (isSelected) 3.dp else 0.dp,
                     color = if (isSelected) PrimaryOrange else Color.Transparent,
@@ -68,11 +86,7 @@ fun EnergyDrinkItemSquared(
                     onClick = if (isSelectionMode) onSelectionClick else onClick,
                     onLongClick = onLongClick
                 ),
-            color = if (isSelected) {
-                PrimaryOrange.copy(alpha = 0.28f)
-            } else {
-                SecondaryPurple
-            }
+            color = Color.Transparent
         ) {
             Row(
                 modifier = Modifier

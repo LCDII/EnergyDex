@@ -1,6 +1,7 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.energydex.domain.energydrink.model.EnergyDrink
+import com.kashif_e.backdrop.Backdrop
 
 @Composable
 fun EnergyDrinkListSquared (
@@ -23,11 +25,14 @@ fun EnergyDrinkListSquared (
     modifier: Modifier = Modifier,
     scrollState: LazyGridState = rememberLazyGridState(),
     selectedDrinkIds: Set<Long> = emptySet(),
+    cardBackdrop: Backdrop,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier,
         state = scrollState,
+        contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -41,6 +46,7 @@ fun EnergyDrinkListSquared (
                 onLongClick = { onEnergyDrinkLongClick(energyDrink) },
                 onSelectionClick = { onEnergyDrinkSelectionClick(energyDrink) },
                 isSelectionMode = isSelectionMode,
+                cardBackdrop = cardBackdrop,
                     modifier = Modifier
                         .widthIn(max = 600.dp)
                         .fillMaxWidth(),

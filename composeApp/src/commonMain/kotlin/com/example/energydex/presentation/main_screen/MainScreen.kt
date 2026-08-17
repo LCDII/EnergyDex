@@ -5,12 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
@@ -18,8 +17,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,8 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,10 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydex.core.presentation.PrimaryPurple
-import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
-import com.example.energydex.core.presentation.PrimaryOrangeGradientEnd
 import com.example.energydex.core.presentation.ErrorRed
+import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.GlassPanelTint
+import com.example.energydex.core.presentation.GlassTabBorder
+import com.example.energydex.core.presentation.backdropGlass
+import com.kashif_e.backdrop.backdrops.layerBackdrop
+import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.energydrink.energydrink_section.EnergyDrinkSectionRoot
@@ -98,6 +97,8 @@ fun MainScreen(
 
     val pagerState = rememberPagerState{ MainScreenTab.entries.size }
 
+    val plaqueBackdrop = rememberLayerBackdrop()
+
     LaunchedEffect(state.selectedTabIndex) {
         pagerState.animateScrollToPage(state.selectedTabIndex.ordinal)
     }
@@ -108,97 +109,17 @@ fun MainScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(PrimaryPurple)//TODO
-            .statusBarsPadding(),
     ) {
-        PrimaryTabRow(
-            selectedTabIndex = state.selectedTabIndex.ordinal,
-            containerColor = PrimaryPurple,//TODO
-            modifier = Modifier
-                .padding(vertical = 12.dp)
-                .widthIn(max = 700.dp)
-                .fillMaxWidth(),
-            indicator = {
-                Box(
-                    modifier = Modifier
-                        .tabIndicatorOffset(state.selectedTabIndex.ordinal)
-                        .padding(horizontal = 24.dp)
-                        .height(3.dp)
-                        .clip(RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp))
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    PrimaryOrange,
-                                    PrimaryOrangeGradientEnd
-                                )
-                            )
-                        )
-                )
-            },
-            divider = {}
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { onAction(MainScreenAction.OnTabSelected(MainScreenTab.ENERGY_DRINKS)) }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Drinks",
-                    textAlign = TextAlign.Center,
-                    color = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
-                        PrimaryOrange else SecondaryPurple,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = if (state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS)
-                            FontWeight.SemiBold
-                        else
-                            FontWeight.Normal,
-                        letterSpacing = 0.5.sp
-                    )
-                )
-            }
-
-            // Кастомный таб для Tags
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { onAction(MainScreenAction.OnTabSelected(MainScreenTab.TAGS)) }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Tags",
-                    textAlign = TextAlign.Center,
-                    color = if (state.selectedTabIndex == MainScreenTab.TAGS)
-                        PrimaryOrange else SecondaryPurple,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = if (state.selectedTabIndex == MainScreenTab.TAGS)
-                            FontWeight.SemiBold
-                        else
-                            FontWeight.Normal,
-                        letterSpacing = 0.5.sp
-                    )
-                )
-            }
-        }
-
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+                .fillMaxSize()
+                .statusBarsPadding()
+                .layerBackdrop(plaqueBackdrop)
         ) { pageIndex ->
             Box(
                 modifier = Modifier
@@ -262,5 +183,86 @@ fun MainScreen(
                 }
             }
         }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(vertical = 12.dp)
+                .widthIn(max = 340.dp)
+                .clip(RoundedCornerShape(28.dp))
+                .backdropGlass(
+                    backdrop = plaqueBackdrop,
+                    shape = RoundedCornerShape(28.dp),
+                    tint = GlassPanelTint
+                )
+        ) {
+            Row(modifier = Modifier.height(56.dp)) {
+                GlassTabItem(
+                    title = "Drinks",
+                    selected = state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS,
+                    onClick = {
+                        onAction(MainScreenAction.OnTabSelected(MainScreenTab.ENERGY_DRINKS))
+                    },
+                    leftCorner = true,
+                    modifier = Modifier.weight(1f)
+                )
+                GlassTabItem(
+                    title = "Tags",
+                    selected = state.selectedTabIndex == MainScreenTab.TAGS,
+                    onClick = {
+                        onAction(MainScreenAction.OnTabSelected(MainScreenTab.TAGS))
+                    },
+                    leftCorner = false,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun GlassTabItem(
+    title: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    leftCorner: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val shape = if (leftCorner) {
+        RoundedCornerShape(topStart = 28.dp, bottomStart = 28.dp)
+    } else {
+        RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxHeight()
+            .then(
+                if (selected) {
+                    Modifier.background(
+                        brush = GlassTabBorder,
+                        shape = shape
+                    )
+                } else {
+                    Modifier
+                }
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = title,
+            textAlign = TextAlign.Center,
+            color = if (selected) AccentWhite else SecondaryPurple,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                letterSpacing = 0.5.sp
+            )
+        )
     }
 }
