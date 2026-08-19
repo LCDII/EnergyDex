@@ -36,15 +36,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.presentation.main_screen.components.UseFullGlassTab
-import com.example.energydex.presentation.main_screen.components.glassTabCapsuleFull
-import com.example.energydex.presentation.main_screen.components.glassTabCapsuleLean
-import com.example.energydex.presentation.main_screen.components.glassTabPlaqueFull
-import com.example.energydex.presentation.main_screen.components.glassTabPlaqueLean
+import com.example.energydex.core.presentation.TextOnGradient
+import com.example.energydex.core.presentation.GlassPanelTint
+import com.example.energydex.core.presentation.TabGradient
+import com.example.energydex.core.presentation.glassContainer
+import com.example.energydex.core.presentation.glassThumb
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import com.example.energydex.domain.energydrink.model.EnergyDrink
@@ -119,7 +119,7 @@ fun MainScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PrimaryPurple)//TODO
+            .background(AppBackground)//TODO
     ) {
         HorizontalPager(
             state = pagerState,
@@ -157,7 +157,9 @@ fun MainScreen(
                                         },
                                         onCreateTagClick = {
                                             onCreateTagClick()
-                                        }
+                                        },
+                                        isDrinksTabActive =
+                                            state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS
                                     )
                                 }
                             }
@@ -199,18 +201,16 @@ fun MainScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
                 .clip(RoundedCornerShape(28.dp))
-                .then(
-                    if (UseFullGlassTab) {
-                        Modifier.glassTabPlaqueFull(plaqueBackdrop)
-                    } else {
-                        Modifier.glassTabPlaqueLean(plaqueBackdrop)
-                    }
+                .glassContainer(
+                    backdrop = plaqueBackdrop,
+                    shape = RoundedCornerShape(28.dp),
+                    tint = GlassPanelTint
                 )
         ) {
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
+                    .height(50.dp)
             ) {
                 val halfWidth = maxWidth / 2
                 val isTagsSelected = state.selectedTabIndex == MainScreenTab.TAGS
@@ -229,12 +229,11 @@ fun MainScreen(
                         .width(halfWidth)
                         .fillMaxHeight()
                         .clip(capsuleShape)
-                        .then(
-                            if (UseFullGlassTab) {
-                                Modifier.glassTabCapsuleFull(plaqueBackdrop)
-                            } else {
-                                Modifier.glassTabCapsuleLean(plaqueBackdrop)
-                            }
+                        .glassThumb(
+                            backdrop = plaqueBackdrop,
+                            shape = capsuleShape,
+                            tintBrush = TabGradient,
+                            tintOpacity = 0.7f
                         )
                 )
 
@@ -281,7 +280,7 @@ private fun TabSegment(
         Text(
             text = title,
             textAlign = TextAlign.Center,
-            color = AccentWhite,
+            color = if (selected) TextOnGradient else AccentWhite,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
                 letterSpacing = 0.5.sp

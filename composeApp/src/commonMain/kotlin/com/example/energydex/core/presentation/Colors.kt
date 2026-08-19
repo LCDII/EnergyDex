@@ -12,10 +12,13 @@ val PrimaryOrange = Color(0xFFFF7700)
 val SecondaryOrange = Color(0xFFFFB347)
 val PrimaryOrangeGradientEnd = Color(0xFFFF5500)
 
-val PrimaryPurple = Color(0xFF1F1038)
+val AppBackground = Color(0xFF1E1E1E)
+val PrimaryPurple = AppBackground
 val SecondaryPurple = Color(0x73995EFF)
 
-val AccentWhite = Color(0xFFFFFFFF)
+val TextOnGradient = AppBackground
+val TextOnBackground = Color(0xFFFFFFFF)
+val AccentWhite = TextOnBackground
 val ErrorRed = Color(0xFFFF0000)
 
 const val TagOrangeValue = "#FF7700"

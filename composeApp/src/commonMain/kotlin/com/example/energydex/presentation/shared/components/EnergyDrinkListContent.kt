@@ -1,6 +1,5 @@
 package com.example.energydex.presentation.shared.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,21 +7,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,21 +24,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.GlassButtonGradient
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.core.presentation.GlassChipTint
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.UiText
-import com.example.energydex.core.presentation.glassBackdrop
+import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
-import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
@@ -52,12 +42,11 @@ import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
 import energydex.composeapp.generated.resources.no_search_results
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 private val SearchRowTopPadding = 84.dp
 private val ListContentTopPadding = 166.dp
+private val SortPanelTopPadding = SearchRowTopPadding + 50.dp + 8.dp
 
 @Composable
 fun EnergyDrinkListContent(
@@ -76,6 +65,7 @@ fun EnergyDrinkListContent(
     isBulkOperationRunning: Boolean = false,
     sortOption: EnergyDrinkListSortOptions,
     isSortMenuVisible: Boolean,
+    isDrinksTabActive: Boolean = true,
     onSearchQueryChange: (String) -> Unit,
     onTabSelected: (EnergyDrinkSectionTab) -> Unit,
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
@@ -100,7 +90,7 @@ fun EnergyDrinkListContent(
     val listGlassState = rememberLayerBackdrop()
 
     val cardBackdrop = rememberCanvasBackdrop {
-        drawRect(PrimaryPurple)
+        drawRect(AppBackground)
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -180,7 +170,8 @@ fun EnergyDrinkListContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(start = 16.dp, end = 16.dp, top = SearchRowTopPadding, bottom = 16.dp),
+                .padding(horizontal = 8.dp)
+                .padding(top = SearchRowTopPadding, bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -188,7 +179,8 @@ fun EnergyDrinkListContent(
                 modifier = Modifier
                     .weight(1f)
                     .widthIn(max = 520.dp)
-                    .glassBackdrop(
+                    .height(50.dp)
+                    .glassContainer(
                         backdrop = listGlassState,
                         shape = RoundedCornerShape(100),
                         tint = GlassChipTint
@@ -198,55 +190,30 @@ fun EnergyDrinkListContent(
                 onImeSearch = { keyboardController?.hide() }
             )
             EnergyDrinkViewModeToggle(
+                backdrop = listGlassState,
                 selectedTab = selectedTab,
-                onTabSelected = onTabSelected,
-                modifier = Modifier.glassBackdrop(
-                    backdrop = listGlassState,
-                    shape = RoundedCornerShape(12.dp),
-                    tint = GlassChipTint
-                )
+                onTabSelected = onTabSelected
             )
             Box {
                 GlassCircleButton(
                     onClick = onSortButtonClick,
                     contentDescription = "Sort",
                     icon = Res.drawable.ic_energy_drinks_filter,
-backdrop = listGlassState,
+                    backdrop = listGlassState,
+                    size = 50.dp,
                 )
-
-                DropdownMenu(
-                    expanded = isSortMenuVisible,
-                    onDismissRequest = onSortButtonClick
-                ) {
-                    listOf(
-                        EnergyDrinkListSortOptions.TITLE_ASC,
-                        EnergyDrinkListSortOptions.DATE_ASC,
-                        EnergyDrinkListSortOptions.RATING_ASC
-                    ).forEach { option ->
-                        val isCurrent = option.fieldGroup() == sortOption.fieldGroup()
-                        DropdownMenuItem(
-                            text = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = option.label(),
-                                        color = if (isCurrent) PrimaryOrange else Color.Unspecified
-                                    )
-                                    if (isCurrent) {
-                                        Text(
-                                            text = if (sortOption.isAscending()) "↓" else "↑",
-                                            color = PrimaryOrange
-                                        )
-                                    }
-                                }
-                            },
-                            onClick = { onSortOptionSelected(option) }
-                        )
-                    }
-                }
             }
+        }
+
+        if (isSortMenuVisible && isDrinksTabActive) {
+            SortDropdownPanel(
+                backdrop = listGlassState,
+                currentOption = sortOption,
+                onOptionSelected = onSortOptionSelected,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = SortPanelTopPadding, end = 8.dp)
+            )
         }
 
         if (isSelectionMode) {
@@ -266,6 +233,7 @@ backdrop = listGlassState,
                 contentDescription = primaryActionDescription,
                 icon = Res.drawable.ic_energy_drink_add,
                 backdrop = listGlassState,
+                size = 80.dp,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 24.dp)
@@ -322,86 +290,4 @@ backdrop = listGlassState,
             )
         }
     }
-}
-
-@Composable
-private fun EnergyDrinkSelectionToolbar(
-    selectedCount: Int,
-    isBusy: Boolean,
-    onDeleteClick: () -> Unit,
-    onTagClick: () -> Unit,
-    onCancelClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(PrimaryPurple)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        TextButton(onClick = onCancelClick, enabled = !isBusy) {
-            Text("Cancel", color = AccentWhite)
-        }
-        Text(
-            text = "$selectedCount selected",
-            color = AccentWhite,
-            modifier = Modifier.weight(1f)
-        )
-        TextButton(onClick = onTagClick, enabled = !isBusy) {
-            Text("Tag", color = AccentWhite)
-        }
-        TextButton(onClick = onDeleteClick, enabled = !isBusy) {
-            Text("Delete", color = PrimaryOrange)
-        }
-    }
-}
-
-@Composable
-private fun GlassCircleButton(
-    onClick: () -> Unit,
-    contentDescription: String,
-    icon: DrawableResource,
-    backdrop: Backdrop,
-    modifier: Modifier = Modifier
-) {
-    val circle = CircleShape
-    Box(
-        modifier = modifier
-            .size(58.dp)
-            .glassBackdrop(
-                backdrop = backdrop,
-                shape = circle,
-                tintBrush = GlassButtonGradient,
-                tintOpacity = 0.85f,
-                blurRadius = 18.dp,
-                brightness = 0.05f,
-                contrast = 1.1f,
-                saturation = 1.3f
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        IconButton(onClick = onClick) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = contentDescription,
-                tint = AccentWhite,
-                modifier = Modifier.size(26.dp)
-            )
-        }
-    }
-}
-
-private fun EnergyDrinkListSortOptions.fieldGroup(): String = name.substringBefore("_")
-
-private fun EnergyDrinkListSortOptions.isAscending(): Boolean = name.endsWith("_ASC")
-
-private fun EnergyDrinkListSortOptions.label(): String = when (this) {
-    EnergyDrinkListSortOptions.TITLE_ASC,
-    EnergyDrinkListSortOptions.TITLE_DESC -> "Title"
-    EnergyDrinkListSortOptions.DATE_ASC,
-    EnergyDrinkListSortOptions.DATE_DESC -> "Date"
-    EnergyDrinkListSortOptions.RATING_ASC,
-    EnergyDrinkListSortOptions.RATING_DESC -> "Rating"
 }

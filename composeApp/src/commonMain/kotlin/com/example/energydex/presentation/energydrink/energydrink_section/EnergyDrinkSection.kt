@@ -17,7 +17,8 @@ fun EnergyDrinkSectionRoot(
     viewModel: EnergyDrinkSectionViewModel = koinViewModel(),
     onEnergyDrinkClick: (EnergyDrink) -> Unit,
     onAddEnergyDrinkButtonClick: () -> Unit,
-    onCreateTagClick: () -> Unit = {}
+    onCreateTagClick: () -> Unit = {},
+    isDrinksTabActive: Boolean = true
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -33,7 +34,8 @@ fun EnergyDrinkSectionRoot(
             }//can redo it
             viewModel.onAction(action)
         },
-        onCreateTagClick = onCreateTagClick
+        onCreateTagClick = onCreateTagClick,
+        isDrinksTabActive = isDrinksTabActive
     )
 
 }
@@ -42,7 +44,8 @@ fun EnergyDrinkSectionRoot(
 fun EnergyDrinkSection(
     state: EnergyDrinkSectionState,
     onAction: (EnergyDrinkSectionAction) -> Unit,
-    onCreateTagClick: () -> Unit = {}
+    onCreateTagClick: () -> Unit = {},
+    isDrinksTabActive: Boolean = true
 ) {
     EnergyDrinkListContent(
         searchQuery = state.searchQuery,
@@ -59,6 +62,7 @@ fun EnergyDrinkSection(
         errorMessage = state.errorMessage,
         sortOption = state.sortOption,
         isSortMenuVisible = state.isSortMenuVisible,
+        isDrinksTabActive = isDrinksTabActive,
         onSearchQueryChange = {
             onAction(EnergyDrinkSectionAction.OnSearchQueryChange(it))
         },
