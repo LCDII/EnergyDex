@@ -19,12 +19,17 @@ val GlassActiveGradient = Brush.verticalGradient(
 )
 
 val GlassButtonGradient = Brush.verticalGradient(
-    listOf(
-        PrimaryOrange.copy(alpha = 0.9f),
-        SecondaryOrange.copy(alpha = 0.9f)
-    )
+    listOf(PrimaryOrange, SecondaryOrange)
 )
 
-val GlassTabBorder = Brush.horizontalGradient(
-    listOf(PrimaryOrange, PrimaryOrangeGradientEnd)
+private val TabDrinkGreen = Color(0xFF27CF51)
+private val TabDrinkLight = Color(0xFF47FF75)
+private val TabDrinkBright = Color(0xFF75F696)
+
+val TabGradient = Brush.horizontalGradient(
+    colorStops = arrayOf(
+        0.20f to TabDrinkGreen,
+        0.50f to TabDrinkLight,
+        0.95f to TabDrinkBright,
+    )
 )

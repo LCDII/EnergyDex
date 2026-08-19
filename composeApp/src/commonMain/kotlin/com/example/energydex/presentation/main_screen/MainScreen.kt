@@ -1,17 +1,22 @@
 package com.example.energydex.presentation.main_screen
 
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,9 +40,11 @@ import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.GlassPanelTint
-import com.example.energydex.core.presentation.GlassTabBorder
-import com.example.energydex.core.presentation.backdropGlass
+import com.example.energydex.presentation.main_screen.components.UseFullGlassTab
+import com.example.energydex.presentation.main_screen.components.glassTabCapsuleFull
+import com.example.energydex.presentation.main_screen.components.glassTabCapsuleLean
+import com.example.energydex.presentation.main_screen.components.glassTabPlaqueFull
+import com.example.energydex.presentation.main_screen.components.glassTabPlaqueLean
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import com.example.energydex.domain.energydrink.model.EnergyDrink
@@ -189,65 +196,81 @@ fun MainScreen(
                 .align(Alignment.TopCenter)
                 .statusBarsPadding()
                 .padding(vertical = 12.dp)
-                .widthIn(max = 340.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
                 .clip(RoundedCornerShape(28.dp))
-                .backdropGlass(
-                    backdrop = plaqueBackdrop,
-                    shape = RoundedCornerShape(28.dp),
-                    tint = GlassPanelTint
+                .then(
+                    if (UseFullGlassTab) {
+                        Modifier.glassTabPlaqueFull(plaqueBackdrop)
+                    } else {
+                        Modifier.glassTabPlaqueLean(plaqueBackdrop)
+                    }
                 )
         ) {
-            Row(modifier = Modifier.height(56.dp)) {
-                GlassTabItem(
-                    title = "Drinks",
-                    selected = state.selectedTabIndex == MainScreenTab.ENERGY_DRINKS,
-                    onClick = {
-                        onAction(MainScreenAction.OnTabSelected(MainScreenTab.ENERGY_DRINKS))
-                    },
-                    leftCorner = true,
-                    modifier = Modifier.weight(1f)
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                val halfWidth = maxWidth / 2
+                val isTagsSelected = state.selectedTabIndex == MainScreenTab.TAGS
+                val targetOffset = if (isTagsSelected) halfWidth else 0.dp
+                val thumbOffset by animateDpAsState(
+                    targetValue = targetOffset,
+                    animationSpec = tween(durationMillis = 250),
+                    label = "tabThumbOffset"
                 )
-                GlassTabItem(
-                    title = "Tags",
-                    selected = state.selectedTabIndex == MainScreenTab.TAGS,
-                    onClick = {
-                        onAction(MainScreenAction.OnTabSelected(MainScreenTab.TAGS))
-                    },
-                    leftCorner = false,
-                    modifier = Modifier.weight(1f)
+
+                val capsuleShape = RoundedCornerShape(percent = 50)
+
+                Box(
+                    modifier = Modifier
+                        .offset(x = thumbOffset)
+                        .width(halfWidth)
+                        .fillMaxHeight()
+                        .clip(capsuleShape)
+                        .then(
+                            if (UseFullGlassTab) {
+                                Modifier.glassTabCapsuleFull(plaqueBackdrop)
+                            } else {
+                                Modifier.glassTabCapsuleLean(plaqueBackdrop)
+                            }
+                        )
                 )
+
+                Row(modifier = Modifier.fillMaxSize()) {
+                    TabSegment(
+                        title = "Drinks",
+                        selected = !isTagsSelected,
+                        onClick = {
+                            onAction(MainScreenAction.OnTabSelected(MainScreenTab.ENERGY_DRINKS))
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    TabSegment(
+                        title = "Tags",
+                        selected = isTagsSelected,
+                        onClick = {
+                            onAction(MainScreenAction.OnTabSelected(MainScreenTab.TAGS))
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun GlassTabItem(
+private fun TabSegment(
     title: String,
     selected: Boolean,
     onClick: () -> Unit,
-    leftCorner: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val shape = if (leftCorner) {
-        RoundedCornerShape(topStart = 28.dp, bottomStart = 28.dp)
-    } else {
-        RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)
-    }
-
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .then(
-                if (selected) {
-                    Modifier.background(
-                        brush = GlassTabBorder,
-                        shape = shape
-                    )
-                } else {
-                    Modifier
-                }
-            )
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -258,7 +281,7 @@ private fun GlassTabItem(
         Text(
             text = title,
             textAlign = TextAlign.Center,
-            color = if (selected) AccentWhite else SecondaryPurple,
+            color = AccentWhite,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
                 letterSpacing = 0.5.sp

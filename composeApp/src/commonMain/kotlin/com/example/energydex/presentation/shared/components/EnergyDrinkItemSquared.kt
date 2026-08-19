@@ -34,7 +34,7 @@ import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.GlassCardTint
-import com.example.energydex.core.presentation.backdropGlass
+import com.example.energydex.core.presentation.glassBackdrop
 import com.example.energydex.core.presentation.tagColor
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.kashif_e.backdrop.Backdrop
@@ -65,7 +65,7 @@ fun EnergyDrinkItemSquared(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape)
-                .backdropGlass(
+                .glassBackdrop(
                     backdrop = cardBackdrop,
                     shape = shape,
                     tint = if (isSelected) {
@@ -75,7 +75,7 @@ fun EnergyDrinkItemSquared(
                     },
                     blurRadius = 14.dp,
                     saturation = 1.15f,
-                    innerShadow = cardInnerShadow
+                    innerShadow = { cardInnerShadow }
                 )
                 .border(
                     width = if (isSelected) 3.dp else 0.dp,
@@ -125,6 +125,7 @@ fun EnergyDrinkItemSquared(
 
                 Text(
                     text = energyDrink.name,
+                    color = AccentWhite,
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -158,6 +159,7 @@ fun EnergyDrinkItemSquared(
                         } else {
                             "${energyDrink.rating}"
                         },
+                        color = AccentWhite,
                         style = MaterialTheme.typography.bodyLarge,
                         fontSize = 18.sp
                     )
@@ -174,6 +176,7 @@ fun EnergyDrinkItemSquared(
                 }
                 Text(
                     text = energyDrink.createdAt.toString().substring(0,10),
+                    color = AccentWhite,
                     modifier = Modifier
                 )
             }

@@ -39,7 +39,7 @@ import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.GlassCardTint
-import com.example.energydex.core.presentation.backdropGlass
+import com.example.energydex.core.presentation.glassBackdrop
 import com.example.energydex.core.presentation.tagColor
 import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.shadow.InnerShadow
@@ -64,7 +64,7 @@ fun EnergyDrinkItemLonged(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape)
-                .backdropGlass(
+                .glassBackdrop(
                     backdrop = cardBackdrop,
                     shape = shape,
                     tint = if (isSelected) {
@@ -74,7 +74,7 @@ fun EnergyDrinkItemLonged(
                     },
                     blurRadius = 14.dp,
                     saturation = 1.15f,
-                    innerShadow = cardInnerShadow
+                    innerShadow = { cardInnerShadow }
                 )
                 .border(
                     width = if (isSelected) 3.dp else 0.dp,
@@ -127,6 +127,7 @@ fun EnergyDrinkItemLonged(
                 ) {
                     Text(
                         text=energyDrink.name,
+                        color = AccentWhite,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -147,7 +148,8 @@ fun EnergyDrinkItemLonged(
                         }
                     }
                     Text(
-                        text = energyDrink.createdAt.toString().substring(0,10)
+                        text = energyDrink.createdAt.toString().substring(0,10),
+                        color = AccentWhite
                     )
                 }
                 Icon(
@@ -162,6 +164,7 @@ fun EnergyDrinkItemLonged(
                     } else {
                         "${energyDrink.rating}"
                     },
+                    color = AccentWhite,
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 24.sp
                )

@@ -1,7 +1,6 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,11 +37,10 @@ import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.GlassButtonGradient
 import com.example.energydex.core.presentation.GlassChipTint
-import com.example.energydex.core.presentation.GlassEdgeHighlight
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.UiText
-import com.example.energydex.core.presentation.backdropGlass
+import com.example.energydex.core.presentation.glassBackdrop
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
@@ -50,9 +48,6 @@ import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
-import com.kashif_e.backdrop.drawBackdrop
-import com.kashif_e.backdrop.effects.blur
-import com.kashif_e.backdrop.effects.colorControls
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
@@ -193,7 +188,7 @@ fun EnergyDrinkListContent(
                 modifier = Modifier
                     .weight(1f)
                     .widthIn(max = 520.dp)
-                    .backdropGlass(
+                    .glassBackdrop(
                         backdrop = listGlassState,
                         shape = RoundedCornerShape(100),
                         tint = GlassChipTint
@@ -205,7 +200,7 @@ fun EnergyDrinkListContent(
             EnergyDrinkViewModeToggle(
                 selectedTab = selectedTab,
                 onTabSelected = onTabSelected,
-                modifier = Modifier.backdropGlass(
+                modifier = Modifier.glassBackdrop(
                     backdrop = listGlassState,
                     shape = RoundedCornerShape(12.dp),
                     tint = GlassChipTint
@@ -372,39 +367,29 @@ private fun GlassCircleButton(
     modifier: Modifier = Modifier
 ) {
     val circle = CircleShape
-    Box(modifier = modifier.size(58.dp)) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .drawBackdrop(
-                    backdrop = backdrop,
-                    shape = { circle },
-                    effects = {
-                        blur(radius = 18.dp.toPx())
-                        colorControls(brightness = 0.02f, contrast = 1.1f, saturation = 1.25f)
-                    }
-                )
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(GlassButtonGradient, circle),
-            contentAlignment = Alignment.Center
-        ) {
-            IconButton(onClick = onClick) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = contentDescription,
-                    tint = AccentWhite,
-                    modifier = Modifier.size(26.dp)
-                )
-            }
+    Box(
+        modifier = modifier
+            .size(58.dp)
+            .glassBackdrop(
+                backdrop = backdrop,
+                shape = circle,
+                tintBrush = GlassButtonGradient,
+                tintOpacity = 0.85f,
+                blurRadius = 18.dp,
+                brightness = 0.05f,
+                contrast = 1.1f,
+                saturation = 1.3f
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        IconButton(onClick = onClick) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = contentDescription,
+                tint = AccentWhite,
+                modifier = Modifier.size(26.dp)
+            )
         }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .border(1.5.dp, GlassEdgeHighlight, circle)
-        )
     }
 }
 
