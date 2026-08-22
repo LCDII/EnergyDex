@@ -4,15 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.border
@@ -21,29 +21,31 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.GlassCardTint
+import com.example.energydex.core.presentation.TagPurpleColor
 import com.example.energydex.core.presentation.glassBackdrop
-import com.example.energydex.core.presentation.tagColor
+import com.example.energydex.core.presentation.ratingStarTint
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.shadow.InnerShadow
 import energydex.composeapp.generated.resources.Res
-import energydex.composeapp.generated.resources.ic_gem
 import energydex.composeapp.generated.resources.ic_image_placeholder
-import energydex.composeapp.generated.resources.ic_tag
+import energydex.composeapp.generated.resources.ic_star
 import org.jetbrains.compose.resources.painterResource
+
 
 @Composable
 fun EnergyDrinkItemSquared(
@@ -58,12 +60,17 @@ fun EnergyDrinkItemSquared(
 ) {
     val shape = RoundedCornerShape(32.dp)
     val cardInnerShadow = InnerShadow(radius = 4.dp)
+    val hasPhoto = energyDrink.imagePath != null
+    val hasTags = energyDrink.tags.isNotEmpty()
+    val squaredCardHeight = 200.dp
+    val cardInnerPadding = 12.dp
 
     Box(modifier = modifier) {
-        Surface (
+        Surface(
             shape = shape,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(squaredCardHeight)
                 .clip(shape)
                 .glassBackdrop(
                     backdrop = cardBackdrop,
@@ -88,98 +95,100 @@ fun EnergyDrinkItemSquared(
                 ),
             color = Color.Transparent
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .height(IntrinsicSize.Min)
+            BoxWithConstraints(
+                modifier = Modifier.fillMaxSize()
             ) {
-            Column(
-                modifier = Modifier
-                    .width(IntrinsicSize.Min),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(110.dp)
-                        .width(110.dp)
-                        .clip(RoundedCornerShape(20.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (energyDrink.imagePath == null) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_image_placeholder),
-                            contentDescription = null,
-                            tint = SecondaryOrange,
-                            modifier = Modifier.size(48.dp)
-                        )
-                    } else {
-                        AsyncImage(
-                            model = energyDrink.imagePath,
-                            contentDescription = energyDrink.name,
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                            error = painterResource(Res.drawable.ic_image_placeholder)
-                        )
+                when {
+                    !hasPhoto && !hasTags -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(cardInnerPadding),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            DrinkName(energyDrink.name)
+                            DrinkRating(energyDrink.rating)
+                        }
+                    }
+
+                    !hasPhoto -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(cardInnerPadding)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                DrinkName(energyDrink.name)
+                                DrinkRating(energyDrink.rating)
+                            }
+                            TagPack(
+                                tags = energyDrink.tags
+                            )
+                        }
+                    }
+
+                    !hasTags -> {
+                        Row(modifier = Modifier.fillMaxSize()) {
+                            DrinkPhoto(
+                                energyDrink = energyDrink,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .padding(cardInnerPadding),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                DrinkName(energyDrink.name)
+                                DrinkRating(energyDrink.rating)
+                            }
+                        }
+                    }
+
+                    else -> {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Row(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                            ) {
+                                DrinkPhoto(
+                                    energyDrink = energyDrink,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .padding(cardInnerPadding),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    DrinkName(energyDrink.name)
+                                    DrinkRating(energyDrink.rating)
+                                }
+                            }
+                            TagPack(
+                                tags = energyDrink.tags,
+                                modifier = Modifier
+                                    .padding(horizontal = cardInnerPadding, vertical = cardInnerPadding)
+                            )
+                        }
                     }
                 }
-
-                Text(
-                    text = energyDrink.name,
-                    color = AccentWhite,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth()
-                )
-
-            }
-            Column(
-                modifier = Modifier
-                    .width(IntrinsicSize.Min)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_gem),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text =if(energyDrink.rating == null)
-                        {
-                            "0.0"
-                        } else {
-                            "${energyDrink.rating}"
-                        },
-                        color = AccentWhite,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 18.sp
-                    )
-                }
-                if (energyDrink.tags.isNotEmpty()) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_tag),
-                        contentDescription = "Tags",
-                        tint = tagColor(energyDrink.tags.first().color),
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(16.dp)
-                    )
-                }
-                Text(
-                    text = energyDrink.createdAt.toString().substring(0,10),
-                    color = AccentWhite,
-                    modifier = Modifier
-                )
-            }
             }
         }
 
@@ -195,5 +204,70 @@ fun EnergyDrinkItemSquared(
                 Text("✓", color = AccentWhite, fontSize = 18.sp)
             }
         }
+    }
+}
+
+@Composable
+private fun DrinkPhoto(
+    energyDrink: EnergyDrink,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.clip(RoundedCornerShape(20.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = energyDrink.imagePath,
+            contentDescription = energyDrink.name,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+            error = painterResource(Res.drawable.ic_image_placeholder),
+            placeholder = painterResource(Res.drawable.ic_image_placeholder)
+        )
+    }
+}
+
+@Composable
+private fun DrinkName(
+    name: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = name,
+        color = AccentWhite,
+        style = MaterialTheme.typography.titleSmall.copy(
+            fontWeight = FontWeight.SemiBold
+        ),
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Center,
+        modifier = modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .fillMaxWidth()
+    )
+}
+
+@Composable
+private fun DrinkRating(
+    rating: Double?,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_star),
+            contentDescription = null,
+            tint = if (rating != null && rating >= 10.0) TagPurpleColor else ratingStarTint(rating),
+            modifier = Modifier.size(20.dp)
+        )
+        Text(
+            text = rating?.toString() ?: "0.0",
+            color = AccentWhite,
+            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 18.sp
+        )
     }
 }

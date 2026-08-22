@@ -1,5 +1,7 @@
 package com.example.energydex.core.presentation
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val DarkBlue = Color(0xFF0B405E)
@@ -21,6 +23,15 @@ val TextOnBackground = Color(0xFFFFFFFF)
 val AccentWhite = TextOnBackground
 val ErrorRed = Color(0xFFFF0000)
 
+val RatingGreen = Color(0xFF47FF75)
+
+fun ratingStarTint(rating: Double?): Color = when {
+    rating == null || rating < 4.0 -> ErrorRed
+    rating < 7.0 -> PrimaryOrange
+    rating < 10.0 -> RatingGreen
+    else -> RatingGreen
+}
+
 const val TagOrangeValue = "#FF7700"
 const val TagLightOrangeValue = "#FFB347"
 const val TagPurpleValue = "#A855F7"
@@ -38,6 +49,18 @@ val TagGreenColor = Color(0xFF22C55E)
 val TagRedColor = Color(0xFFEF4444)
 val TagYellowColor = Color(0xFFFACC15)
 val TagPinkColor = Color(0xFFEC4899)
+
+val RatingStarGradient = Brush.linearGradient(
+    colorStops = arrayOf(
+        0.00f to Color(0xFF7B2FF7),  // фиолетовый
+        0.35f to Color(0xFFF107A3),  // горяч. розовый
+        0.60f to Color(0xFFFF7A00),  // оранжевый
+        0.85f to Color(0xFFFFD54F),  // золото
+        1.00f to Color(0xFFFFF1B8)   // светло-золотой
+    ),
+    start = Offset.Zero,
+    end = Offset.Infinite
+)
 
 val TagColorValues = listOf(
     TagOrangeValue,
