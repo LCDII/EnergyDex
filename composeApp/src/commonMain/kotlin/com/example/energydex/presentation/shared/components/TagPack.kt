@@ -18,18 +18,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.domain.tag.model.Tag
+import com.kashif_e.backdrop.Backdrop
 
 private val ChipGap = 4.dp
-private val ChipRowHeight = 18.dp
+private val ChipRowHeight = 20.dp
 private val ChipFontSize = 12.sp
 private val ChipHorizontalPadding = 10.dp
-private val ChipVerticalPadding = 1.dp
+private val ChipVerticalPadding = 3.dp
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagPack(
     tags: List<Tag>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    backdrop: Backdrop
 ) {
     if (tags.isEmpty()) return
 
@@ -47,6 +49,7 @@ fun TagPack(
         tags.forEach { tag ->
             TagChip(
                 tag = tag,
+                backdrop = backdrop,
                 fontSize = ChipFontSize,
                 horizontalPadding = ChipHorizontalPadding,
                 verticalPadding = ChipVerticalPadding

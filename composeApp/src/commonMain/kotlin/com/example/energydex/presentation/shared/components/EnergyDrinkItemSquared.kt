@@ -129,7 +129,8 @@ fun EnergyDrinkItemSquared(
                                 DrinkRating(energyDrink.rating)
                             }
                             TagPack(
-                                tags = energyDrink.tags
+                                tags = energyDrink.tags,
+                                backdrop = cardBackdrop
                             )
                         }
                     }
@@ -183,6 +184,7 @@ fun EnergyDrinkItemSquared(
                             }
                             TagPack(
                                 tags = energyDrink.tags,
+                                backdrop = cardBackdrop,
                                 modifier = Modifier
                                     .padding(horizontal = cardInnerPadding, vertical = cardInnerPadding)
                             )

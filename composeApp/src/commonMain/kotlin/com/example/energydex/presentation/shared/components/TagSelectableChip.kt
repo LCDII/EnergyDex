@@ -3,24 +3,23 @@ package com.example.energydex.presentation.shared.components
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.energydex.core.presentation.SecondaryOrange
-import com.example.energydex.core.presentation.tagColor
-import com.example.energydex.core.presentation.tagTextColor
+import androidx.compose.ui.draw.alpha
 import com.example.energydex.domain.tag.model.Tag
+import com.kashif_e.backdrop.Backdrop
 
 @Composable
 fun TagSelectableChip(
     tag: Tag,
     selected: Boolean,
     onClick: () -> Unit,
+    backdrop: Backdrop,
     modifier: Modifier = Modifier
 ) {
-    val containerColor = if (selected) tagColor(tag.color) else tagColor(tag.color).copy(alpha = 0.3f)
-    val contentColor = if (selected) tagTextColor(containerColor) else SecondaryOrange
     TagChip(
         tag = tag,
-        containerColor = containerColor,
-        contentColor = contentColor,
-        modifier = modifier.clickable(onClick = onClick)
+        backdrop = backdrop,
+        modifier = modifier
+            .alpha(if (selected) 1f else 0.5f)
+            .clickable(onClick = onClick)
     )
 }

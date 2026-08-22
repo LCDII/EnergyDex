@@ -18,6 +18,7 @@ import com.kashif_e.backdrop.highlight.Highlight
  *  - false = «лёгкий» (colorControls + blur(16)) — рецепт FrostedListHeader, плавнее на скролле
  */
 val UseHeavyGlass = true
+val UseHeavyTagGlass = false
 
 /** Пресет-обёртка над [glassBackdrop] для «контейнеров» (search, подложка таба, подложка toggle). */
 fun Modifier.glassContainer(
@@ -67,6 +68,42 @@ fun Modifier.glassThumb(
         highlight = { Highlight.Ambient },
         tintBrush = tintBrush,
         tintOpacity = tintOpacity,
+        edgeWidth = 1.dp,
+        edge = tintBrush,
+    )
+} else {
+    glassBackdrop(
+        backdrop = backdrop,
+        shape = shape,
+        effects = {
+            colorControls(brightness = 0.08f, saturation = 1.7f)
+            blur(radius = 8.dp.toPx())
+        },
+        highlight = { Highlight.Default },
+        tintBrush = tintBrush,
+        tintOpacity = tintOpacity,
+        edgeWidth = 1.dp,
+        edge = tintBrush,
+    )
+}
+
+fun Modifier.glassTag(
+    backdrop: Backdrop,
+    shape: Shape,
+    tintBrush: Brush,
+    tintOpacity: Float = 0.7f
+): Modifier = if (UseHeavyTagGlass) {
+    glassBackdrop(
+        backdrop = backdrop,
+        shape = shape,
+        effects = {
+            vibrancy()
+            blur(radius = 8.dp.toPx())
+            lens(refractionHeight = 24.dp.toPx(), refractionAmount = 24.dp.toPx())
+        },
+        highlight = { Highlight.Ambient },
+        tintBrush = tintBrush,
+        tintOpacity = tintOpacity,
     )
 } else {
     glassBackdrop(
@@ -76,8 +113,10 @@ fun Modifier.glassThumb(
             colorControls(brightness = 0.1f, saturation = 1.5f)
             blur(radius = 16.dp.toPx())
         },
-        highlight = { Highlight.Default },
+        highlight = { Highlight.Ambient },
         tintBrush = tintBrush,
         tintOpacity = tintOpacity,
+        edgeWidth = 1.dp,
+        edge = tintBrush,
     )
 }

@@ -1,6 +1,5 @@
 package com.example.energydex.presentation.shared.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,23 +19,33 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.energydex.core.presentation.tagColor
+import com.example.energydex.core.presentation.tagGradient
+import com.example.energydex.core.presentation.glassTag
+import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.domain.tag.model.Tag
+import com.kashif_e.backdrop.Backdrop
+import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 
 @Composable
 fun TagChip(
     tag: Tag,
     modifier: Modifier = Modifier,
-    containerColor: Color = tagColor(tag.color),
-    contentColor: Color = Color.White,
+    backdrop: Backdrop,
     fontSize: TextUnit = 14.sp,
     horizontalPadding: Dp = 5.dp,
-    verticalPadding: Dp = 2.dp
+    verticalPadding: Dp = 1.dp
 ) {
+    val shape = RoundedCornerShape(50)
+    val tagBrush = tagGradient(tag.color)
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(50))
-            .background(containerColor)
+            .clip(shape)
+            .glassTag(
+                backdrop = backdrop,
+                shape = shape,
+                tintBrush = tagBrush,
+                tintOpacity = 0.85f
+            )
             .padding(horizontal = horizontalPadding, vertical = verticalPadding),
         contentAlignment = Alignment.Center
     ) {
@@ -57,23 +66,21 @@ fun TagChip(
 @Preview
 @Composable
 private fun TagChipPreview() {
+    val backdrop = rememberCanvasBackdrop { drawRect(PrimaryPurple) }
     Column {
         Row {
             TagChip(
                 tag = Tag(1, "red", "Energy"),
-                containerColor = Color(0xFFE57373),
-                contentColor = Color.White
+                backdrop = backdrop
             )
             TagChip(
                 tag = Tag(2, "blue", "Zero Sugar"),
-                containerColor = Color(0xFF64B5F6),
-                contentColor = Color.White
+                backdrop = backdrop
             )
         }
         TagChip(
             tag = Tag(3, "green", "Longer tag example"),
-            containerColor = Color(0xFF81C784),
-            contentColor = Color.Black
+            backdrop = backdrop
         )
     }
 }

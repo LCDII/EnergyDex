@@ -47,6 +47,7 @@ import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.presentation.shared.components.TagChip
+import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
@@ -82,6 +83,7 @@ fun EnergyDrinkDetailScreen(
     onAction: (EnergyDrinkDetailAction) -> Unit
 ) {
     var isImagePreviewVisible by remember { mutableStateOf(false) }
+    val tagBackdrop = rememberCanvasBackdrop { drawRect(PrimaryPurple) }
 
     if (state.showDeleteConfirmation) {
         AlertDialog(
@@ -213,7 +215,7 @@ fun EnergyDrinkDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         drink.tags.forEach { tag ->
-                            TagChip(tag = tag)
+                            TagChip(tag = tag, backdrop = tagBackdrop)
                         }
                     }
                 }
