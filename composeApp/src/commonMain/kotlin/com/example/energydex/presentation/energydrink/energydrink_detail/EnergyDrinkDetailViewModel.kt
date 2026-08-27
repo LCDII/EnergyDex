@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
-import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,8 +14,7 @@ import kotlinx.coroutines.launch
 
 class EnergyDrinkDetailViewModel(
     private val id: Long,
-    private val getEnergyDrinkById: GetEnergyDrinkByIdUseCase,
-    private val deleteEnergyDrink: DeleteEnergyDrinkUseCase
+    private val getEnergyDrinkById: GetEnergyDrinkByIdUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkDetailState())
     val state = _state.stateIn(
@@ -45,36 +43,6 @@ class EnergyDrinkDetailViewModel(
 
     fun onAction(action: EnergyDrinkDetailAction) {
         when (action) {
-            EnergyDrinkDetailAction.OnDeleteClick -> {
-                _state.update { it.copy(showDeleteConfirmation = true) }
-            }
-            EnergyDrinkDetailAction.OnConfirmDeleteClick -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(isDeleting = true) }
-                    deleteEnergyDrink(id)
-                        .onSuccess {
-                            _state.update {
-                                it.copy(
-                                    showDeleteConfirmation = false,
-                                    isDeleting = false,
-                                    isDeleted = true
-                                )
-                            }
-                        }
-                        .onError { error ->
-                            _state.update {
-                                it.copy(
-                                    showDeleteConfirmation = false,
-                                    isDeleting = false,
-                                    errorMessage = error.toUiText()
-                                )
-                            }
-                        }
-                }
-            }
-            EnergyDrinkDetailAction.OnDeclineDeleteClick -> {
-                _state.update { it.copy(showDeleteConfirmation = false) }
-            }
             EnergyDrinkDetailAction.OnBackClick->{
 
             }

@@ -5,9 +5,6 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 
 data class EnergyDrinkDetailState(
     val isLoading: Boolean = true,
-    val showDeleteConfirmation: Boolean = false,
-    val isDeleting: Boolean = false,
-    val isDeleted: Boolean = false,
     val currentDrink: EnergyDrink? = null,
     val errorMessage: UiText? = null,
     //TODO

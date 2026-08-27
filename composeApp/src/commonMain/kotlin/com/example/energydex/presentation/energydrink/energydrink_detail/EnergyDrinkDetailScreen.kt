@@ -1,32 +1,29 @@
 package com.example.energydex.presentation.energydrink.energydrink_detail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +31,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -41,17 +41,26 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.core.presentation.ErrorRed
+import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.PrimaryPurple
-import com.example.energydex.core.presentation.SecondaryOrange
-import com.example.energydex.core.presentation.SecondaryPurple
+import com.example.energydex.core.presentation.TagPurpleColor
+import com.example.energydex.core.presentation.glassContainer
+import com.example.energydex.core.presentation.ratingStarTint
+import com.example.energydex.domain.energydrink.model.EnergyDrink
+import com.example.energydex.presentation.shared.components.GlassCircleButton
 import com.example.energydex.presentation.shared.components.TagChip
+import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
+import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import energydex.composeapp.generated.resources.Res
+import energydex.composeapp.generated.resources.ic_arrow_back
+import energydex.composeapp.generated.resources.ic_edit
 import energydex.composeapp.generated.resources.ic_image_placeholder
+import energydex.composeapp.generated.resources.ic_star
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EnergyDrinkDetailScreenRoot(
@@ -60,10 +69,6 @@ fun EnergyDrinkDetailScreenRoot(
     onUpdateClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(state.isDeleted) {
-        if (state.isDeleted) onBackClick()
-    }
 
     EnergyDrinkDetailScreen(
         state = state,
@@ -83,190 +88,227 @@ fun EnergyDrinkDetailScreen(
     onAction: (EnergyDrinkDetailAction) -> Unit
 ) {
     var isImagePreviewVisible by remember { mutableStateOf(false) }
-    val tagBackdrop = rememberCanvasBackdrop { drawRect(PrimaryPurple) }
+    val detailBackdrop = rememberLayerBackdrop()
+    val tagBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
+    val topBarShape = RoundedCornerShape(50)
 
-    if (state.showDeleteConfirmation) {
-        AlertDialog(
-            onDismissRequest = {
-                onAction(EnergyDrinkDetailAction.OnDeclineDeleteClick)
-            },
-            title = { Text("Delete energy drink?") },
-            text = { Text("This action cannot be undone.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onAction(EnergyDrinkDetailAction.OnConfirmDeleteClick)
-                    }
-                ) {
-                    Text("Delete", color = ErrorRed)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        onAction(EnergyDrinkDetailAction.OnDeclineDeleteClick)
-                    }
-                ) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(PrimaryPurple)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .layerBackdrop(detailBackdrop)
+                .padding(top = 120.dp, start = 20.dp, end = 20.dp, bottom = 120.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { onAction(EnergyDrinkDetailAction.OnBackClick) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = SecondaryPurple,
-                    contentColor = AccentWhite
-                )
-            ) {
-                Text("Back")
-            }
-            Text("Details", color = AccentWhite, fontSize = 22.sp)
-            TextButton(onClick = { onAction(EnergyDrinkDetailAction.OnUpdateClick) }) {
-                Text("Edit", color = SecondaryOrange)
-            }
-        }
-
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(300.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = PrimaryOrange)
-                }
-            }
-            state.currentDrink != null -> {
-                val drink = state.currentDrink
-                val imageShape = RoundedCornerShape(24.dp)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(280.dp)
-                        .clip(imageShape)
-                        .border(1.dp, SecondaryOrange, imageShape)
-                        .then(
-                            if (drink.imagePath != null) {
-                                Modifier.clickable { isImagePreviewVisible = true }
-                            } else {
-                                Modifier
-                            }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (drink.imagePath == null) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_image_placeholder),
-                            contentDescription = null,
-                            tint = SecondaryOrange,
-                            modifier = Modifier.size(72.dp)
-                        )
-                    } else {
-                        AsyncImage(
-                            model = drink.imagePath,
-                            contentDescription = drink.name,
-                            modifier = Modifier.fillMaxSize(),
-                            error = painterResource(Res.drawable.ic_image_placeholder)
-                        )
-                    }
-                }
-
-                if (isImagePreviewVisible && drink.imagePath != null) {
-                    Dialog(
-                        onDismissRequest = { isImagePreviewVisible = false },
-                        properties = DialogProperties(usePlatformDefaultWidth = false)
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(PrimaryPurple)
-                                .clickable { isImagePreviewVisible = false },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            AsyncImage(
-                                model = drink.imagePath,
-                                contentDescription = drink.name,
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = androidx.compose.ui.layout.ContentScale.Fit,
-                                error = painterResource(Res.drawable.ic_image_placeholder)
-                            )
-                        }
+                        CircularProgressIndicator(color = PrimaryOrange)
                     }
                 }
 
-                if (drink.tags.isNotEmpty()) {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        drink.tags.forEach { tag ->
-                            TagChip(tag = tag, backdrop = tagBackdrop)
-                        }
-                    }
-                }
-
-                Text(
-                    text = drink.name,
-                    color = AccentWhite,
-                    fontSize = 28.sp
-                )
-                Text(
-                    text = "Rating: ${drink.rating ?: 0.0}",
-                    color = SecondaryOrange,
-                    fontSize = 18.sp
-                )
-
-                Text(
-                    text = drink.description?.takeIf { it.isNotBlank() }
-                        ?: "No description",
-                    color = AccentWhite,
-                    fontSize = 17.sp
-                )
-                Text(
-                    text = "Created: ${drink.createdAt.toString().substring(0, 10)}",
-                    color = SecondaryOrange,
-                    fontSize = 14.sp
-                )
-
-                state.errorMessage?.let { error ->
-                    Text(error.asString(), color = ErrorRed)
-                }
-
-                Button(
-                    onClick = { onAction(EnergyDrinkDetailAction.OnDeleteClick) },
-                    enabled = !state.isDeleting,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ErrorRed,
-                        contentColor = AccentWhite
+                state.currentDrink != null -> {
+                    val drink = state.currentDrink
+                    DetailContent(
+                        drink = drink,
+                        tagBackdrop = tagBackdrop,
+                        onImageClick = { isImagePreviewVisible = true }
                     )
-                ) {
-                    Text(if (state.isDeleting) "Deleting..." else "Delete")
+
+                    if (isImagePreviewVisible && drink.imagePath != null) {
+                        Dialog(
+                            onDismissRequest = { isImagePreviewVisible = false },
+                            properties = DialogProperties(usePlatformDefaultWidth = false)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(PrimaryPurple)
+                                    .clickable { isImagePreviewVisible = false },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                AsyncImage(
+                                    model = drink.imagePath,
+                                    contentDescription = drink.name,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                                    error = painterResource(Res.drawable.ic_image_placeholder)
+                                )
+                            }
+                        }
+                    }
+
+                    state.errorMessage?.let { error ->
+                        Text(error.asString(), color = ErrorRed)
+                    }
                 }
-            }
-            else -> {
-                Text(
-                    text = state.errorMessage?.asString() ?: "Energy drink not found",
-                    color = ErrorRed
-                )
+
+                else -> {
+                    Text(
+                        text = state.errorMessage?.asString() ?: "Energy drink not found",
+                        color = ErrorRed,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 12.dp, start = 8.dp, end = 8.dp)
+                .fillMaxWidth()
+                .height(50.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(72.dp)
+                    .height(50.dp)
+                    .clip(topBarShape)
+                    .glassContainer(
+                        backdrop = detailBackdrop,
+                        shape = topBarShape,
+                        tint = GlassPanelTint
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = { onAction(EnergyDrinkDetailAction.OnBackClick) }) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_arrow_back),
+                        contentDescription = "Back",
+                        tint = AccentWhite,
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
+            }
+            Text(
+                text = "Details",
+                color = AccentWhite,
+                fontSize = 22.sp,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        GlassCircleButton(
+            onClick = { onAction(EnergyDrinkDetailAction.OnUpdateClick) },
+            contentDescription = "Edit",
+            icon = Res.drawable.ic_edit,
+            backdrop = detailBackdrop,
+            size = 80.dp,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+        )
+    }
+}
+
+@Composable
+private fun DetailContent(
+    drink: EnergyDrink,
+    tagBackdrop: com.kashif_e.backdrop.Backdrop,
+    onImageClick: () -> Unit
+) {
+    Text(
+        text = drink.name,
+        color = AccentWhite,
+        fontSize = 30.sp,
+        textAlign = TextAlign.Center,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.fillMaxWidth()
+    )
+    DetailRating(drink.rating)
+
+    val imageShape = RoundedCornerShape(24.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(280.dp)
+            .clip(imageShape)
+            .then(if (drink.imagePath != null) Modifier.clickable(onClick = onImageClick) else Modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        if (drink.imagePath == null) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_image_placeholder),
+                contentDescription = null,
+                tint = PrimaryOrange,
+                modifier = Modifier.size(72.dp)
+            )
+        } else {
+            AsyncImage(
+                model = drink.imagePath,
+                contentDescription = drink.name,
+                modifier = Modifier.fillMaxSize(),
+                error = painterResource(Res.drawable.ic_image_placeholder),
+                placeholder = painterResource(Res.drawable.ic_image_placeholder)
+            )
+        }
+    }
+
+    if (drink.tags.isNotEmpty()) {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            drink.tags.forEach { tag ->
+                TagChip(
+                    tag = tag,
+                    backdrop = tagBackdrop,
+                    fontSize = 16.sp,
+                    horizontalPadding = 12.dp,
+                    verticalPadding = 3.dp,
+                    modifier = Modifier
+                        .widthIn(min = 64.dp)
+                        .height(50.dp)
+                )
+            }
+        }
+    }
+
+    drink.description
+        ?.takeIf { it.isNotBlank() }
+        ?.let { description ->
+            Text(
+                text = description,
+                color = AccentWhite,
+                fontSize = 17.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+}
+
+@Composable
+private fun DetailRating(rating: Double?) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_star),
+            contentDescription = null,
+            tint = if (rating != null && rating >= 10.0) TagPurpleColor else ratingStarTint(rating),
+            modifier = Modifier.size(32.dp)
+        )
+        Text(
+            text = rating?.toString() ?: "0.0",
+            color = AccentWhite,
+            fontSize = 24.sp,
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }

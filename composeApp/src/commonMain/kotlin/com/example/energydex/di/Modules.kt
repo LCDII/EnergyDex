@@ -105,7 +105,7 @@ val viewModelModule = module {
     viewModelOf(::EnergyDrinkAddViewModel)
     viewModelOf(::TagSectionViewModel)
     viewModel { parameters ->
-        EnergyDrinkDetailViewModel(parameters.get(), get(), get())
+        EnergyDrinkDetailViewModel(parameters.get(), get())
     }
     viewModel { parameters ->
         EnergyDrinkUpdateViewModel(parameters.get(), get(), get(), get())

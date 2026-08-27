@@ -12,15 +12,10 @@ import com.kashif_e.backdrop.effects.lens
 import com.kashif_e.backdrop.effects.vibrancy
 import com.kashif_e.backdrop.highlight.Highlight
 
-/**
- * Единый переключатель стиля стекла (таб + search + toggle + все кнопки):
- *  - true  = «тяжёлый» (vibrancy + blur(8) + lens(24,24)) — как рецепт LiquidBottomTabs
- *  - false = «лёгкий» (colorControls + blur(16)) — рецепт FrostedListHeader, плавнее на скролле
- */
+
 val UseHeavyGlass = true
 val UseHeavyTagGlass = false
 
-/** Пресет-обёртка над [glassBackdrop] для «контейнеров» (search, подложка таба, подложка toggle). */
 fun Modifier.glassContainer(
     backdrop: Backdrop,
     shape: Shape,
@@ -49,8 +44,6 @@ fun Modifier.glassContainer(
         onDrawSurface = { drawRect(tint) }
     )
 }
-
-/** Пресет-обёртка над [glassBackdrop] для «выбранной части» (капсула таба, thumb toggle, кнопки). */
 fun Modifier.glassThumb(
     backdrop: Backdrop,
     shape: Shape,
