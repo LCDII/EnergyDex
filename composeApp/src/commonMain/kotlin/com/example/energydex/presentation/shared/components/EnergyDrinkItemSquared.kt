@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,7 +59,7 @@ fun EnergyDrinkItemSquared(
     isSelectionMode: Boolean = false,
     cardBackdrop: Backdrop
 ) {
-    val shape = RoundedCornerShape(32.dp)
+    val shape = RoundedCornerShape(24.dp)
     val cardInnerShadow = InnerShadow(radius = 4.dp)
     val hasPhoto = energyDrink.imagePath != null
     val hasTags = energyDrink.tags.isNotEmpty()
@@ -137,11 +138,12 @@ fun EnergyDrinkItemSquared(
 
                     !hasTags -> {
                         Row(modifier = Modifier.fillMaxSize()) {
-                            DrinkPhoto(
-                                energyDrink = energyDrink,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxHeight()
+                                DrinkPhoto(
+                                    energyDrink = energyDrink,
+                                    shape = shape,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
                             )
                             Column(
                                 modifier = Modifier
@@ -166,6 +168,7 @@ fun EnergyDrinkItemSquared(
                             ) {
                                 DrinkPhoto(
                                     energyDrink = energyDrink,
+                                    shape = shape,
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxHeight()
@@ -212,10 +215,11 @@ fun EnergyDrinkItemSquared(
 @Composable
 private fun DrinkPhoto(
     energyDrink: EnergyDrink,
+    shape: Shape,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.clip(RoundedCornerShape(20.dp)),
+        modifier = modifier.clip(shape),
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
@@ -263,7 +267,7 @@ private fun DrinkRating(
             painter = painterResource(Res.drawable.ic_star),
             contentDescription = null,
             tint = if (rating != null && rating >= 10.0) TagPurpleColor else ratingStarTint(rating),
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(24.dp)
         )
         Text(
             text = rating?.toString() ?: "0.0",
