@@ -3,9 +3,7 @@ package com.example.energydex.core.presentation
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-val GlassPanelTint = PrimaryPurple.copy(alpha = 0.45f)
-val GlassCardTint = PrimaryPurple.copy(alpha = 0.55f)
-val GlassChipTint = PrimaryPurple.copy(alpha = 0.40f)
+val GlassPanelTint = AppBackground.copy(alpha = 0.45f)
 
 val GlassEdgeHighlight = Brush.verticalGradient(
     listOf(
@@ -14,23 +12,19 @@ val GlassEdgeHighlight = Brush.verticalGradient(
     )
 )
 
-private val TabDrinkGreen = Color(0xFF27CF51)
-private val TabDrinkLight = Color(0xFF47FF75)
-private val TabDrinkBright = Color(0xFF75F696)
-
 val TabGradient = Brush.horizontalGradient(
     colorStops = arrayOf(
-        0.20f to TabDrinkGreen,
-        0.50f to TabDrinkLight,
-        0.95f to TabDrinkBright,
+        0.20f to Color(0xFF27CF51),
+        0.50f to Color(0xFF47FF75),
+        0.95f to Color(0xFF75F696),
     )
 )
 
 val TabGradientVertical = Brush.verticalGradient(
     colorStops = arrayOf(
-        0.20f to TabDrinkGreen,
-        0.50f to TabDrinkLight,
-        0.95f to TabDrinkBright,
+        0.20f to Color(0xFF27CF51),
+        0.50f to Color(0xFF47FF75),
+        0.95f to Color(0xFF75F696),
     )
 )
 
@@ -59,6 +53,14 @@ val AccentIndigoGradient = Brush.horizontalGradient(
 )
 
 val AccentRedGradient = Brush.horizontalGradient(
+    colorStops = arrayOf(
+        0.20f to TagRedColor,
+        0.50f to Color(0xFFFF585C),
+        0.95f to Color(0xFFFF6E71)
+    )
+)
+
+val AccentRedGradientVertical = Brush.verticalGradient(
     colorStops = arrayOf(
         0.20f to TagRedColor,
         0.50f to Color(0xFFFF585C),

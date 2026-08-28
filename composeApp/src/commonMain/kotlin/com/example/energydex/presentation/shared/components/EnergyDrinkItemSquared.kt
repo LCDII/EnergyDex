@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.GlassCardTint
+import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.TagPurpleColor
 import com.example.energydex.core.presentation.glassBackdrop
 import com.example.energydex.core.presentation.ratingStarTint
@@ -79,7 +79,7 @@ fun EnergyDrinkItemSquared(
                     tint = if (isSelected) {
                         PrimaryOrange.copy(alpha = 0.28f)
                     } else {
-                        GlassCardTint
+                        GlassPanelTint
                     },
                     blurRadius = 14.dp,
                     saturation = 1.15f,

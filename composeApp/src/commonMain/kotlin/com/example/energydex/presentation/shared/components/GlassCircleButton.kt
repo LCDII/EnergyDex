@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.TabGradientVertical
@@ -25,7 +26,8 @@ fun GlassCircleButton(
     icon: DrawableResource,
     backdrop: Backdrop,
     modifier: Modifier = Modifier,
-    size: Dp = 58.dp
+    size: Dp = 58.dp,
+    tintBrush: Brush = TabGradientVertical
 ) {
     val circle = CircleShape
     Box(
@@ -35,7 +37,7 @@ fun GlassCircleButton(
             .glassThumb(
                 backdrop = backdrop,
                 shape = circle,
-                tintBrush = TabGradientVertical,
+                tintBrush = tintBrush,
                 tintOpacity = 0.7f
             ),
         contentAlignment = Alignment.Center

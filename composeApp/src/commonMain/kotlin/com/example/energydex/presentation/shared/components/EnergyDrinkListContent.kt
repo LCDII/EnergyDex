@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.AppBackground
-import com.example.energydex.core.presentation.GlassChipTint
+import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.UiText
 import com.example.energydex.core.presentation.glassContainer
@@ -183,7 +183,7 @@ fun EnergyDrinkListContent(
                     .glassContainer(
                         backdrop = listGlassState,
                         shape = RoundedCornerShape(100),
-                        tint = GlassChipTint
+                        tint = GlassPanelTint
                     ),
                 searchQuery = searchQuery,
                 onSearchQueryChange = onSearchQueryChange,

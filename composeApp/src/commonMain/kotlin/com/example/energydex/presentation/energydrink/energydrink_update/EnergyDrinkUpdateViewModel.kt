@@ -6,6 +6,7 @@ import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
 import com.example.energydex.domain.energydrink.usecase.GetEnergyDrinkByIdUseCase
+import com.example.energydex.domain.energydrink.usecase.DeleteEnergyDrinkUseCase
 import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkUseCase
 import com.example.energydex.domain.tag.usecase.ObserveTagsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,8 @@ class EnergyDrinkUpdateViewModel(
     private val id: Long,
     private val getEnergyDrinkById: GetEnergyDrinkByIdUseCase,
     private val updateEnergyDrink: UpdateEnergyDrinkUseCase,
-    private val observeTags: ObserveTagsUseCase
+    private val observeTags: ObserveTagsUseCase,
+    private val deleteEnergyDrink: DeleteEnergyDrinkUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(EnergyDrinkUpdateState())
     val state = _state.stateIn(
@@ -70,6 +72,13 @@ class EnergyDrinkUpdateViewModel(
                 }
             }
             is EnergyDrinkUpdateAction.OnSaveClick -> save()
+            is EnergyDrinkUpdateAction.OnDeleteClick -> {
+                _state.update { it.copy(showDeleteConfirmation = true) }
+            }
+            is EnergyDrinkUpdateAction.OnConfirmDeleteClick -> delete()
+            is EnergyDrinkUpdateAction.OnDeclineDeleteClick -> {
+                _state.update { it.copy(showDeleteConfirmation = false) }
+            }
             is EnergyDrinkUpdateAction.OnBackClick -> {
                 //navigation only; ui responsible for nav;
             }
@@ -146,5 +155,29 @@ class EnergyDrinkUpdateViewModel(
         }.onError { error ->
             _state.update { it.copy(isSaving = false, errorMessage = error.toUiText()) }
         }
+    }
+
+    private fun delete() = viewModelScope.launch {
+        if (_state.value.isDeleting) return@launch
+        _state.update { it.copy(isDeleting = true) }
+        deleteEnergyDrink(id)
+            .onSuccess {
+                _state.update {
+                    it.copy(
+                        showDeleteConfirmation = false,
+                        isDeleting = false,
+                        isDeleted = true
+                    )
+                }
+            }
+            .onError { error ->
+                _state.update {
+                    it.copy(
+                        showDeleteConfirmation = false,
+                        isDeleting = false,
+                        errorMessage = error.toUiText()
+                    )
+                }
+            }
     }
 }

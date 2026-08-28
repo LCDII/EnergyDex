@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.example.energydex.domain.tag.model.Tag
 import com.example.energydex.presentation.shared.components.TagSelectableChip
-import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.AppBackground
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 
 @Composable
@@ -15,7 +15,7 @@ fun TagSelector(
     selectedTagIds: Set<Long>,
     onTagToggle: (Long) -> Unit
 ) {
-    val backdrop = rememberCanvasBackdrop { drawRect(PrimaryPurple) }
+    val backdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)

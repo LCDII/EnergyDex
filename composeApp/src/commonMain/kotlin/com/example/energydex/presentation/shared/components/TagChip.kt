@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.energydex.core.presentation.tagGradient
 import com.example.energydex.core.presentation.glassTag
-import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.domain.tag.model.Tag
 import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
@@ -66,7 +66,7 @@ fun TagChip(
 @Preview
 @Composable
 private fun TagChipPreview() {
-    val backdrop = rememberCanvasBackdrop { drawRect(PrimaryPurple) }
+    val backdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
     Column {
         Row {
             TagChip(

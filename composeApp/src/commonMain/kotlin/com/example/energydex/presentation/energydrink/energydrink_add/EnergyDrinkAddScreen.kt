@@ -42,7 +42,7 @@ import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkDescriptionTextField
@@ -145,7 +145,7 @@ fun EnergyDrinkAddScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(PrimaryPurple)
+            .background(AppBackground)
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp),

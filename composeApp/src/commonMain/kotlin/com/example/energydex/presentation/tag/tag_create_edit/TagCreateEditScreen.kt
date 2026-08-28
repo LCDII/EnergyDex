@@ -33,7 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.core.presentation.SecondaryPurple
 import com.example.energydex.core.presentation.TagColorValues
@@ -69,7 +69,7 @@ private fun TagCreateEditScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(PrimaryPurple)
+            .background(AppBackground)
             .statusBarsPadding()
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)

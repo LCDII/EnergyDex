@@ -2,7 +2,7 @@ package com.example.energydex.presentation.energydrink.energydrink_section.previ
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.energydex.core.presentation.PrimaryPurple
+import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.presentation.shared.components.EnergyDrinkListLonged
 import com.example.energydex.domain.tag.model.Tag
@@ -39,6 +39,6 @@ fun PreviewEnergyDrinkListLonged() {
             )
         },
         onEnergyDrinkClick = {},
-        cardBackdrop = rememberCanvasBackdrop { drawRect(PrimaryPurple) }
+        cardBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
     )
 }

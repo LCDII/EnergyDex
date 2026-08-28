@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.GlassChipTint
+import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.TabGradient
 import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.glassContainer
@@ -46,7 +46,7 @@ fun EnergyDrinkViewModeToggle(
             .glassContainer(
                 backdrop = backdrop,
                 shape = RoundedCornerShape(28.dp),
-                tint = GlassChipTint
+                tint = GlassPanelTint
             )
     ) {
         val halfWidth = maxWidth / 2

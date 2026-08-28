@@ -108,7 +108,7 @@ val viewModelModule = module {
         EnergyDrinkDetailViewModel(parameters.get(), get())
     }
     viewModel { parameters ->
-        EnergyDrinkUpdateViewModel(parameters.get(), get(), get(), get())
+        EnergyDrinkUpdateViewModel(parameters.get(), get(), get(), get(), get())
     }
     viewModel { parameters ->
         TagDetailViewModel(parameters.get(), get(), get(), get())

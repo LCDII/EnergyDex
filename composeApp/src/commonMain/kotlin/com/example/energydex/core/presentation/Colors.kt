@@ -15,7 +15,6 @@ val SecondaryOrange = Color(0xFFFFB347)
 val PrimaryOrangeGradientEnd = Color(0xFFFF5500)
 
 val AppBackground = Color(0xFF1E1E1E)
-val PrimaryPurple = AppBackground
 val SecondaryPurple = Color(0x73995EFF)
 
 val TextOnGradient = AppBackground

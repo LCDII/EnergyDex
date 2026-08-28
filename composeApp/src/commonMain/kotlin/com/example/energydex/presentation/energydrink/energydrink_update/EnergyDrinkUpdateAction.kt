@@ -8,5 +8,8 @@ interface EnergyDrinkUpdateAction {
     data object OnRemoveImage : EnergyDrinkUpdateAction
     data class OnTagToggle(val tagId: Long) : EnergyDrinkUpdateAction
     data object OnSaveClick : EnergyDrinkUpdateAction
+    data object OnDeleteClick : EnergyDrinkUpdateAction
+    data object OnConfirmDeleteClick : EnergyDrinkUpdateAction
+    data object OnDeclineDeleteClick : EnergyDrinkUpdateAction
     data object OnBackClick : EnergyDrinkUpdateAction
 }

@@ -45,12 +45,12 @@ import com.example.energydex.core.presentation.AppBackground
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.PrimaryPurple
 import com.example.energydex.core.presentation.TagPurpleColor
 import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.ratingStarTint
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.presentation.shared.components.GlassCircleButton
+import com.example.energydex.presentation.shared.components.GlassBackButton
 import com.example.energydex.presentation.shared.components.TagChip
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
@@ -95,17 +95,32 @@ fun EnergyDrinkDetailScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PrimaryPurple)
+            .background(AppBackground)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .layerBackdrop(detailBackdrop)
-                .padding(top = 120.dp, start = 20.dp, end = 20.dp, bottom = 120.dp),
+                .statusBarsPadding()
+                .padding(top = 12.dp, start = 20.dp, end = 20.dp, bottom = 120.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Details",
+                    color = AccentWhite,
+                    fontSize = 22.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             when {
                 state.isLoading -> {
                     Box(
@@ -134,7 +149,7 @@ fun EnergyDrinkDetailScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(PrimaryPurple)
+                                    .background(AppBackground)
                                     .clickable { isImagePreviewVisible = false },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -164,42 +179,14 @@ fun EnergyDrinkDetailScreen(
             }
         }
 
-        Box(
+        GlassBackButton(
+            backdrop = detailBackdrop,
+            onClick = { onAction(EnergyDrinkDetailAction.OnBackClick) },
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopStart)
                 .statusBarsPadding()
-                .padding(top = 12.dp, start = 8.dp, end = 8.dp)
-                .fillMaxWidth()
-                .height(50.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(72.dp)
-                    .height(50.dp)
-                    .clip(topBarShape)
-                    .glassContainer(
-                        backdrop = detailBackdrop,
-                        shape = topBarShape,
-                        tint = GlassPanelTint
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                IconButton(onClick = { onAction(EnergyDrinkDetailAction.OnBackClick) }) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_arrow_back),
-                        contentDescription = "Back",
-                        tint = AccentWhite,
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
-            }
-            Text(
-                text = "Details",
-                color = AccentWhite,
-                fontSize = 22.sp,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
+                .padding(top = 12.dp, start = 8.dp)
+        )
 
         GlassCircleButton(
             onClick = { onAction(EnergyDrinkDetailAction.OnUpdateClick) },
