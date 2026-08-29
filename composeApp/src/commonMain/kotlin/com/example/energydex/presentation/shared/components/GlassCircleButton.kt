@@ -29,14 +29,12 @@ fun GlassCircleButton(
     size: Dp = 58.dp,
     tintBrush: Brush = TabGradientVertical
 ) {
-    val circle = CircleShape
     Box(
         modifier = modifier
             .size(size)
-            .clip(circle)
             .glassThumb(
                 backdrop = backdrop,
-                shape = circle,
+                shape = CircleShape,
                 tintBrush = tintBrush,
                 tintOpacity = 0.7f
             ),

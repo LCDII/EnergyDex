@@ -54,15 +54,6 @@ import com.example.energydex.presentation.main_screen.components.MainScreenTab
 import com.example.energydex.presentation.tag.tag_section.TagSectionRoot
 import org.koin.compose.viewmodel.koinViewModel
 
-@Preview
-@Composable
-fun MainScreenPreview(){
-    MainScreenRoot(
-        onEnergyDrinkClick = {},
-        onAddEnergyDrinkButtonClick = {},
-        onTagClick = {}
-    )
-}
 
 @Composable
 fun MainScreenRoot(

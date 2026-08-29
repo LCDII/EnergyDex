@@ -25,16 +25,14 @@ fun GlassBackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(50)
 
     Box(
         modifier = modifier
             .width(72.dp)
             .height(50.dp)
-            .clip(shape)
             .glassContainer(
                 backdrop = backdrop,
-                shape = shape,
+                shape = RoundedCornerShape(50),
                 tint = GlassPanelTint
             ),
         contentAlignment = Alignment.Center

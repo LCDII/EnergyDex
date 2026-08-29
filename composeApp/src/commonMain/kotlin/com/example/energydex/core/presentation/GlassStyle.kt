@@ -14,7 +14,6 @@ import com.kashif_e.backdrop.highlight.Highlight
 
 
 val UseHeavyGlass = true
-val UseHeavyTagGlass = false
 
 fun Modifier.glassContainer(
     backdrop: Backdrop,
@@ -85,31 +84,13 @@ fun Modifier.glassTag(
     shape: Shape,
     tintBrush: Brush,
     tintOpacity: Float = 0.7f
-): Modifier = if (UseHeavyTagGlass) {
+): Modifier =
     glassBackdrop(
         backdrop = backdrop,
         shape = shape,
-        effects = {
-            vibrancy()
-            blur(radius = 8.dp.toPx())
-            lens(refractionHeight = 24.dp.toPx(), refractionAmount = 24.dp.toPx())
-        },
-        highlight = { Highlight.Ambient },
-        tintBrush = tintBrush,
-        tintOpacity = tintOpacity,
-    )
-} else {
-    glassBackdrop(
-        backdrop = backdrop,
-        shape = shape,
-        effects = {
-            colorControls(brightness = 0.1f, saturation = 1.5f)
-            blur(radius = 16.dp.toPx())
-        },
         highlight = { Highlight.Ambient },
         tintBrush = tintBrush,
         tintOpacity = tintOpacity,
         edgeWidth = 1.dp,
         edge = tintBrush,
     )
-}

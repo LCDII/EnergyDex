@@ -372,7 +372,7 @@ private fun ReadOnlyValue(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
@@ -384,6 +384,7 @@ private fun ReadOnlyValue(
             maxLines = if (textSize.value > 20f) 2 else 6,
             overflow = TextOverflow.Ellipsis
         )
+        Spacer(modifier = Modifier.width(4.dp))
         EditIconButton(onClick = onEdit)
     }
 }
@@ -483,15 +484,19 @@ private fun DetailRating(
                 fontSize = 24.sp
             )
         }
+        Spacer(modifier = Modifier.width(8.dp))
         EditIconButton(onClick = onEdit)
     }
 }
 
 @Composable
-private fun EditIconButton(onClick: () -> Unit) {
+private fun EditIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(36.dp)
+        modifier = modifier.size(36.dp)
     ) {
         Icon(
             painter = painterResource(Res.drawable.ic_edit),
@@ -514,7 +519,7 @@ private fun EditableImage(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(280.dp)
+            .height(420.dp)
                 .clip(imageShape),
             contentAlignment = Alignment.Center
         ) {
@@ -530,8 +535,9 @@ private fun EditableImage(
                     model = imagePath,
                     contentDescription = name,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                    error = painterResource(Res.drawable.ic_image_placeholder)
+                    contentScale = androidx.compose.ui.layout.ContentScale.FillHeight,
+                    error = painterResource(Res.drawable.ic_image_placeholder),
+                    placeholder = painterResource(Res.drawable.ic_image_placeholder)
                 )
             }
         }
