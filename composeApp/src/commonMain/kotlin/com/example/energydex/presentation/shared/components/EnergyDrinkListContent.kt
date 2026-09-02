@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.AppBackground
+import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.UiText
@@ -38,9 +39,18 @@ import com.example.energydex.presentation.energydrink.energydrink_section.compon
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.SolidColor
+import com.example.energydex.core.presentation.AccentRedGradientVertical
+import com.example.energydex.core.presentation.TagGreenColor
+import com.example.energydex.core.presentation.TabGradientVertical
+import com.example.energydex.core.presentation.TextOnBackground
 import energydex.composeapp.generated.resources.Res
+import energydex.composeapp.generated.resources.ic_close
+import energydex.composeapp.generated.resources.ic_delete
 import energydex.composeapp.generated.resources.ic_energy_drink_add
 import energydex.composeapp.generated.resources.ic_energy_drinks_filter
+import energydex.composeapp.generated.resources.ic_tag
 import energydex.composeapp.generated.resources.no_search_results
 import org.jetbrains.compose.resources.stringResource
 
@@ -217,27 +227,52 @@ fun EnergyDrinkListContent(
         }
 
         if (isSelectionMode) {
-            EnergyDrinkSelectionToolbar(
-                selectedCount = selectedDrinkIds.size,
-                isBusy = isBulkOperationRunning,
-                onDeleteClick = onDeleteSelectedClick,
-                onTagClick = onTagSelectedClick,
-                onCancelClick = onCancelSelectionClick,
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
-        }
-
-        onPrimaryActionClick?.let { onClick ->
-            GlassCircleButton(
-                onClick = onClick,
-                contentDescription = primaryActionDescription,
-                icon = Res.drawable.ic_energy_drink_add,
-                backdrop = listGlassState,
-                size = 80.dp,
+            Row(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp)
-            )
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                GlassCircleButton(
+                    onClick = onCancelSelectionClick,
+                    contentDescription = "Cancel selection",
+                    icon = Res.drawable.ic_close,
+                    backdrop = listGlassState,
+                    size = 80.dp,
+                    tintBrush = SolidColor(GlassPanelTint),
+                    iconTint = AccentWhite
+                )
+                GlassCircleButton(
+                    onClick = onTagSelectedClick,
+                    contentDescription = "Tag selected",
+                    icon = Res.drawable.ic_tag,
+                    backdrop = listGlassState,
+                    size = 80.dp,
+                    tintBrush = TabGradientVertical,
+                )
+                GlassCircleButton(
+                    onClick = onDeleteSelectedClick,
+                    contentDescription = "Delete selected",
+                    icon = Res.drawable.ic_delete,
+                    backdrop = listGlassState,
+                    size = 80.dp,
+                    tintBrush = AccentRedGradientVertical,
+                )
+            }
+        } else {
+            onPrimaryActionClick?.let { onClick ->
+                GlassCircleButton(
+                    onClick = onClick,
+                    contentDescription = primaryActionDescription,
+                    icon = Res.drawable.ic_energy_drink_add,
+                    backdrop = listGlassState,
+                    size = 80.dp,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 24.dp)
+                )
+            }
         }
 
         if (isDeleteDialogVisible) {
@@ -257,11 +292,14 @@ fun EnergyDrinkListContent(
         if (isTagDialogVisible) {
             AlertDialog(
                 onDismissRequest = onDismissTagDialogClick,
+                containerColor = AppBackground,
+                titleContentColor = AccentWhite,
+                textContentColor = AccentWhite,
                 title = { Text("Add tags") },
                 text = {
                     Column {
                         TextButton(onClick = onCreateTagClick) {
-                            Text("Create new tag")
+                            Text("Create new tag", color = TagGreenColor)
                         }
                         if (tags.isEmpty()) {
                             Text("No tags available")
@@ -270,7 +308,12 @@ fun EnergyDrinkListContent(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Checkbox(
                                         checked = tag.id in selectedTagIds,
-                                        onCheckedChange = { onToggleTag(tag.id) }
+                                        onCheckedChange = { onToggleTag(tag.id) },
+                                        colors = androidx.compose.material3.CheckboxDefaults.colors(
+                                            checkedColor = TagGreenColor,
+                                            uncheckedColor = AccentWhite.copy(alpha = 0.6f),
+                                            checkmarkColor = AppBackground
+                                        )
                                     )
                                     Text(tag.name)
                                 }
@@ -281,11 +324,17 @@ fun EnergyDrinkListContent(
                 confirmButton = {
                     Button(
                         onClick = onConfirmTagSelectedClick,
-                        enabled = selectedTagIds.isNotEmpty() && !isBulkOperationRunning
+                        enabled = selectedTagIds.isNotEmpty() && !isBulkOperationRunning,
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = TagGreenColor,
+                            contentColor = AppBackground
+                        )
                     ) { Text("Add") }
                 },
                 dismissButton = {
-                    TextButton(onClick = onDismissTagDialogClick) { Text("Cancel") }
+                    TextButton(onClick = onDismissTagDialogClick) {
+                        Text("Cancel", color = AccentWhite.copy(alpha = 0.7f))
+                    }
                 }
             )
         }

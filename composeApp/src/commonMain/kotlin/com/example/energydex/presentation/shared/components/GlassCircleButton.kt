@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.TabGradientVertical
@@ -27,7 +28,8 @@ fun GlassCircleButton(
     backdrop: Backdrop,
     modifier: Modifier = Modifier,
     size: Dp = 58.dp,
-    tintBrush: Brush = TabGradientVertical
+    tintBrush: Brush = TabGradientVertical,
+    iconTint: Color = TextOnGradient
 ) {
     Box(
         modifier = modifier
@@ -44,7 +46,7 @@ fun GlassCircleButton(
             Icon(
                 painter = painterResource(icon),
                 contentDescription = contentDescription,
-                tint = TextOnGradient,
+                tint = iconTint,
                 modifier = Modifier.size(26.dp)
             )
         }

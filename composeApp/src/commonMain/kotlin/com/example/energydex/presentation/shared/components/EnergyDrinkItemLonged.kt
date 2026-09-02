@@ -1,6 +1,5 @@
 package com.example.energydex.presentation.shared.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.border
 import androidx.compose.material3.Icon
@@ -33,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.GlassPanelTint
-import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.TagGreenColor
 import com.example.energydex.core.presentation.TagPurpleColor
 import com.example.energydex.core.presentation.glassBackdrop
 import com.example.energydex.core.presentation.ratingStarTint
@@ -74,7 +72,7 @@ fun EnergyDrinkItemLonged(
                     backdrop = cardBackdrop,
                     shape = shape,
                     tint = if (isSelected) {
-                        PrimaryOrange.copy(alpha = 0.28f)
+                        TagGreenColor.copy(alpha = 0.28f)
                     } else {
                         GlassPanelTint
                     },
@@ -84,7 +82,7 @@ fun EnergyDrinkItemLonged(
                 )
                 .border(
                     width = if (isSelected) 3.dp else 0.dp,
-                    color = if (isSelected) PrimaryOrange else Color.Transparent,
+                    color = if (isSelected) TagGreenColor else Color.Transparent,
                     shape = shape
                 )
                 .combinedClickable(
@@ -172,18 +170,6 @@ fun EnergyDrinkItemLonged(
             }
         }
 
-        if (isSelected) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(10.dp)
-                    .size(30.dp)
-                    .background(PrimaryOrange, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("✓", color = AccentWhite, fontSize = 18.sp)
-            }
-        }
     }
 }
 
