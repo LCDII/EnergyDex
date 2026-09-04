@@ -53,6 +53,7 @@ import energydex.composeapp.generated.resources.ic_energy_drinks_filter
 import energydex.composeapp.generated.resources.ic_tag
 import energydex.composeapp.generated.resources.no_search_results
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.DrawableResource
 
 private val SearchRowTopPadding = 84.dp
 private val ListContentTopPadding = 166.dp
@@ -93,7 +94,12 @@ fun EnergyDrinkListContent(
     onSortButtonClick: () -> Unit,
     onSortOptionSelected: (EnergyDrinkListSortOptions) -> Unit,
     onPrimaryActionClick: (() -> Unit)? = null,
-    primaryActionDescription: String = ""
+    primaryActionDescription: String = "",
+    primaryActionIcon: DrawableResource = Res.drawable.ic_energy_drink_add,
+    showTagSelectionAction: Boolean = true,
+    selectionActionIcon: org.jetbrains.compose.resources.DrawableResource = Res.drawable.ic_delete,
+    selectionActionDescription: String = "Delete selected",
+    selectionActionTintBrush: Brush = AccentRedGradientVertical,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -243,21 +249,23 @@ fun EnergyDrinkListContent(
                     tintBrush = SolidColor(GlassPanelTint),
                     iconTint = AccentWhite
                 )
-                GlassCircleButton(
-                    onClick = onTagSelectedClick,
-                    contentDescription = "Tag selected",
-                    icon = Res.drawable.ic_tag,
-                    backdrop = listGlassState,
-                    size = 80.dp,
-                    tintBrush = GreenGradientVertical,
-                )
+                if (showTagSelectionAction) {
+                    GlassCircleButton(
+                        onClick = onTagSelectedClick,
+                        contentDescription = "Tag selected",
+                        icon = Res.drawable.ic_tag,
+                        backdrop = listGlassState,
+                        size = 80.dp,
+                        tintBrush = GreenGradientVertical,
+                    )
+                }
                 GlassCircleButton(
                     onClick = onDeleteSelectedClick,
-                    contentDescription = "Delete selected",
-                    icon = Res.drawable.ic_delete,
+                    contentDescription = selectionActionDescription,
+                    icon = selectionActionIcon,
                     backdrop = listGlassState,
                     size = 80.dp,
-                    tintBrush = AccentRedGradientVertical,
+                    tintBrush = selectionActionTintBrush,
                 )
             }
         } else {
@@ -265,7 +273,7 @@ fun EnergyDrinkListContent(
                 GlassCircleButton(
                     onClick = onClick,
                     contentDescription = primaryActionDescription,
-                    icon = Res.drawable.ic_energy_drink_add,
+                    icon = primaryActionIcon,
                     backdrop = listGlassState,
                     size = 80.dp,
                     modifier = Modifier

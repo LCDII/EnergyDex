@@ -7,6 +7,7 @@ import com.example.energydex.core.domain.onError
 import com.example.energydex.core.domain.onSuccess
 import com.example.energydex.core.presentation.toUiText
 import com.example.energydex.domain.energydrink.usecase.ObserveEnergyDrinksForTagUseCase
+import com.example.energydex.domain.energydrink.usecase.UpdateEnergyDrinkTagRelationsUseCase
 import com.example.energydex.domain.tag.usecase.DeleteTagUseCase
 import com.example.energydex.domain.tag.usecase.GetTagByIdUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +30,8 @@ class TagDetailViewModel(
     private val id: Long,
     private val getTagById: GetTagByIdUseCase,
     private val observeEnergyDrinksForTag: ObserveEnergyDrinksForTagUseCase,
-    private val deleteTag: DeleteTagUseCase
+    private val deleteTag: DeleteTagUseCase,
+    private val updateRelations: UpdateEnergyDrinkTagRelationsUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(TagDetailState())
     val state = _state.stateIn(
@@ -40,6 +42,7 @@ class TagDetailViewModel(
 
     init {
         loadCurrentTag()
+        loadTaggedDrinkIds()
         observeDrinks()
     }
 
@@ -49,6 +52,22 @@ class TagDetailViewModel(
             TagDetailAction.OnEditClick -> Unit
             TagDetailAction.OnAddDrinksClick -> Unit
             is TagDetailAction.OnEnergyDrinkNavigateClick -> Unit
+            is TagDetailAction.OnEnergyDrinkHold -> _state.update {
+                it.copy(
+                    isSelectionMode = true,
+                    selectedEnergyDrinkIds = it.selectedEnergyDrinkIds + action.energyDrink.id
+                )
+            }
+            is TagDetailAction.OnSelectEnergyDrink -> _state.update {
+                val selected = it.selectedEnergyDrinkIds.toMutableSet()
+                if (!selected.add(action.energyDrink.id)) selected.remove(action.energyDrink.id)
+                it.copy(
+                    selectedEnergyDrinkIds = selected,
+                    isSelectionMode = selected.isNotEmpty()
+                )
+            }
+            TagDetailAction.OnCancelSelectionClick -> clearSelection()
+            TagDetailAction.OnRemoveSelectedClick -> removeSelected()
             is TagDetailAction.OnSearchQueryChange -> _state.update {
                 it.copy(searchQuery = action.query)
             }
@@ -130,7 +149,46 @@ class TagDetailViewModel(
             .launchIn(viewModelScope)
     }
 
+    private fun loadTaggedDrinkIds() {
+        observeEnergyDrinksForTag(id)
+            .onEach { drinks ->
+                _state.update { it.copy(taggedEnergyDrinkIds = drinks.map { drink -> drink.id }.toSet()) }
+            }
+            .launchIn(viewModelScope)
+    }
+
     private fun showError(error: com.example.energydex.core.domain.DataError.Local) {
         _state.update { it.copy(isLoading = false, errorMessage = error.toUiText()) }
+    }
+
+    private fun clearSelection() {
+        _state.update {
+            it.copy(
+                isSelectionMode = false,
+                selectedEnergyDrinkIds = emptySet(),
+                isBulkOperationRunning = false
+            )
+        }
+    }
+
+    private fun removeSelected() {
+        val selectedIds = _state.value.selectedEnergyDrinkIds
+        if (selectedIds.isEmpty() || _state.value.isBulkOperationRunning) return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isBulkOperationRunning = true) }
+            val currentIds = _state.value.taggedEnergyDrinkIds
+            updateRelations(
+                tagId = id,
+                previousDrinkIds = currentIds,
+                selectedDrinkIds = currentIds - selectedIds
+            ).onSuccess {
+                clearSelection()
+            }.onError { error ->
+                _state.update {
+                    it.copy(isBulkOperationRunning = false, errorMessage = error.toUiText())
+                }
+            }
+        }
     }
 }
