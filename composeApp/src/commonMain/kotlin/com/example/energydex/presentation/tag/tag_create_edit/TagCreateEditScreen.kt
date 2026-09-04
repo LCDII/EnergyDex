@@ -5,18 +5,18 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -31,13 +31,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.ErrorRed
-import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.AppBackground
-import com.example.energydex.core.presentation.SecondaryOrange
-import com.example.energydex.core.presentation.SecondaryPurple
+import com.example.energydex.core.presentation.GlassPanelTint
+import com.example.energydex.core.presentation.GreenGradientVertical
 import com.example.energydex.core.presentation.TagColorValues
-import com.example.energydex.core.presentation.tagColor
+import com.example.energydex.core.presentation.glassContainer
+import com.example.energydex.core.presentation.tagGradient
+import com.example.energydex.presentation.shared.components.GlassBackButton
+import com.example.energydex.presentation.shared.components.GlassCircleButton
+import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
+import energydex.composeapp.generated.resources.Res
+import energydex.composeapp.generated.resources.ic_check
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun TagCreateEditScreenRoot(
@@ -66,79 +71,124 @@ private fun TagCreateEditScreen(
     onBack: () -> Unit,
     onAction: (TagCreateEditAction) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppBackground)
-            .statusBarsPadding()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = onBack,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = SecondaryPurple,
-                    contentColor = AccentWhite
-                )
-            ) { Text("Back") }
-            Text(title, color = AccentWhite, fontSize = 22.sp)
-            Box(modifier = Modifier.size(72.dp))
-        }
+    val backdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
+    val textShape = RoundedCornerShape(100)
 
-        OutlinedTextField(
-            value = state.name,
-            onValueChange = { onAction(TagCreateEditAction.OnNameChange(it)) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            isError = !state.isNameValid,
-            label = { Text("Tag name") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = AccentWhite,
-                unfocusedTextColor = SecondaryOrange,
-                focusedBorderColor = PrimaryOrange,
-                unfocusedBorderColor = SecondaryOrange
-            )
+    Box(modifier = Modifier.fillMaxSize().background(AppBackground)) {
+        GlassBackButton(
+            backdrop = backdrop,
+            onClick = onBack,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding()
+                .padding(start = 8.dp, top = 12.dp)
         )
 
-        Text("Choose color", color = SecondaryOrange, fontSize = 16.sp)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            TagColorValues.take(4).forEach { color ->
-                ColorChoice(color, state.color) {
-                    onAction(TagCreateEditAction.OnColorSelected(color))
-                }
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            TagColorValues.drop(4).forEach { color ->
-                ColorChoice(color, state.color) {
-                    onAction(TagCreateEditAction.OnColorSelected(color))
-                }
-            }
-        }
+        Text(
+            text = title,
+            color = AccentWhite,
+            fontSize = 22.sp,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 16.dp)
+        )
 
-        state.errorMessage?.let { Text(it.asString(), color = ErrorRed) }
-
-        Button(
-            onClick = { onAction(TagCreateEditAction.OnSaveClick) },
-            enabled = !state.isSaving,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryOrange,
-                contentColor = AccentWhite
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 70.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+                .glassContainer(
+                    backdrop = backdrop,
+                    shape = textShape,
+                    tint = GlassPanelTint
+                )
+        ) {
+            OutlinedTextField(
+                value = state.name,
+                onValueChange = { onAction(TagCreateEditAction.OnNameChange(it)) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                isError = !state.isNameValid,
+                placeholder = { Text("Tag name", color = AccentWhite.copy(alpha = 0.5f)) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                shape = textShape,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = AccentWhite,
+                    unfocusedTextColor = AccentWhite,
+                    cursorColor = AccentWhite,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                )
             )
-        ) { Text(if (state.isSaving) "Saving..." else "Save") }
+        }
+
+        Text(
+            text = "Choose color",
+            color = AccentWhite.copy(alpha = 0.6f),
+            fontSize = 16.sp,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 136.dp, start = 8.dp)
+                .fillMaxWidth()
+        )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 176.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp), // 2 ряда по 44.dp + отступ 12.dp
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(TagColorValues) { color ->
+                    ColorChoice(
+                        color = color,
+                        selectedColor = state.color,
+                        onClick = { onAction(TagCreateEditAction.OnColorSelected(color)) }
+                    )
+                }
+            }
+        }
+
+        state.errorMessage?.let {
+            Text(
+                text = it.asString(),
+                color = Color.Red,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 290.dp, start = 8.dp)
+                    .fillMaxWidth()
+            )
+        }
+
+        GlassCircleButton(
+            onClick = { onAction(TagCreateEditAction.OnSaveClick) },
+            contentDescription = "Save",
+            icon = Res.drawable.ic_check,
+            backdrop = backdrop,
+            tintBrush = GreenGradientVertical,
+            iconTint = Color.Black,
+            size = 80.dp,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+        )
     }
 }
 
@@ -148,11 +198,11 @@ private fun ColorChoice(
     selectedColor: String,
     onClick: () -> Unit
 ) {
-    val parsed = tagColor(color)
+    val gradient = tagGradient(color)
     Box(
         modifier = Modifier
             .size(44.dp)
-            .background(parsed, CircleShape)
+            .background(brush = gradient, shape = CircleShape)
             .border(
                 width = if (color == selectedColor) 3.dp else 1.dp,
                 color = if (color == selectedColor) AccentWhite else Color.Transparent,

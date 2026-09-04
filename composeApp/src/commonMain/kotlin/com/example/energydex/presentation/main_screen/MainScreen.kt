@@ -42,7 +42,7 @@ import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.GlassPanelTint
-import com.example.energydex.core.presentation.TabGradient
+import com.example.energydex.core.presentation.GreenGradientHorizontal
 import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.glassThumb
 import com.kashif_e.backdrop.backdrops.layerBackdrop
@@ -223,7 +223,7 @@ fun MainScreen(
                         .glassThumb(
                             backdrop = plaqueBackdrop,
                             shape = capsuleShape,
-                            tintBrush = TabGradient,
+                            tintBrush = GreenGradientHorizontal,
                             tintOpacity = 0.7f
                         )
                 )

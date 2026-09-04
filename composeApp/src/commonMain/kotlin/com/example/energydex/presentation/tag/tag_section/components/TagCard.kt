@@ -8,10 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,14 +22,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.example.energydex.core.presentation.SecondaryPurple
-import com.example.energydex.core.presentation.tagColor
-import com.example.energydex.core.presentation.AccentWhite
+import com.example.energydex.core.presentation.AppBackground
+import com.example.energydex.core.presentation.GreenGradientHorizontal
+import com.example.energydex.core.presentation.glassContainerColored
+import com.example.energydex.core.presentation.glassThumb
+import com.example.energydex.core.presentation.tagGradient
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.tag.model.TagWithEnergyDrinks
+import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import org.jetbrains.compose.resources.painterResource
@@ -45,35 +50,63 @@ fun TagCard(
     onTagClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tagColor = tagColor(model.tag.color)
+    val tagBrush = tagGradient(model.tag.color)
     val slots = buildTagCardSlots(model.drinks)
+    val backdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
 
-    Surface(
+    val cardShape = RoundedCornerShape(24.dp)
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onTagClick),
-        shape = RoundedCornerShape(24.dp),
-        color = SecondaryPurple
+            .clip(cardShape)
+            .clickable(onClick = onTagClick)
     ) {
-        Column {
-            Box(
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.Transparent
+        ) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(tagColor.copy(alpha = 0.8f))
-                    .padding(12.dp)
+                    .glassContainerColored(
+                        backdrop = backdrop,
+                        shape = cardShape,
+                        tintBrush = tagBrush
+                    )
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    DrinkSlotRow(slots.take(5), tagColor)
-                    DrinkSlotRow(slots.drop(5).take(5), tagColor)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        DrinkSlotRow(slots.take(5))
+                        DrinkSlotRow(slots.drop(5).take(5))
+                    }
                 }
+                Spacer(modifier = Modifier.height(48.dp))
             }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(48.dp)
+                .glassThumb(
+                    backdrop = backdrop,
+                    shape = cardShape,
+                    tintBrush = GreenGradientHorizontal
+                ),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 text = model.tag.name,
-                color = AccentWhite,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 14.dp),
-                textAlign = TextAlign.Center
+                color = AppBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
     }
@@ -90,8 +123,7 @@ private fun buildTagCardSlots(drinks: List<EnergyDrink>): List<TagCardSlot> {
 
 @Composable
 private fun DrinkSlotRow(
-    slots: List<TagCardSlot>,
-    tagColor: Color
+    slots: List<TagCardSlot>
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -109,8 +141,7 @@ private fun DrinkSlotRow(
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(tagColor.copy(alpha = 0.35f)),
+                        .clip(RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -131,21 +162,26 @@ private fun DrinkSlotRow(
                         contentAlignment = Alignment.Center
                     ) {
                         if (drink.imagePath == null) {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_image_placeholder),
-                                contentDescription = drink.name,
-                                tint = Color.White,
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f)
-                            )
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = drink.name,
+                                    color = Color.White,
+                                    fontSize = 10.sp,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(4.dp)
+                                )
+                            }
                         } else {
                             AsyncImage(
                                 model = drink.imagePath,
                                 contentDescription = drink.name,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f),
+                                modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop,
                                 error = painterResource(Res.drawable.ic_image_placeholder)
                             )

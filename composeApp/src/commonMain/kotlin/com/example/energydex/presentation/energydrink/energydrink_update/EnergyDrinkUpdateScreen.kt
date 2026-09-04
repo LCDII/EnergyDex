@@ -56,7 +56,7 @@ import com.example.energydex.core.presentation.AccentRedGradientVertical
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.TabGradientVertical
+import com.example.energydex.core.presentation.GreenGradientVertical
 import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.glassThumb
@@ -162,7 +162,6 @@ private fun EnergyDrinkUpdateScreen(
     var descriptionDraft by remember { mutableStateOf("") }
     val detailBackdrop = rememberLayerBackdrop()
     val tagBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
-    val topBarShape = RoundedCornerShape(50)
 
     LaunchedEffect(state.name, state.ratingText, state.description) {
         if (editingField == null) {
@@ -446,7 +445,7 @@ private fun EditableField(
         ) {
             FieldActionButton(
                 icon = Res.drawable.ic_check,
-                tintBrush = TabGradientVertical,
+                tintBrush = GreenGradientVertical,
                 onClick = onConfirm
             )
             FieldActionButton(

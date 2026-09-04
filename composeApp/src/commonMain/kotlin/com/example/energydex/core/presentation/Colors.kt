@@ -32,10 +32,8 @@ fun ratingStarTint(rating: Double?): Color = when {
 }
 
 const val TagOrangeValue = "#FF7700"
-const val TagLightOrangeValue = "#FFB347"
 const val TagPurpleValue = "#A855F7"
 const val TagBlueValue = "#38BDF8"
-const val TagGreenValue = "#22C55E"
 const val TagRedValue = "#EF4444"
 const val TagYellowValue = "#FACC15"
 const val TagPinkValue = "#EC4899"
@@ -44,10 +42,10 @@ val TagOrangeColor = PrimaryOrange
 val TagLightOrangeColor = SecondaryOrange
 val TagPurpleColor = Color(0xFFA855F7)
 val TagBlueColor = Color(0xFF38BDF8)
-val TagGreenColor = Color(0xFF22C55E)
+val TagAmberColor = Color(0xFFD4A017)
 val TagRedColor = Color(0xFFEF4444)
-val TagYellowColor = Color(0xFFFACC15)
-val TagPinkColor = Color(0xFFEC4899)
+val TagYellowColor = Color(0xFFE8AE24)
+val TagPinkColor = Color(0xFFE94F9A)
 
 val RatingStarGradient = Brush.linearGradient(
     colorStops = arrayOf(
@@ -63,21 +61,19 @@ val RatingStarGradient = Brush.linearGradient(
 
 val TagColorValues = listOf(
     TagOrangeValue,
-    TagLightOrangeValue,
     TagPurpleValue,
     TagBlueValue,
-    TagGreenValue,
     TagRedValue,
     TagYellowValue,
     TagPinkValue
 )
 
+val SelectedColor = Color(0xFF27CF51)
+
 fun tagColor(value: String): Color = when (value) {
     TagOrangeValue -> TagOrangeColor
-    TagLightOrangeValue -> TagLightOrangeColor
     TagPurpleValue -> TagPurpleColor
     TagBlueValue -> TagBlueColor
-    TagGreenValue -> TagGreenColor
     TagRedValue -> TagRedColor
     TagYellowValue -> TagYellowColor
     TagPinkValue -> TagPinkColor

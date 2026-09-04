@@ -12,7 +12,7 @@ val GlassEdgeHighlight = Brush.verticalGradient(
     )
 )
 
-val TabGradient = Brush.horizontalGradient(
+val GreenGradientHorizontal = Brush.horizontalGradient(
     colorStops = arrayOf(
         0.20f to Color(0xFF27CF51),
         0.50f to Color(0xFF47FF75),
@@ -20,7 +20,7 @@ val TabGradient = Brush.horizontalGradient(
     )
 )
 
-val TabGradientVertical = Brush.verticalGradient(
+val GreenGradientVertical = Brush.verticalGradient(
     colorStops = arrayOf(
         0.20f to Color(0xFF27CF51),
         0.50f to Color(0xFF47FF75),
@@ -30,7 +30,7 @@ val TabGradientVertical = Brush.verticalGradient(
 
 val AccentBlueGradient = Brush.horizontalGradient(
     colorStops = arrayOf(
-        0.20f to TagBlueColor,
+        0.20f to Color(0xFF1A7FBB),   // сине-голубой
         0.50f to Color(0xFF3CA4FF),
         0.95f to Color(0xFF6AB9FE)
     )
@@ -68,13 +68,7 @@ val AccentRedGradientVertical = Brush.verticalGradient(
     )
 )
 
-val AccentCyanGradient = Brush.horizontalGradient(
-    colorStops = arrayOf(
-        0.20f to Color(0xFF20B8D0),
-        0.50f to Color(0xFF4DD7E8),
-        0.95f to Color(0xFF8AE8F2)
-    )
-)
+
 
 val AccentPinkGradient = Brush.horizontalGradient(
     colorStops = arrayOf(
@@ -92,20 +86,19 @@ val AccentYellowGradient = Brush.horizontalGradient(
     )
 )
 
-val AccentTealGradient = Brush.horizontalGradient(
+val AccentAmberGradient = Brush.horizontalGradient(
     colorStops = arrayOf(
-        0.20f to Color(0xFF20BFA3),
-        0.50f to Color(0xFF4BD6BE),
-        0.95f to Color(0xFF86E9D5)
+        0.20f to Color(0xFFD4A017),
+        0.50f to Color(0xFFFFCC33),
+        0.95f to Color(0xFFFFE066)
     )
 )
 
+
 fun tagGradient(value: String): Brush = when (value) {
     TagBlueValue -> AccentBlueGradient
-    TagOrangeValue, TagLightOrangeValue -> AccentOrangeGradient
     TagPurpleValue -> AccentIndigoGradient
     TagRedValue -> AccentRedGradient
-    TagGreenValue -> AccentTealGradient
     TagYellowValue -> AccentYellowGradient
     TagPinkValue -> AccentPinkGradient
     else -> AccentOrangeGradient

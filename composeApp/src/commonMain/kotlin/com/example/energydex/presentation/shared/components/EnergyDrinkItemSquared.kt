@@ -32,8 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.TagGreenColor
+import com.example.energydex.core.presentation.TagPinkColor
 import com.example.energydex.core.presentation.GlassPanelTint
+import com.example.energydex.core.presentation.SelectedColor
 import com.example.energydex.core.presentation.TagPurpleColor
 import com.example.energydex.core.presentation.glassBackdrop
 import com.example.energydex.core.presentation.ratingStarTint
@@ -75,7 +76,7 @@ fun EnergyDrinkItemSquared(
                     backdrop = cardBackdrop,
                     shape = shape,
                     tint = if (isSelected) {
-                        TagGreenColor.copy(alpha = 0.28f)
+                        SelectedColor.copy(alpha = 0.28f)
                     } else {
                         GlassPanelTint
                     },
@@ -84,8 +85,8 @@ fun EnergyDrinkItemSquared(
                     innerShadow = { cardInnerShadow }
                 )
                 .border(
-                    width = if (isSelected) 3.dp else 0.dp,
-                    color = if (isSelected) TagGreenColor else Color.Transparent,
+                    width = if (isSelected) 2.dp else 0.dp,
+                    color = if (isSelected) SelectedColor else Color.Transparent,
                     shape = shape
                 )
                 .combinedClickable(

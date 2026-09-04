@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.GlassPanelTint
-import com.example.energydex.core.presentation.TabGradient
+import com.example.energydex.core.presentation.GreenGradientHorizontal
 import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.glassThumb
@@ -83,7 +83,7 @@ private fun SortDropdownRow(
                     Modifier.glassThumb(
                         backdrop = backdrop,
                         shape = shape,
-                        tintBrush = TabGradient,
+                        tintBrush = GreenGradientHorizontal,
                         tintOpacity = 0.7f
                     )
                 } else {

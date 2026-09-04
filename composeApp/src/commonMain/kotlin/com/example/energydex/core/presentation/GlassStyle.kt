@@ -79,6 +79,17 @@ fun Modifier.glassThumb(
     )
 }
 
+fun Modifier.glassContainerColored(
+    backdrop: Backdrop,
+    shape: Shape,
+    tintBrush: Brush
+): Modifier = glassThumb(
+    backdrop = backdrop,
+    shape = shape,
+    tintBrush = tintBrush,
+    tintOpacity = 0.7f
+)
+
 fun Modifier.glassTag(
     backdrop: Backdrop,
     shape: Shape,

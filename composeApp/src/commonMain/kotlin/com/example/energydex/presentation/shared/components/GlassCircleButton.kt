@@ -1,6 +1,7 @@
 package com.example.energydex.presentation.shared.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -13,7 +14,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.energydex.core.presentation.TabGradientVertical
+import com.example.energydex.core.presentation.GreenGradientVertical
 import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.glassThumb
 import com.kashif_e.backdrop.Backdrop
@@ -28,7 +29,7 @@ fun GlassCircleButton(
     backdrop: Backdrop,
     modifier: Modifier = Modifier,
     size: Dp = 58.dp,
-    tintBrush: Brush = TabGradientVertical,
+    tintBrush: Brush = GreenGradientVertical,
     iconTint: Color = TextOnGradient
 ) {
     Box(
@@ -42,7 +43,10 @@ fun GlassCircleButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        IconButton(onClick = onClick) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.fillMaxSize()
+        ) {
             Icon(
                 painter = painterResource(icon),
                 contentDescription = contentDescription,

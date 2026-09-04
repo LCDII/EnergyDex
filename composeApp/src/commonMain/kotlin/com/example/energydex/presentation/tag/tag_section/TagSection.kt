@@ -1,37 +1,27 @@
 package com.example.energydex.presentation.tag.tag_section
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.SecondaryOrange
 import com.example.energydex.domain.tag.model.Tag
+import com.example.energydex.presentation.shared.components.GlassCircleButton
 import com.example.energydex.presentation.tag.tag_section.components.TagCard
+import com.kashif_e.backdrop.backdrops.layerBackdrop
+import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_energy_drink_add
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -59,6 +49,8 @@ fun TagSection(
     state: TagSectionState,
     onAction: (TagSectionAction) -> Unit
 ) {
+    val backdrop = rememberLayerBackdrop()
+
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             state.isLoading -> CircularProgressIndicator(
@@ -72,17 +64,17 @@ fun TagSection(
                 text = "No tags yet",
                 modifier = Modifier.align(Alignment.Center)
             )
-            else -> LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 240.dp),
-                modifier = Modifier.fillMaxSize(),
+            else -> LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .layerBackdrop(backdrop),
                 contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
+                    start = 8.dp,
+                    end = 8.dp,
                     top = 84.dp,
-                    bottom = 16.dp
+                    bottom = 8.dp
                 ),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(state.tags, key = { it.tag.id }) { model ->
                     TagCard(
@@ -95,34 +87,15 @@ fun TagSection(
             }
         }
 
-        FloatingActionButton(
-            onClick = {
-                onAction(TagSectionAction.OnCreateTagClick)
-            },
-            containerColor = Color.Transparent,
-            elevation = FloatingActionButtonDefaults.elevation(4.dp),
+        GlassCircleButton(
+            onClick = { onAction(TagSectionAction.OnCreateTagClick) },
+            contentDescription = "Create tag",
+            icon = Res.drawable.ic_energy_drink_add,
+            backdrop = backdrop,
+            size = 80.dp,
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(56.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(PrimaryOrange, SecondaryOrange)
-                        ),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_energy_drink_add),
-                    contentDescription = "Create tag",
-                    tint = AccentWhite,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-        }
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+        )
     }
 }

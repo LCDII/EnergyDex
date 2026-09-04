@@ -42,8 +42,8 @@ import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
 import com.example.energydex.core.presentation.AccentRedGradientVertical
-import com.example.energydex.core.presentation.TagGreenColor
-import com.example.energydex.core.presentation.TabGradientVertical
+import com.example.energydex.core.presentation.TagPinkColor
+import com.example.energydex.core.presentation.GreenGradientVertical
 import com.example.energydex.core.presentation.TextOnBackground
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_close
@@ -249,7 +249,7 @@ fun EnergyDrinkListContent(
                     icon = Res.drawable.ic_tag,
                     backdrop = listGlassState,
                     size = 80.dp,
-                    tintBrush = TabGradientVertical,
+                    tintBrush = GreenGradientVertical,
                 )
                 GlassCircleButton(
                     onClick = onDeleteSelectedClick,
@@ -299,7 +299,7 @@ fun EnergyDrinkListContent(
                 text = {
                     Column {
                         TextButton(onClick = onCreateTagClick) {
-                            Text("Create new tag", color = TagGreenColor)
+                            Text("Create new tag", color = TagPinkColor)
                         }
                         if (tags.isEmpty()) {
                             Text("No tags available")
@@ -310,7 +310,7 @@ fun EnergyDrinkListContent(
                                         checked = tag.id in selectedTagIds,
                                         onCheckedChange = { onToggleTag(tag.id) },
                                         colors = androidx.compose.material3.CheckboxDefaults.colors(
-                                            checkedColor = TagGreenColor,
+                                            checkedColor = TagPinkColor,
                                             uncheckedColor = AccentWhite.copy(alpha = 0.6f),
                                             checkmarkColor = AppBackground
                                         )
@@ -326,7 +326,7 @@ fun EnergyDrinkListContent(
                         onClick = onConfirmTagSelectedClick,
                         enabled = selectedTagIds.isNotEmpty() && !isBulkOperationRunning,
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                            containerColor = TagGreenColor,
+                            containerColor = TagPinkColor,
                             contentColor = AppBackground
                         )
                     ) { Text("Add") }

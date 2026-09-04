@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.energydex.core.presentation.AccentWhite
 import com.example.energydex.core.presentation.GlassPanelTint
-import com.example.energydex.core.presentation.TabGradient
+import com.example.energydex.core.presentation.GreenGradientHorizontal
 import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.glassThumb
@@ -67,7 +67,7 @@ fun EnergyDrinkViewModeToggle(
                 .glassThumb(
                     backdrop = backdrop,
                     shape = thumbShape,
-                    tintBrush = TabGradient,
+                    tintBrush = GreenGradientHorizontal,
                     tintOpacity = 0.7f
                 )
         )
