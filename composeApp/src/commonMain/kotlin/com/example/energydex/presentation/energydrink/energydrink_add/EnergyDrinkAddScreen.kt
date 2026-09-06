@@ -1,12 +1,11 @@
 package com.example.energydex.presentation.energydrink.energydrink_add
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,16 +14,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -35,38 +31,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AccentWhite
-import com.example.energydex.core.presentation.ErrorRed
-import com.example.energydex.core.presentation.PrimaryOrange
 import com.example.energydex.core.presentation.AppBackground
-import com.example.energydex.core.presentation.SecondaryOrange
-import com.example.energydex.core.presentation.SecondaryPurple
-import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkDescriptionTextField
-import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkNameTextField
-import com.example.energydex.presentation.energydrink.energydrink_add.components.EnergyDrinkRatingTextField
+import com.example.energydex.core.presentation.ErrorRed
+import com.example.energydex.core.presentation.GlassPanelTint
+import com.example.energydex.core.presentation.PrimaryOrange
+import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.presentation.energydrink.image.ImagePickerSource
 import com.example.energydex.presentation.energydrink.image.PlatformImagePicker
+import com.example.energydex.presentation.shared.components.GlassBackButton
+import com.example.energydex.presentation.shared.components.GlassCircleButton
 import com.example.energydex.presentation.tag.components.TagSelector
+import com.kashif_e.backdrop.Backdrop
+import com.kashif_e.backdrop.backdrops.layerBackdrop
+import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
+import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import energydex.composeapp.generated.resources.Res
-import energydex.composeapp.generated.resources.add_energy_drink_title
-import energydex.composeapp.generated.resources.add_image
-import energydex.composeapp.generated.resources.change_image
-import energydex.composeapp.generated.resources.close_hint
-import energydex.composeapp.generated.resources.done
-import energydex.composeapp.generated.resources.go_back
-import energydex.composeapp.generated.resources.ic_energy_drink_add
+import energydex.composeapp.generated.resources.energy_drink_description
+import energydex.composeapp.generated.resources.energy_drink_name
+import energydex.composeapp.generated.resources.energy_drink_name_required
+import energydex.composeapp.generated.resources.ic_check
+import energydex.composeapp.generated.resources.ic_edit
 import energydex.composeapp.generated.resources.ic_image_placeholder
+import energydex.composeapp.generated.resources.ic_star
 import energydex.composeapp.generated.resources.image_source_camera
 import energydex.composeapp.generated.resources.image_source_gallery
 import energydex.composeapp.generated.resources.image_source_selection
-import energydex.composeapp.generated.resources.rate_hint
 import energydex.composeapp.generated.resources.remove_image
-import energydex.composeapp.generated.resources.selected_image
-import energydex.composeapp.generated.resources.tags_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -82,9 +83,7 @@ fun EnergyDrinkAddScreenRoot(
     var isImageSourceDialogVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.isSaved) {
-        if (state.isSaved) {
-            onSaveClick()
-        }
+        if (state.isSaved) onSaveClick()
     }
 
     PlatformImagePicker(
@@ -102,21 +101,21 @@ fun EnergyDrinkAddScreenRoot(
             title = { Text(stringResource(Res.string.image_source_selection)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TextButton(
-                        onClick = {
+                    TextButton(onClick = {
+                        isImageSourceDialogVisible = false
+                        pickerSource = ImagePickerSource.CAMERA
+                    }) { Text(stringResource(Res.string.image_source_camera)) }
+                    TextButton(onClick = {
+                        isImageSourceDialogVisible = false
+                        pickerSource = ImagePickerSource.GALLERY
+                    }) { Text(stringResource(Res.string.image_source_gallery)) }
+                    if (state.imagePath != null) {
+                        TextButton(onClick = {
                             isImageSourceDialogVisible = false
-                            pickerSource = ImagePickerSource.CAMERA
+                            viewModel.onAction(EnergyDrinkAddAction.OnRemoveImage)
+                        }) {
+                            Text(stringResource(Res.string.remove_image), color = ErrorRed)
                         }
-                    ) {
-                        Text(stringResource(Res.string.image_source_camera))
-                    }
-                    TextButton(
-                        onClick = {
-                            isImageSourceDialogVisible = false
-                            pickerSource = ImagePickerSource.GALLERY
-                        }
-                    ) {
-                        Text(stringResource(Res.string.image_source_gallery))
                     }
                 }
             },
@@ -128,9 +127,7 @@ fun EnergyDrinkAddScreenRoot(
         state = state,
         onPickImage = { isImageSourceDialogVisible = true },
         onAction = { action ->
-            if (action is EnergyDrinkAddAction.OnBackClick) {
-                onBackClick()
-            }
+            if (action is EnergyDrinkAddAction.OnBackClick) onBackClick()
             viewModel.onAction(action)
         }
     )
@@ -142,166 +139,223 @@ fun EnergyDrinkAddScreen(
     onPickImage: () -> Unit,
     onAction: (EnergyDrinkAddAction) -> Unit
 ) {
-    Column(
+    val detailBackdrop = rememberLayerBackdrop()
+    val fieldBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(AppBackground)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = { onAction(EnergyDrinkAddAction.OnBackClick) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = SecondaryPurple,
-                    contentColor = AccentWhite
-                )
-            ) {
-                Text(stringResource(Res.string.go_back))
-            }
-
-            Text(
-                text = stringResource(Res.string.add_energy_drink_title),
-                color = AccentWhite,
-                fontSize = 22.sp
-            )
-
-            Spacer(modifier = Modifier.width(72.dp))
-        }
-
-        EnergyDrinkNameTextField(
-            modifier = Modifier.fillMaxWidth(),
-            name = state.name,
-            onNameChange = { onAction(EnergyDrinkAddAction.OnNameChange(it)) },
-            isValid = state.isNameTextValid
-        )
-
-        Button(
-            onClick = onPickImage,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = SecondaryPurple,
-                contentColor = AccentWhite
-            )
-        ) {
-            Text(
-                if (state.imagePath == null)
-                    stringResource(Res.string.add_image)
-                else
-                    stringResource(Res.string.change_image)
-            )
-        }
-
-        val imageShape = RoundedCornerShape(24.dp)
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(imageShape)
-                .border(1.dp, SecondaryOrange, imageShape),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .layerBackdrop(detailBackdrop)
         ) {
-            if (state.imagePath == null) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_image_placeholder),
-                    contentDescription = null,
-                    tint = SecondaryOrange,
-                    modifier = Modifier.size(64.dp)
-                )
-            } else {
-                AsyncImage(
-                    model = state.imagePath,
-                    contentDescription = stringResource(Res.string.selected_image),
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                    error = painterResource(Res.drawable.ic_image_placeholder)
-                )
-            }
-        }
-
-        if (state.imagePath != null) {
-            TextButton(
-                onClick = { onAction(EnergyDrinkAddAction.OnRemoveImage) },
-                modifier = Modifier.align(Alignment.End)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .statusBarsPadding()
+                    .padding(top = 12.dp, start = 8.dp, end = 8.dp, bottom = 120.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(stringResource(Res.string.remove_image), color = SecondaryOrange)
+                Box(modifier = Modifier.fillMaxWidth().height(50.dp))
+
+                GlassTextField(
+                    value = state.name,
+                    onValueChange = { onAction(EnergyDrinkAddAction.OnNameChange(it)) },
+                    backdrop = fieldBackdrop,
+                    placeholder = stringResource(Res.string.energy_drink_name),
+                    textSize = 30.sp,
+                    isError = !state.isNameTextValid
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_star),
+                        contentDescription = null,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Box(modifier = Modifier.width(140.dp)) {
+                        GlassTextField(
+                            value = state.ratingText,
+                            onValueChange = {
+                                onAction(EnergyDrinkAddAction.OnRatingTextChange(it))
+                            },
+                            backdrop = fieldBackdrop,
+                            placeholder = "0.0",
+                            keyboardType = KeyboardType.Decimal,
+                            isError = !state.isRatingTextValid,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                AddEditableImage(
+                    imagePath = state.imagePath,
+                    onPickImage = onPickImage
+                )
+
+                if (state.availableTags.isNotEmpty()) {
+                    TagSelector(
+                        modifier = Modifier.fillMaxWidth(),
+                        availableTags = state.availableTags,
+                        selectedTagIds = state.selectedTagIds,
+                        onTagToggle = { onAction(EnergyDrinkAddAction.OnTagToggle(it)) }
+                    )
+                }
+
+                GlassTextField(
+                    value = state.description,
+                    onValueChange = {
+                        onAction(EnergyDrinkAddAction.OnDescriptionChange(it))
+                    },
+                    backdrop = fieldBackdrop,
+                    placeholder = stringResource(Res.string.energy_drink_description),
+                    singleLine = false
+                )
+
+                state.errorMessage?.let { errorMessage ->
+                    Text(
+                        text = errorMessage.asString(),
+                        color = ErrorRed,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 
-        EnergyDrinkDescriptionTextField(
-            modifier = Modifier.fillMaxWidth(),
-            description = state.description,
-            onDescriptionChange = {
-                onAction(EnergyDrinkAddAction.OnDescriptionChange(it))
-            }
+        GlassBackButton(
+            backdrop = detailBackdrop,
+            onClick = { onAction(EnergyDrinkAddAction.OnBackClick) },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding()
+                .padding(top = 12.dp, start = 8.dp)
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(Res.string.rate_hint),
-                color = SecondaryOrange,
-                fontSize = 16.sp
-            )
-
-            EnergyDrinkRatingTextField(
-                ratingText = state.ratingText,
-                onRatingChange = {
-                    onAction(EnergyDrinkAddAction.OnRatingTextChange(it))
-                },
-                isValid = state.isRatingTextValid
-            )
-        }
-
-        if (state.availableTags.isNotEmpty()) {
-            Text(stringResource(Res.string.tags_title), color = SecondaryOrange, fontSize = 16.sp)
-            TagSelector(
-                availableTags = state.availableTags,
-                selectedTagIds = state.selectedTagIds,
-                onTagToggle = { onAction(EnergyDrinkAddAction.OnTagToggle(it)) }
-            )
-        }
-
-        state.errorMessage?.let { errorMessage ->
-            Text(
-                text = errorMessage.asString(),
-                color = ErrorRed,
-                fontSize = 14.sp
-            )
-        }
-
-        FloatingActionButton(
+        GlassCircleButton(
             onClick = {
-                if (!state.isSaving) {
-                    onAction(EnergyDrinkAddAction.OnSaveClick)
-                }
+                if (!state.isSaving) onAction(EnergyDrinkAddAction.OnSaveClick)
             },
-            elevation = FloatingActionButtonDefaults.elevation(4.dp),
-            containerColor = PrimaryOrange,
+            contentDescription = "Save",
+            icon = Res.drawable.ic_check,
+            backdrop = detailBackdrop,
+            size = 80.dp,
             modifier = Modifier
-                .align(Alignment.End)
-                .size(56.dp),
-            shape = CircleShape
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+        )
+    }
+}
+
+@Composable
+private fun GlassTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    backdrop: Backdrop,
+    placeholder: String,
+    textSize: TextUnit = 17.sp,
+    singleLine: Boolean = true,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    textAlign: TextAlign = TextAlign.Start,
+    isError: Boolean = false
+) {
+    val shape = if (singleLine) RoundedCornerShape(100) else RoundedCornerShape(28.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .glassContainer(
+                backdrop = backdrop,
+                shape = shape,
+                tint = GlassPanelTint
+            )
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            shape = shape,
+            singleLine = singleLine,
+            minLines = 1,
+            maxLines = if (singleLine) 1 else Int.MAX_VALUE,
+            isError = isError,
+            placeholder = { Text(placeholder, color = AccentWhite.copy(alpha = 0.55f)) },
+            textStyle = TextStyle(
+                color = AccentWhite,
+                fontSize = textSize,
+                textAlign = textAlign
+            ),
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                keyboardType = keyboardType
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = AccentWhite,
+                unfocusedTextColor = AccentWhite,
+                cursorColor = AccentWhite,
+                errorCursorColor = ErrorRed,
+                focusedBorderColor = AccentWhite.copy(alpha = 0.45f),
+                unfocusedBorderColor = AccentWhite.copy(alpha = 0.18f),
+                errorBorderColor = ErrorRed,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent
+            )
+        )
+    }
+}
+
+@Composable
+private fun AddEditableImage(
+    imagePath: String?,
+    onPickImage: () -> Unit
+) {
+    val imageShape = RoundedCornerShape(24.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(440.dp)
+            .clip(imageShape)
+            .clickable(onClick = onPickImage),
+        contentAlignment = Alignment.Center
+    ) {
+        if (imagePath == null) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_image_placeholder),
+                contentDescription = null,
+                tint = PrimaryOrange,
+                modifier = Modifier.size(72.dp)
+            )
+        } else {
+            AsyncImage(
+                model = imagePath,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.FillHeight,
+                error = painterResource(Res.drawable.ic_image_placeholder),
+                placeholder = painterResource(Res.drawable.ic_image_placeholder)
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.32f)),
+            contentAlignment = Alignment.Center
         ) {
-            if (state.isSaving) {
-                Text("...", color = AccentWhite)//TODO change animation
-            } else {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_energy_drink_add),
-                    contentDescription = stringResource(Res.string.done),
-                    tint = AccentWhite,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+            Icon(
+                painter = painterResource(Res.drawable.ic_edit),
+                contentDescription = "Change photo",
+                tint = AccentWhite.copy(alpha = 0.82f),
+                modifier = Modifier.size(56.dp)
+            )
         }
     }
 }

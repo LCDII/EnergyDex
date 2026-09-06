@@ -72,7 +72,7 @@ fun TagSection(
                     start = 8.dp,
                     end = 8.dp,
                     top = 84.dp,
-                    bottom = 8.dp
+                    bottom = 112.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {

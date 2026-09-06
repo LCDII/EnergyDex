@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -51,17 +49,14 @@ import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.glassThumb
 import com.example.energydex.presentation.energydrink.image.ImagePickerSource
 import com.example.energydex.presentation.energydrink.image.PlatformImagePicker
-import com.example.energydex.domain.energydrink.model.EnergyDrink
-import com.example.energydex.presentation.shared.components.TagChip
 import com.example.energydex.presentation.shared.components.GlassCircleButton
 import com.example.energydex.presentation.shared.components.GlassBackButton
+import com.example.energydex.presentation.tag.components.TagSelector
 import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
-import com.example.energydex.core.presentation.AccentRedGradient
 import energydex.composeapp.generated.resources.Res
-import energydex.composeapp.generated.resources.ic_arrow_back
 import energydex.composeapp.generated.resources.ic_check
 import energydex.composeapp.generated.resources.ic_delete
 import energydex.composeapp.generated.resources.ic_edit
@@ -149,7 +144,6 @@ private fun EnergyDrinkUpdateScreen(
     onAction: (EnergyDrinkUpdateAction) -> Unit
 ) {
     val detailBackdrop = rememberLayerBackdrop()
-    val tagBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
     val fieldBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
 
     Box(
@@ -221,26 +215,13 @@ private fun EnergyDrinkUpdateScreen(
                 onPickImage = onPickImage
             )
 
-            val selectedTags = state.availableTags.filter { it.id in state.selectedTagIds }
-            if (selectedTags.isNotEmpty()) {
-                FlowRow(
+            if (state.availableTags.isNotEmpty()) {
+                TagSelector(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    selectedTags.forEach { tag ->
-                        TagChip(
-                            tag = tag,
-                            backdrop = tagBackdrop,
-                            fontSize = 16.sp,
-                            horizontalPadding = 12.dp,
-                            verticalPadding = 3.dp,
-                            modifier = Modifier
-                                .widthIn(min = 64.dp)
-                                .height(50.dp)
-                        )
-                    }
-                }
+                    availableTags = state.availableTags,
+                    selectedTagIds = state.selectedTagIds,
+                    onTagToggle = { onAction(EnergyDrinkUpdateAction.OnTagToggle(it)) }
+                )
             }
 
             GlassTextField(

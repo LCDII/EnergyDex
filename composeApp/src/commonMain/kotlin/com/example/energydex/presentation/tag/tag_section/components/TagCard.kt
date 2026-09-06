@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.energydex.core.presentation.AppBackground
-import com.example.energydex.core.presentation.GreenGradientHorizontal
 import com.example.energydex.core.presentation.glassContainerColored
 import com.example.energydex.core.presentation.glassThumb
 import com.example.energydex.core.presentation.tagGradient
@@ -96,13 +96,13 @@ fun TagCard(
                 .glassThumb(
                     backdrop = backdrop,
                     shape = cardShape,
-                    tintBrush = GreenGradientHorizontal
+                    tintBrush = SolidColor(AppBackground)
                 ),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = model.tag.name,
-                color = AppBackground,
+                color = Color.White,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,

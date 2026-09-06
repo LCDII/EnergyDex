@@ -150,7 +150,7 @@ fun EnergyDrinkListContent(
                             start = 8.dp,
                             end = 8.dp,
                             top = ListContentTopPadding,
-                            bottom = 8.dp
+                            bottom = 112.dp
                         )
                     )
                 }
@@ -175,7 +175,7 @@ fun EnergyDrinkListContent(
                             start = 8.dp,
                             end = 8.dp,
                             top = ListContentTopPadding,
-                            bottom = 8.dp
+                            bottom = 112.dp
                         )
                     )
                 }
