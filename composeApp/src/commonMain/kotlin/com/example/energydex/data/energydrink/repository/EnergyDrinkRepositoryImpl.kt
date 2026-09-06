@@ -107,8 +107,11 @@ class EnergyDrinkRepositoryImpl(
             nameQuery = query,
             sortOption = sortOption.name
         ).asFlow().mapToList(Dispatchers.IO),
-        observeLocalImagePaths()
-    ) { entities, imagePaths ->
+        observeLocalImagePaths(),
+        energyDrinkTagQueries.selectAllRelations()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+    ) { entities, imagePaths, _ ->
         entities.toEnergyDrinks(imagePaths)
     }
 

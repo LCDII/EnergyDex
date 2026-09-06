@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,13 +16,11 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -37,15 +34,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,19 +47,14 @@ import com.example.energydex.core.presentation.AccentRedGradientVertical
 import com.example.energydex.core.presentation.ErrorRed
 import com.example.energydex.core.presentation.GlassPanelTint
 import com.example.energydex.core.presentation.PrimaryOrange
-import com.example.energydex.core.presentation.GreenGradientVertical
-import com.example.energydex.core.presentation.TextOnGradient
 import com.example.energydex.core.presentation.glassContainer
 import com.example.energydex.core.presentation.glassThumb
-import com.example.energydex.core.presentation.ratingStarTint
-import com.example.energydex.core.presentation.TagPurpleColor
 import com.example.energydex.presentation.energydrink.image.ImagePickerSource
 import com.example.energydex.presentation.energydrink.image.PlatformImagePicker
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.presentation.shared.components.TagChip
 import com.example.energydex.presentation.shared.components.GlassCircleButton
 import com.example.energydex.presentation.shared.components.GlassBackButton
-import com.example.energydex.presentation.energydrink.energydrink_update.components.EditingField
 import com.kashif_e.backdrop.Backdrop
 import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberCanvasBackdrop
@@ -77,12 +63,10 @@ import com.example.energydex.core.presentation.AccentRedGradient
 import energydex.composeapp.generated.resources.Res
 import energydex.composeapp.generated.resources.ic_arrow_back
 import energydex.composeapp.generated.resources.ic_check
-import energydex.composeapp.generated.resources.ic_close
 import energydex.composeapp.generated.resources.ic_delete
 import energydex.composeapp.generated.resources.ic_edit
 import energydex.composeapp.generated.resources.ic_image_placeholder
 import energydex.composeapp.generated.resources.ic_star
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -123,8 +107,16 @@ fun EnergyDrinkUpdateScreenRoot(
                     }) { Text("Take photo") }
                     TextButton(onClick = {
                         showSourceDialog = false
-                        pickerSource = ImagePickerSource.GALLERY
-                    }) { Text("Choose from gallery") }
+                         pickerSource = ImagePickerSource.GALLERY
+                     }) { Text("Choose from gallery") }
+                    if (state.imagePath != null) {
+                        TextButton(onClick = {
+                        showSourceDialog = false
+                            viewModel.onAction(EnergyDrinkUpdateAction.OnRemoveImage)
+                        }) {
+                            Text("Remove photo", color = ErrorRed)
+                        }
+                    }
                 }
             },
             confirmButton = {}
@@ -156,103 +148,77 @@ private fun EnergyDrinkUpdateScreen(
     onPickImage: () -> Unit,
     onAction: (EnergyDrinkUpdateAction) -> Unit
 ) {
-    var editingField by remember { mutableStateOf<EditingField?>(null) }
-    var nameDraft by remember { mutableStateOf("") }
-    var ratingDraft by remember { mutableStateOf("") }
-    var descriptionDraft by remember { mutableStateOf("") }
     val detailBackdrop = rememberLayerBackdrop()
     val tagBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
-
-    LaunchedEffect(state.name, state.ratingText, state.description) {
-        if (editingField == null) {
-            nameDraft = state.name
-            ratingDraft = state.ratingText
-            descriptionDraft = state.description
-        }
-    }
+    val fieldBackdrop = rememberCanvasBackdrop { drawRect(AppBackground) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(AppBackground)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .layerBackdrop(detailBackdrop)
-                .statusBarsPadding()
-                .padding(top = 12.dp, start = 20.dp, end = 20.dp, bottom = 120.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .statusBarsPadding()
+                    .padding(top = 12.dp, start = 8.dp, end = 8.dp, bottom = 120.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Edit",
-                    color = AccentWhite,
-                    fontSize = 22.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Edit",
+                        color = AccentWhite,
+                        fontSize = 22.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
 
-            if (editingField == EditingField.NAME) {
-                EditableField(
-                    value = nameDraft,
-                    onValueChange = { nameDraft = it },
-                    onConfirm = {
-                        onAction(EnergyDrinkUpdateAction.OnNameChange(nameDraft))
-                        editingField = null
-                    },
-                    onCancel = {
-                        nameDraft = state.name
-                        editingField = null
-                    }
-                )
-            } else {
-                ReadOnlyValue(
-                    value = state.name,
-                    onEdit = {
-                        nameDraft = state.name
-                        editingField = EditingField.NAME
-                    },
-                    textSize = 30.sp
-                )
-            }
+            GlassTextField(
+                value = state.name,
+                onValueChange = { onAction(EnergyDrinkUpdateAction.OnNameChange(it)) },
+                backdrop = fieldBackdrop,
+                textSize = 30.sp,
+                singleLine = true
+            )
 
-            if (editingField == EditingField.RATING) {
-                EditableField(
-                    value = ratingDraft,
-                    onValueChange = { ratingDraft = it },
-                    onConfirm = {
-                        onAction(EnergyDrinkUpdateAction.OnRatingTextChange(ratingDraft))
-                        editingField = null
-                    },
-                    onCancel = {
-                        ratingDraft = state.ratingText
-                        editingField = null
-                    },
-                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_star),
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(28.dp)
                 )
-            } else {
-                DetailRating(
-                    rating = state.rating,
-                    onEdit = {
-                        ratingDraft = state.ratingText
-                        editingField = EditingField.RATING
-                    }
-                )
+                Box(modifier = Modifier.width(140.dp)) {
+                    GlassTextField(
+                        value = state.ratingText,
+                        onValueChange = { onAction(EnergyDrinkUpdateAction.OnRatingTextChange(it)) },
+                        backdrop = fieldBackdrop,
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal,
+                        singleLine = true,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
             EditableImage(
                 imagePath = state.imagePath,
                 name = state.name,
-                onPickImage = onPickImage,
-                onRemoveImage = { onAction(EnergyDrinkUpdateAction.OnRemoveImage) }
+                onPickImage = onPickImage
             )
 
             val selectedTags = state.availableTags.filter { it.id in state.selectedTagIds }
@@ -277,34 +243,17 @@ private fun EnergyDrinkUpdateScreen(
                 }
             }
 
-            if (editingField == EditingField.DESCRIPTION) {
-                EditableField(
-                    value = descriptionDraft,
-                    onValueChange = { descriptionDraft = it },
-                    onConfirm = {
-                        onAction(EnergyDrinkUpdateAction.OnDescriptionChange(descriptionDraft))
-                        editingField = null
-                    },
-                    onCancel = {
-                        descriptionDraft = state.description
-                        editingField = null
-                    },
-                    singleLine = false
-                )
-            } else {
-                ReadOnlyValue(
-                    value = state.description,
-                    onEdit = {
-                        descriptionDraft = state.description
-                        editingField = EditingField.DESCRIPTION
-                    },
-                    textSize = 17.sp,
-                    placeholder = "No description"
-                )
-            }
+            GlassTextField(
+                value = state.description,
+                onValueChange = { onAction(EnergyDrinkUpdateAction.OnDescriptionChange(it)) },
+                backdrop = fieldBackdrop,
+                placeholder = "No description",
+                singleLine = false
+            )
 
-            state.errorMessage?.let { error ->
-                Text(error.asString(), color = ErrorRed, textAlign = TextAlign.Center)
+                state.errorMessage?.let { error ->
+                    Text(error.asString(), color = ErrorRed, textAlign = TextAlign.Center)
+                }
             }
         }
 
@@ -363,163 +312,69 @@ private fun EnergyDrinkUpdateScreen(
 }
 
 @Composable
-private fun ReadOnlyValue(
-    value: String,
-    onEdit: () -> Unit,
-    textSize: androidx.compose.ui.unit.TextUnit,
-    placeholder: String? = null
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = value.ifBlank { placeholder.orEmpty() },
-            color = AccentWhite,
-            fontSize = textSize,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(1f, fill = false),
-            maxLines = if (textSize.value > 20f) 2 else 6,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        EditIconButton(onClick = onEdit)
-    }
-}
-
-@Composable
-private fun EditableField(
+private fun GlassTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit,
+    backdrop: Backdrop,
+    textSize: androidx.compose.ui.unit.TextUnit = 17.sp,
+    placeholder: String? = null,
     singleLine: Boolean = true,
-    keyboardType: androidx.compose.ui.text.input.KeyboardType = androidx.compose.ui.text.input.KeyboardType.Text
+    keyboardType: androidx.compose.ui.text.input.KeyboardType = androidx.compose.ui.text.input.KeyboardType.Text,
+    textAlign: TextAlign = TextAlign.Start
 ) {
-    val focusRequester = remember { FocusRequester() }
-    var fieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = value,
-                selection = TextRange(value.length)
+    val shape = if (singleLine) RoundedCornerShape(100) else RoundedCornerShape(28.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .glassContainer(
+                backdrop = backdrop,
+                shape = shape,
+                tint = GlassPanelTint
             )
-        )
-    }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
     ) {
         OutlinedTextField(
-            value = fieldValue,
+            value = value,
             onValueChange = {
-                fieldValue = it
-                onValueChange(it.text)
+                onValueChange(it)
             },
-            modifier = Modifier
-                .weight(1f)
-                .focusRequester(focusRequester),
+            modifier = Modifier.fillMaxWidth(),
+            shape = shape,
             singleLine = singleLine,
-            maxLines = if (singleLine) 1 else 5,
-            textStyle = TextStyle(color = AccentWhite, fontSize = 17.sp),
+            minLines = if (singleLine) 1 else 1,
+            maxLines = if (singleLine) 1 else Int.MAX_VALUE,
+            textStyle = TextStyle(color = AccentWhite, fontSize = textSize, textAlign = textAlign),
+            placeholder = placeholder?.let {
+                { Text(it, color = AccentWhite.copy(alpha = 0.55f), fontSize = textSize) }
+            },
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = keyboardType),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = AccentWhite,
                 unfocusedTextColor = AccentWhite,
-                focusedBorderColor = AccentWhite,
-                unfocusedBorderColor = AccentWhite,
+                focusedBorderColor = AccentWhite.copy(alpha = 0.45f),
+                unfocusedBorderColor = AccentWhite.copy(alpha = 0.18f),
                 cursorColor = AccentWhite,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent
             )
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            FieldActionButton(
-                icon = Res.drawable.ic_check,
-                tintBrush = GreenGradientVertical,
-                onClick = onConfirm
-            )
-            FieldActionButton(
-                icon = Res.drawable.ic_close,
-                tintBrush = AccentRedGradientVertical,
-                onClick = onCancel
-            )
         }
-    }
-}
-
-@Composable
-private fun DetailRating(
-    rating: Double?,
-    onEdit: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_star),
-                contentDescription = null,
-                tint = if (rating != null && rating >= 10.0) TagPurpleColor else ratingStarTint(rating),
-                modifier = Modifier.size(32.dp)
-            )
-            Text(
-                text = rating?.toString() ?: "0.0",
-                color = AccentWhite,
-                fontSize = 24.sp
-            )
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        EditIconButton(onClick = onEdit)
-    }
-}
-
-@Composable
-private fun EditIconButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.size(36.dp)
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.ic_edit),
-            contentDescription = "Edit",
-            tint = AccentWhite,
-            modifier = Modifier.size(18.dp)
-        )
-    }
 }
 
 @Composable
 private fun EditableImage(
     imagePath: String?,
     name: String,
-    onPickImage: () -> Unit,
-    onRemoveImage: () -> Unit
+    onPickImage: () -> Unit
 ) {
     val imageShape = RoundedCornerShape(24.dp)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-            .height(420.dp)
-                .clip(imageShape),
+                .height(440.dp)
+                .clip(imageShape)
+                .clickable(onClick = onPickImage),
             contentAlignment = Alignment.Center
         ) {
             if (imagePath == null) {
@@ -539,40 +394,20 @@ private fun EditableImage(
                     placeholder = painterResource(Res.drawable.ic_image_placeholder)
                 )
             }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TextButton(onClick = onPickImage) {
-                Text(if (imagePath == null) "Add photo" else "Change photo", color = AccentWhite)
-            }
-            if (imagePath != null) {
-                TextButton(onClick = onRemoveImage) {
-                    Text("Remove photo", color = ErrorRed)
-                }
-            }
-        }
-    }
-}
 
-@Composable
-private fun FieldActionButton(
-    icon: DrawableResource,
-    tintBrush: Brush,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(tintBrush),
-        contentAlignment = Alignment.Center
-    ) {
-        IconButton(onClick = onClick) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                tint = TextOnGradient,
-                modifier = Modifier.size(24.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.32f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_edit),
+                    contentDescription = "Change photo",
+                    tint = AccentWhite.copy(alpha = 0.82f),
+                    modifier = Modifier.size(56.dp)
+                )
+            }
         }
     }
 }
