@@ -62,11 +62,13 @@ val useCaseModule = module {
 expect val platformModule: Module
 
 
-val databaseModule = module {
+fun databaseModule(database: EnergyDexDatabase? = null) = module {
 
-    single { EnergyDexDatabase(
-        get<DatabaseDriverFactory>().createDriver()
-    ) }
+    single {
+        database ?: EnergyDexDatabase(
+            get<DatabaseDriverFactory>().createDriver()
+        )
+    }
 
     single { get<EnergyDexDatabase>().energyDrinkEntityQueries }
     single { get<EnergyDexDatabase>().tagEntityQueries }

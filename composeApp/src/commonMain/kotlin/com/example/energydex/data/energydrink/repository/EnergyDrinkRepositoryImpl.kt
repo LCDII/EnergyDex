@@ -1,6 +1,9 @@
 package com.example.energydex.data.energydrink.repository
 
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import app.cash.sqldelight.coroutines.mapToList
 import com.example.EnergyDrinkEntityQueries
 import com.example.EnergyDrinkLocalMetadataQueries
@@ -14,7 +17,6 @@ import com.example.energydex.data.tag.mappers.toTag
 import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -31,7 +33,7 @@ class EnergyDrinkRepositoryImpl(
         amount: Int,
         description: String?,
         rating: Double?
-    ): Result<Long, DataError.Local> = withContext(Dispatchers.IO) {
+    ): Result<Long, DataError.Local> = withContext(Dispatchers.Default) {
         try {
             energyDrinkEntityQueries.insertEnergyDrink(
                 name = name,
@@ -41,7 +43,7 @@ class EnergyDrinkRepositoryImpl(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 updatedAt = Clock.System.now().toEpochMilliseconds()
             )
-            Result.Success(energyDrinkEntityQueries.lastInsertRowId().executeAsOne())
+            Result.Success(energyDrinkEntityQueries.lastInsertRowId().awaitAsOne())
         } catch (_: Exception) {
             Result.Error(DataError.Local.ALREADY_EXISTS)
         }
@@ -53,7 +55,7 @@ class EnergyDrinkRepositoryImpl(
         amount: Int,
         description: String?,
         rating: Double?
-    ): EmptyResult<DataError.Local> = withContext(Dispatchers.IO) {
+    ): EmptyResult<DataError.Local> = withContext(Dispatchers.Default) {
         try {
             energyDrinkEntityQueries.updateEnergyDrink(
                 id = id,
@@ -70,7 +72,7 @@ class EnergyDrinkRepositoryImpl(
     }
 
     override suspend fun deleteEnergyDrink(id: Long): EmptyResult<DataError.Local> =
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             try {
                 energyDrinkEntityQueries.deleteEnergyDrink(id = id)
                 energyDrinkTagQueries.deleteAllTagsForEnergyDrink(energyDrinkId = id)
@@ -81,16 +83,16 @@ class EnergyDrinkRepositoryImpl(
         }
 
     override suspend fun getEnergyDrinkById(id: Long): Result<EnergyDrink, DataError.Local> =
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             try {
-                val energyDrink = energyDrinkEntityQueries.selectById(id = id).executeAsOne()
+                val energyDrink = energyDrinkEntityQueries.selectById(id = id).awaitAsOne()
                 val tags = energyDrinkTagQueries
                     .selectTagsForEnergyDrink(energyDrinkId = id)
-                    .executeAsList()
+                    .awaitAsList()
                     .map { it.toTag() }
                 val imagePath = localMetadataQueries
                     .selectByEnergyDrinkId(id)
-                    .executeAsOneOrNull()
+                    .awaitAsOneOrNull()
                     ?.localImagePath
 
                 Result.Success(energyDrink.toEnergyDrink(tags, imagePath))
@@ -106,11 +108,11 @@ class EnergyDrinkRepositoryImpl(
         energyDrinkEntityQueries.observeEnergyDrinks(
             nameQuery = query,
             sortOption = sortOption.name
-        ).asFlow().mapToList(Dispatchers.IO),
+        ).asFlow().mapToList(Dispatchers.Default),
         observeLocalImagePaths(),
         energyDrinkTagQueries.selectAllRelations()
             .asFlow()
-            .mapToList(Dispatchers.IO)
+            .mapToList(Dispatchers.Default)
     ) { entities, imagePaths, _ ->
         entities.toEnergyDrinks(imagePaths)
     }
@@ -118,7 +120,7 @@ class EnergyDrinkRepositoryImpl(
     private fun observeLocalImagePaths(): Flow<Map<Long, String?>> =
         localMetadataQueries.selectAll()
             .asFlow()
-            .mapToList(Dispatchers.IO)
+            .mapToList(Dispatchers.Default)
             .map { metadata ->
                 metadata.associate { it.energyDrinkId to it.localImagePath }
             }
@@ -126,10 +128,10 @@ class EnergyDrinkRepositoryImpl(
     private suspend fun List<com.example.EnergyDrinkEntity>.toEnergyDrinks(
         imagePaths: Map<Long, String?>
     ): List<EnergyDrink> = map { entity ->
-        val tags = withContext(Dispatchers.IO) {
+        val tags = withContext(Dispatchers.Default) {
             energyDrinkTagQueries
                 .selectTagsForEnergyDrink(entity.id)
-                .executeAsList()
+                .awaitAsList()
                 .map { it.toTag() }
         }
         entity.toEnergyDrink(tags, imagePaths[entity.id])

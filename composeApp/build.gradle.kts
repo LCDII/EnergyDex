@@ -1,4 +1,6 @@
 
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -26,6 +28,11 @@ kotlin {
             isStatic = true
         }
     }
+
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
     
     sourceSets {
         iosMain.dependencies {
@@ -39,6 +46,14 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
+
+        wasmJsMain.dependencies {
+            implementation(libs.sqldelight.web.worker)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqlDelight.get()))
+            implementation(npm("sql.js", "1.13.0"))
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+        }
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -58,6 +73,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.sqldelight.coroutines.extensions)
+            implementation(libs.sqldelight.async.extensions)
 
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
@@ -108,6 +124,7 @@ sqldelight {
     databases {
         create("EnergyDexDatabase") {
             packageName.set("com.example")
+            generateAsync.set(true)
         }
     }
 }

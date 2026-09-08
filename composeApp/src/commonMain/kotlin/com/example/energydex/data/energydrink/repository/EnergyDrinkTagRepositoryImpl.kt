@@ -11,9 +11,9 @@ import com.example.energydex.domain.energydrink.model.EnergyDrink
 import com.example.energydex.domain.energydrink.repository.EnergyDrinkTagRepository
 import com.example.EnergyDrinkLocalMetadataQueries
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.coroutines.mapToList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -96,7 +96,7 @@ class EnergyDrinkTagRepositoryImpl(
     override fun observeAllRelations(): Flow<Unit> =
         energyDrinkTagQueries.selectAllRelations()
             .asFlow()
-            .mapToList(Dispatchers.IO)
+            .mapToList(Dispatchers.Default)
             .map { Unit }
 
     override fun observeEnergyDrinksForTag(
@@ -111,17 +111,17 @@ class EnergyDrinkTagRepositoryImpl(
                 sortOption = sortOption.name
             )
             .asFlow()
-            .mapToList(Dispatchers.IO),
+            .mapToList(Dispatchers.Default),
         localMetadataQueries.selectAll()
             .asFlow()
-            .mapToList(Dispatchers.IO)
+            .mapToList(Dispatchers.Default)
             .map { metadata -> metadata.associate { it.energyDrinkId to it.localImagePath } }
     ) { entities, imagePaths ->
         entities.map { entity ->
-            val tags = withContext(Dispatchers.IO) {
+            val tags = withContext(Dispatchers.Default) {
                 energyDrinkTagQueries
                     .selectTagsForEnergyDrink(entity.id)
-                    .executeAsList()
+                    .awaitAsList()
                     .map { it.toTag() }
             }
             entity.toEnergyDrink(tags, imagePaths[entity.id])

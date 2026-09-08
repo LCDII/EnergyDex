@@ -1,5 +1,6 @@
 package com.example.energydex.data.energydrink.repository
 
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import com.example.EnergyDrinkLocalMetadataQueries
 import com.example.energydex.core.domain.DataError
 import com.example.energydex.core.domain.EmptyResult
@@ -27,7 +28,7 @@ class EnergyDrinkLocalMetadataRepositoryImpl(
     ): Result<String?, DataError.Local> = try {
         Result.Success(
             queries.selectByEnergyDrinkId(energyDrinkId)
-                .executeAsOneOrNull()
+                .awaitAsOneOrNull()
                 ?.localImagePath
         )
     } catch (_: Exception) {
