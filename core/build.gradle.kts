@@ -17,8 +17,8 @@ kotlin {
         browser()
     }
 
-    androidLibrary {
-        namespace = "com.example.energydex.core"
+    android {
+        namespace = "dev.lcdii.energydex.core"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         compilerOptions { jvmTarget = JvmTarget.JVM_11 }

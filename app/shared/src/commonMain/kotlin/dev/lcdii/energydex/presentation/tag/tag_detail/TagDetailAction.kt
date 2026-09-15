@@ -1,0 +1,23 @@
+package dev.lcdii.energydex.presentation.tag.tag_detail
+
+import dev.lcdii.energydex.presentation.energydrink.energydrink_section.components.EnergyDrinkListSortOptions
+import dev.lcdii.energydex.domain.energydrink.model.EnergyDrink
+import dev.lcdii.energydex.presentation.shared.components.EnergyDrinkSectionTab
+
+sealed interface TagDetailAction {
+    data object OnBackClick : TagDetailAction
+    data object OnEditClick : TagDetailAction
+    data object OnAddDrinksClick : TagDetailAction
+    data class OnEnergyDrinkNavigateClick(val energyDrink: EnergyDrink) : TagDetailAction
+    data class OnEnergyDrinkHold(val energyDrink: EnergyDrink) : TagDetailAction
+    data class OnSelectEnergyDrink(val energyDrink: EnergyDrink) : TagDetailAction
+    data object OnCancelSelectionClick : TagDetailAction
+    data object OnRemoveSelectedClick : TagDetailAction
+    data class OnSearchQueryChange(val query: String) : TagDetailAction
+    data class OnTabSelected(val tab: EnergyDrinkSectionTab) : TagDetailAction
+    data object OnSortButtonClick : TagDetailAction
+    data class OnSortOptionSelected(val option: EnergyDrinkListSortOptions) : TagDetailAction
+    data object OnDeleteClick : TagDetailAction
+    data object OnConfirmDeleteClick : TagDetailAction
+    data object OnDeclineDeleteClick : TagDetailAction
+}

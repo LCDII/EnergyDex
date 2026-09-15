@@ -22,8 +22,8 @@ kotlin {
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs { browser() }
 
-    androidLibrary {
-        namespace = "com.example.energydex.shared"
+    android {
+        namespace = "dev.lcdii.energydex.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         compilerOptions { jvmTarget = JvmTarget.JVM_11 }
@@ -73,7 +73,7 @@ dependencies { androidRuntimeClasspath(libs.compose.uiTooling) }
 sqldelight {
     databases {
         create("EnergyDexDatabase") {
-            packageName.set("com.example")
+            packageName.set("dev.lcdii.energydex.database")
             generateAsync.set(true)
         }
     }

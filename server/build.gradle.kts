@@ -3,10 +3,10 @@ plugins {
     alias(libs.plugins.ktor)
 }
 
-group = "com.example.energydex"
+group = "dev.lcdii.energydex"
 version = "1.0.0"
 
-application { mainClass = "com.example.energydex.server.ApplicationKt" }
+application { mainClass = "dev.lcdii.energydex.server.ApplicationKt" }
 
 dependencies {
     api(projects.core)

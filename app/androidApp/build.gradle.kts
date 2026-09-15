@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.energydex"
+    namespace = "dev.lcdii.energydex"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.energydex"
+        applicationId = "dev.lcdii.energydex"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
