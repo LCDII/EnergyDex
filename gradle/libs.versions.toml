@@ -49,6 +49,12 @@ logback = { module = "ch.qos.logback:logback-classic", version = "1.5.34" }
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-serverCallId = { module = "io.ktor:ktor-server-call-id-jvm", version.ref = "ktor" }
+ktor-serverCors = { module = "io.ktor:ktor-server-cors-jvm", version.ref = "ktor" }
+ktor-serverStatusPages = { module = "io.ktor:ktor-server-status-pages-jvm", version.ref = "ktor" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serverContentNegotiation = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
 
 sqldelight-android = {module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight"}
 sqldelight-ios = {module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight"}

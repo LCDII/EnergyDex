@@ -13,6 +13,12 @@ dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.serverCallId)
+    implementation(libs.ktor.serverCors)
+    implementation(libs.ktor.serverStatusPages)
+    implementation(libs.ktor.client.contentNegotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.serverContentNegotiation)
+
 
     implementation(libs.logback)
     implementation(libs.koin.ktor)
