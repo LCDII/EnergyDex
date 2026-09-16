@@ -12,5 +12,8 @@ dependencies {
     api(projects.core)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.serverCallId)
+
     implementation(libs.logback)
+    implementation(libs.koin.ktor)
 }
